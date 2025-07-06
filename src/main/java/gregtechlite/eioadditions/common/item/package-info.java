@@ -1,0 +1,9 @@
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+@FieldsAreNonnullByDefault
+package gregtechlite.eioadditions.common.item;
+
+import crazypants.enderio.api.annotation.FieldsAreNonnullByDefault;
+import crazypants.enderio.api.annotation.MethodsReturnNonnullByDefault;
+
+import javax.annotation.ParametersAreNonnullByDefault;

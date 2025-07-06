@@ -1,0 +1,173 @@
+[
+  {
+    "modid": "enderio",
+    "name": "Ender IO",
+    "description": "Compact conduits, painted things and all sorts of stuff and bling.",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "CrazyPants", "tterrag", "HenryLoenwind", "MatthiasM" , "CyanideX", "EpicSquid"],
+    "credits": "By CrazyPants, with the help of many"
+  },
+  {
+    "modid": "enderiobase",
+    "name": "Ender IO Base",
+    "description": "Basic materials and items for all EnderIO modules.",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "CrazyPants", "tterrag", "HenryLoenwind", "MatthiasM" , "CyanideX", "EpicSquid"],
+    "parent": "enderio",
+    "dependencies": [ "enderio" ]
+  },
+  {
+    "modid": "enderioeaddons",
+    "name": "Ender IO Addons",
+    "description": "All the things that don't belong in Ender IO but sort of do...",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "CrazyPants", "tterrag", "HenryLoenwind", "MatthiasM", "EpicSquid"],
+    "credits": "By CrazyPants, with the help of many",
+    "parent":"enderio",
+    "dependencies": [ "enderiomachines" ]
+  },
+  {
+    "modid": "enderioconduitsappliedenergistics",
+    "name": "Ender IO Applied Energistics Conduits",
+    "description": "I'm applying my energy!",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "CrazyPants", "tterrag", "HenryLoenwind", "MatthiasM", "EpicSquid"],
+    "credits": "By CrazyPants, with the help of many",
+    "parent":"enderio",
+    "dependencies": [ "enderioconduits" ]
+  },
+  {
+    "modid": "gasconduits",
+    "name": "Ender IO Gas Conduits",
+    "description": "EnderIO styled Gas Conduits for Mekanism Gas",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": ["pupnewfster"],
+    "parent": "enderio",
+    "dependencies": [ "enderioconduits" ]
+  },
+  {
+    "modid": "enderioconduitsopencomputers",
+    "name": "Ender IO Open Computers Conduits",
+    "description": "I'm programming!",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "CrazyPants", "tterrag", "HenryLoenwind", "MatthiasM", "EpicSquid"],
+    "credits": "By CrazyPants, with the help of many",
+    "parent":"enderio",
+    "dependencies": [ "enderioconduits" ]
+  },
+  {
+    "modid": "enderioconduitsrefinedstorage",
+    "name": "Ender IO Refined Storage Conduits",
+    "description": "I'm refining my storage!",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "CrazyPants", "tterrag", "HenryLoenwind", "MatthiasM", "EpicSquid"],
+    "credits": "By CrazyPants, with the help of many",
+    "parent":"enderio",
+    "dependencies": [ "enderioconduits" ]
+  },
+  {
+    "modid": "enderioconduits",
+    "name": "Ender IO Conduits",
+    "description": "Compact conduits.",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "CrazyPants", "tterrag", "HenryLoenwind", "MatthiasM" , "CyanideX", "EpicSquid", "HypherionSA"],
+    "credits": "By CrazyPants, with the help of many",
+    "parent":"enderio",
+    "dependencies": [ "enderio" ]
+  },
+  {
+    "modid": "enderiopowertools",
+    "name": "Ender IO Powertools",
+    "description": "Capacitor Bank and Power Monitor.",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "CrazyPants", "tterrag", "HenryLoenwind", "MatthiasM" , "CyanideX", "EpicSquid"],
+    "credits": "By CrazyPants, with the help of many",
+    "parent":"enderio",
+    "dependencies": [ "enderio", "enderioconduits" ]
+  },
+  {
+    "modid": "enderioendergy",
+    "name": "Ender IO endergy",
+    "description": "All the overpowered stuff to compete with other mods",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "EpicSquid", "CrazyPants", "tterrag", "HenryLoenwind" ],
+    "credits": "By CrazyPants, with the help of many",
+    "parent":"enderio",
+    "dependencies": [ "enderio" ]
+  },
+  {
+    "modid": "enderiointegrationforestry",
+    "name": "Ender IO Integration with Forestry",
+    "description": "I'm growing!",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "CrazyPants", "tterrag", "HenryLoenwind", "MatthiasM", "EpicSquid", "bdew", "mezz"],
+    "credits": "By CrazyPants, with the help of many",
+    "parent":"enderio",
+    "dependencies": [ "enderio" ]
+  },
+  {
+    "modid": "enderiointegrationtic",
+    "name": "Ender IO Integration with Tinkers' Construct",
+    "description": "I'm melting!",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "CrazyPants", "tterrag", "HenryLoenwind", "EpicSquid"],
+    "credits": "By CrazyPants, with the help of many",
+    "parent":"enderio",
+    "dependencies": [ "enderio" ]
+  },
+  {
+    "modid": "enderiointegrationticlate",
+    "name": "Ender IO Integration with Tinkers' Construct",
+    "description": "I'm melting!",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "CrazyPants", "tterrag", "HenryLoenwind", "EpicSquid"],
+    "credits": "By CrazyPants, with the help of many",
+    "parent":"enderiointegrationtic",
+    "dependencies": [ "enderio" ]
+  },
+  {
+    "modid": "enderioinvpanel",
+    "name": "Ender IO Inventory Panel",
+    "description": "A mass-storage solution!",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "CrazyPants", "tterrag", "HenryLoenwind", "MatthiasM" , "CyanideX", "EpicSquid"],
+    "credits": "By CrazyPants, with the help of many",
+    "parent":"enderio",
+    "dependencies": [ "enderio","enderiomachines","enderioconduits" ]
+  },
+  {
+    "modid": "enderiomachines",
+    "name": "Ender IO Machines",
+    "description": "Everything that goes krrrrkrrr and shtshtshtsht and kagrmkagrmkaguddr.",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": [ "CrazyPants", "tterrag", "HenryLoenwind", "MatthiasM" , "CyanideX", "EpicSquid"],
+    "credits": "By CrazyPants, with the help of many",
+    "parent":"enderio",
+    "dependencies": [ "enderio" ]
+  },
+  {
+    "modid": "enderioadditions",
+    "name": "Ender IO Additions",
+    "description": "Additions to Ender IO",
+    "version": "${version}",
+    "mcversion": "${minecraft_version}",
+    "authorList": ["gateguardian"],
+    "parent": "enderio",
+    "dependencies": [ "enderioconduits" ]
+  }
+]

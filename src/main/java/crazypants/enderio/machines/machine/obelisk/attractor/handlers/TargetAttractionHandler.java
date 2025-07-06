@@ -1,0 +1,51 @@
+package crazypants.enderio.machines.machine.obelisk.attractor.handlers;
+
+import javax.annotation.Nonnull;
+
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntitySpider;
+
+import crazypants.enderio.machines.machine.obelisk.attractor.TileAttractor;
+
+public class TargetAttractionHandler implements IMobAttractionHandler {
+
+    @Override
+    public @Nonnull State canAttract(TileAttractor attractor, EntityLiving entity) {
+        if (entity instanceof EntityPigZombie || entity instanceof EntitySpider) {
+            if (((EntityMob) entity).getAttackTarget() == attractor.getTarget()) {
+                return State.ALREADY_ATTRACTING;
+            }
+            return State.CAN_ATTRACT;
+        }
+        return State.CANNOT_ATTRACT;
+    }
+
+    @Override
+    public void startAttracting(TileAttractor attractor, EntityLiving entity) {
+        ((EntityMob) entity).setAttackTarget(attractor.getTarget());
+    }
+
+    @Override
+    public void tick(TileAttractor attractor, EntityLiving entity) {
+        double x = (attractor.getPos().getX() + 0.5D - entity.posX);
+        double y = (attractor.getPos().getY() + 1D - entity.posY);
+        double z = (attractor.getPos().getZ() + 0.5D - entity.posZ);
+        double distance = Math.sqrt(x * x + y * y + z * z);
+        if (distance > 2) {
+            EntityMob mob = (EntityMob) entity;
+            mob.faceEntity(attractor.getTarget(), 180, 0);
+            // TODO are these values right?
+            mob.moveRelative(0, 0, 1, 0);
+            if (mob.posY < attractor.getPos().getY()) {
+                mob.setJumping(true);
+            } else {
+                mob.setJumping(false);
+            }
+        }
+    }
+
+    @Override
+    public void release(TileAttractor attractor, EntityLiving entity) {}
+}

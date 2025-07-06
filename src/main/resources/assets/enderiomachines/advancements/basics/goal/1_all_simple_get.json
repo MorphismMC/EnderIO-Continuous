@@ -1,0 +1,58 @@
+{
+  "display": {
+    "description": {
+      "translate": "enderio.advancement.challenge.1_all_simple_get.desc"
+    },
+    "title": {
+      "translate": "enderio.advancement.challenge.1_all_simple_get.name"
+    },
+    "icon": {
+      "item": "enderio:block_simple_stirling_generator",
+      "data": 0
+    },
+    "frame":"goal",
+    "hidden": true
+  },
+  "criteria": {
+    "inv_changed-enderio:block_simple_stirling_generator": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "enderio:block_simple_stirling_generator",
+            "data": 0
+          }
+        ]
+      }
+    },
+    "inv_changed-enderio:block_simple_sag_mill": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "enderio:block_simple_sag_mill",
+            "data": 0
+          }
+        ]
+      }
+    },
+    "inv_changed-enderio:block_simple_alloy_smelter": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "enderio:block_simple_alloy_smelter",
+            "data": 0
+          }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "loot": [
+      "enderio:reward"
+    ],
+    "experience": 30
+  },
+  "parent": "enderio:start/2_simple_chassis_get"
+}

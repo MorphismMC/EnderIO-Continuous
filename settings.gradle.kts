@@ -1,0 +1,24 @@
+pluginManagement {
+    repositories {
+        maven {
+            // RetroFuturaGradle
+            name = "GTNH Maven"
+            url = uri("https://nexus.gtnewhorizons.com/repository/public/")
+            //noinspection GroovyAssignabilityCheck
+            mavenContent {
+                includeGroup("com.gtnewhorizons")
+                includeGroup("com.gtnewhorizons.retrofuturagradle")
+            }
+        }
+        gradlePluginPortal()
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+plugins {
+    // Automatic toolchain provisioning
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.7.0"
+}
+
+rootProject.name = rootProject.projectDir.getName()
