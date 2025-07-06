@@ -76,9 +76,10 @@ public class EnderIOConduits implements IEnderIOAddon {
     }
 
     @Override
-    @Nonnull
-    public NNList<Triple<Integer, RecipeFactory, String>> getRecipeFiles() {
-        return new NNList<>(Triple.of(2, null, "conduits"), Triple.of(2, null, "hiding_conduits"));
+    public NNList<RecipeFile> getRecipeFileList() {
+        return new NNList<>(
+                new RecipeFile(2, "conduits"),
+                new RecipeFile(2, "hiding_conduits"));
     }
 
     @Override

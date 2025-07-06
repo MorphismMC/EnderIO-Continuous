@@ -49,11 +49,12 @@ tasks {
     }
 
     named<ProcessResources>("processResources") {
-        val resdir = File(sourceSets.main.get().output.resourcesDir, "assets/enderio/config/recipes")
-        fileTree(mapOf("dir" to resdir, "include" to "*.xml")).files.forEach {
+        fileTree(sourceSets.main.get().output.resourcesDir) {
+            include("**/config/recipes/*.xml")
+        }.files.forEach {
             val baseFilename = it.name.take(it.name.lastIndexOf("."))
-            val inputFile = File(resdir, "${baseFilename}.xml")
-            val outputFile = File(resdir, "${baseFilename}.pdf")
+            val inputFile = File(it.parent, "${baseFilename}.xml")
+            val outputFile = File(it.parent, "${baseFilename}.pdf")
             PdfConverterExtension.exportToPdf(outputFile.path,
                 "<html><head></head><body><div style='white-space:pre-wrap; font-family:monospace;'>" +
                         XmlUtil.escapeXml(inputFile.readText()) +

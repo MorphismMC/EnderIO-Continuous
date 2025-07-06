@@ -75,10 +75,9 @@ public class EnderIOConduitsOpenComputers implements IEnderIOAddon {
     }
 
     @Override
-    @Nonnull
-    public NNList<Triple<Integer, RecipeFactory, String>> getRecipeFiles() {
+    public NNList<RecipeFile> getRecipeFileList() {
         if (OCUtil.isOCEnabled()) {
-            return new NNList<>(Triple.of(2, null, "conduits-opencomputers"));
+            return new NNList<>(new RecipeFile(2, "conduits-opencomputers"));
         }
         return NNList.emptyList();
     }

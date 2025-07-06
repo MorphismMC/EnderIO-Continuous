@@ -47,9 +47,8 @@ public class EnderIOPowerTools implements IEnderIOAddon {
     }
 
     @Override
-    @Nonnull
-    public NNList<Triple<Integer, RecipeFactory, String>> getRecipeFiles() {
-        return new NNList<>(Triple.of(2, null, "powertools"));
+    public NNList<RecipeFile> getRecipeFileList() {
+        return new NNList<>(new RecipeFile(2, "powertools"));
     }
 
     @Override

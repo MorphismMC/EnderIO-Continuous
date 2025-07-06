@@ -48,10 +48,11 @@ public class EnderIOInvPanel implements IEnderIOAddon {
     }
 
     @Override
-    @Nonnull
-    public NNList<Triple<Integer, RecipeFactory, String>> getRecipeFiles() {
-        return new NNList<>(Triple.of(2, null, "invpanel"), Triple.of(9, null, "capacitor_invpanel"),
-                Triple.of(9, null, "hiding_invpanel"));
+    public NNList<RecipeFile> getRecipeFileList() {
+        return new NNList<>(
+                new RecipeFile(2, "invpanel"),
+                new RecipeFile(9, "capacitor_invpanel"),
+                new RecipeFile(9, "hiding_invpanel"));
     }
 
     @Override

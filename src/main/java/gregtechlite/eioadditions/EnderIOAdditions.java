@@ -3,6 +3,7 @@ package gregtechlite.eioadditions;
 import com.enderio.core.common.util.NNList;
 import crazypants.enderio.api.addon.IEnderIOAddon;
 import crazypants.enderio.api.teleport.ITravelSource;
+import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.config.ConfigHandlerEIO;
 import crazypants.enderio.base.config.recipes.RecipeFactory;
 import crazypants.enderio.base.init.RegisterModObject;
@@ -14,8 +15,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.apache.commons.lang3.tuple.Triple;
-import org.jetbrains.annotations.NotNull;
 
 @Mod(modid = AdditionsConstants.MOD_ID,
         name = AdditionsConstants.MOD_NAME,
@@ -47,10 +46,13 @@ public class EnderIOAdditions implements IEnderIOAddon {
         event.register(AdditionsObject.class);
     }
 
-    @NotNull
     @Override
-    public NNList<Triple<Integer, RecipeFactory, String>> getRecipeFiles() {
-        return new NNList<>(Triple.of(2, null, "addition_items"));
+    public NNList<RecipeFile> getRecipeFileList() {
+        return new NNList<>(new RecipeFile(
+                2,
+                new RecipeFactory(
+                        EnderIO.getConfigHandler().getConfigDirectory(),
+                        AdditionsConstants.MOD_ID),
+                "addition_items"));
     }
-
 }

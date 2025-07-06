@@ -1,27 +1,22 @@
 package crazypants.enderio.api.addon;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.enderio.core.common.util.NNList;
+import com.github.bsideup.jabel.Desugar;
+import crazypants.enderio.base.EnderIO;
+import crazypants.enderio.base.config.recipes.RecipeFactory;
+import crazypants.enderio.base.init.ModObjectRegistry;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
-
 import org.apache.commons.lang3.tuple.Triple;
-
-import com.enderio.core.common.util.NNList;
-
-import crazypants.enderio.base.EnderIO;
-import crazypants.enderio.base.config.recipes.RecipeFactory;
-import crazypants.enderio.base.init.ModObjectRegistry;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface to tag mod classes (i.e. classes annotated with {@link Mod}) as addons for Ender IO. Implementing this
  * interface is only needed if the addon wants
  * to use one of the features in it.
- *
  */
 public interface IEnderIOAddon {
 
@@ -31,7 +26,7 @@ public interface IEnderIOAddon {
      * <p>
      * Note: This means they will also have to check for {@link EnderIO#MODID} on the {@link OnConfigChangedEvent}
      * instead of only their own ID!
-     * 
+     *
      * @return A {@link Configuration} object.
      */
     default @Nullable Configuration getConfiguration() {
@@ -45,35 +40,56 @@ public interface IEnderIOAddon {
      * <p>
      * Don't use this for your general blocks, those go into the {@link ModObjectRegistry}. This is for things like
      * fluid blocks that cannot be mod-objected.
-     * 
      */
-    default void injectBlocks(@Nonnull IForgeRegistry<Block> registry) {}
+    default void injectBlocks(IForgeRegistry<Block> registry) {
+    }
+
+    @Deprecated
+    default NNList<Triple<Integer, RecipeFactory, String>> getRecipeFiles() {
+        return NNList.emptyList();
+    }
 
     /**
      * Query an addon for their XML recipe files. The returned files will be loaded at the appropriate time in order of
      * priority (ascending).
      * <p>
      * Note: "aliases" is loaded at priority 0.
-     * 
-     * @return A list of (priority, {@link RecipeFactory}, file name) pairs. The {@link RecipeFactory} may be null, in
-     *         which case the base recipe factory (Ender
-     *         IO's config directory and domain) will be used.
+     *
+     * @return A list of RecipeFiles
      */
-    default @Nonnull NNList<Triple<Integer, RecipeFactory, String>> getRecipeFiles() {
-        return NNList.emptyList();
+    default NNList<RecipeFile> getRecipeFileList() {
+        return getRecipeFiles().stream()
+                .map(t -> new RecipeFile(t.getLeft(), t.getMiddle(), t.getRight()))
+                .collect(NNList.collector());
     }
 
     /**
      * Query an addon for their XML recipe example files. The returned files will be copied to the examples folder.
-     * 
+     *
      * @return A list of file names.
      */
-    default @Nonnull NNList<String> getExampleFiles() {
+    default NNList<String> getExampleFiles() {
         return NNList.emptyList();
     }
 
     /**
      * This is called right after all XML recipes have been registered.
      */
-    default void postRecipeRegistration() {}
+    default void postRecipeRegistration() {
+    }
+
+    /**
+     * @param priority priority
+     * @param factory if null, the base recipe factory (Ender IO's config directory and domain)
+     * @param name file name
+     * @author GateGuardian
+     * @date : 2025/7/7
+     */
+    @Desugar
+    record RecipeFile(int priority, @Nullable RecipeFactory factory, String name) {
+
+        public RecipeFile(int priority, String name) {
+            this(priority, null, name);
+        }
+    }
 }

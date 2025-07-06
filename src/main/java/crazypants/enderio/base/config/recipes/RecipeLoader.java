@@ -1,33 +1,7 @@
 package crazypants.enderio.base.config.recipes;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.xml.stream.XMLStreamException;
-
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.ProgressManager;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
-
 import com.enderio.core.common.util.NNList;
 import com.enderio.core.common.util.NullHelper;
-
 import crazypants.enderio.api.addon.IEnderIOAddon;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.Log;
@@ -38,6 +12,21 @@ import crazypants.enderio.base.config.recipes.xml.Aliases;
 import crazypants.enderio.base.config.recipes.xml.Capacitors;
 import crazypants.enderio.base.config.recipes.xml.Recipes;
 import crazypants.enderio.base.recipe.RecipeLevel;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.ProgressManager;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.annotation.Nonnull;
+import javax.xml.stream.XMLStreamException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.Map.Entry;
 
 public final class RecipeLoader {
 
@@ -53,7 +42,8 @@ public final class RecipeLoader {
 
     private static List<Pair<String, Pair<IMCTYPE, String>>> imcRecipes = new ArrayList<>();
 
-    private RecipeLoader() {}
+    private RecipeLoader() {
+    }
 
     public static void addRecipes() {
         ProgressManager.ProgressBar bar = ProgressManager.push("XML Recipes", 11, true);
@@ -73,7 +63,7 @@ public final class RecipeLoader {
 
         recipeFactory.createFileUser("recipes/user/user_recipes.xml");
 
-        NNList<Triple<Integer, RecipeFactory, String>> coreFiles = new NNList<>();
+        NNList<IEnderIOAddon.RecipeFile> coreFiles = new NNList<>();
 
         bar.step("Collecting Sub-Mods/Addons"); // 2
         final List<ModContainer> modList = Loader.instance().getModList();
@@ -82,7 +72,7 @@ public final class RecipeLoader {
             bar2.step(modContainer.getName());
             Object mod = modContainer.getMod();
             if (mod instanceof IEnderIOAddon) {
-                coreFiles.addAll(((IEnderIOAddon) mod).getRecipeFiles());
+                coreFiles.addAll(((IEnderIOAddon) mod).getRecipeFileList());
                 for (String filename : ((IEnderIOAddon) mod).getExampleFiles()) {
                     recipeFactory.copyCore(RECIPES_EXAMPLES + "/" + filename + EXT);
                 }
@@ -90,18 +80,12 @@ public final class RecipeLoader {
         }
         ProgressManager.pop(bar2);
 
-        Collections.sort(coreFiles, new Comparator<Triple<Integer, RecipeFactory, String>>() {
-
-            @Override
-            public int compare(Triple<Integer, RecipeFactory, String> o1, Triple<Integer, RecipeFactory, String> o2) {
-                return o1.getLeft().compareTo(o2.getLeft());
-            }
-        });
+        coreFiles.sort(Comparator.comparingInt(IEnderIOAddon.RecipeFile::priority));
 
         bar.step("Collecting User Files"); // 3
         Set<File> userfiles = new HashSet<>(recipeFactory.listXMLFiles(RECIPES_USER));
-        for (Triple<Integer, RecipeFactory, String> triple : coreFiles) {
-            RecipeFactory factory = triple.getMiddle();
+        for (var triple : coreFiles) {
+            RecipeFactory factory = triple.factory();
             if (factory != null) {
                 userfiles.addAll(factory.listXMLFiles(RECIPES_USER));
             }
@@ -113,10 +97,10 @@ public final class RecipeLoader {
 
         bar.step("Core Aliases"); // 4
         bar2 = ProgressManager.push("File", coreFiles.size());
-        for (Triple<Integer, RecipeFactory, String> triple : coreFiles) {
-            bar2.step(triple.getRight());
-            readCoreFile(new Aliases(), NullHelper.first(triple.getMiddle(), recipeFactory),
-                    RECIPES_ROOT + "/" + triple.getRight());
+        for (var triple : coreFiles) {
+            bar2.step(triple.name());
+            readCoreFile(new Aliases(), NullHelper.first(triple.factory(), recipeFactory),
+                    RECIPES_ROOT + "/" + triple.name());
         }
         ProgressManager.pop(bar2);
 
@@ -143,14 +127,14 @@ public final class RecipeLoader {
         Recipes config = new Recipes();
         try {
             bar2 = ProgressManager.push("File", coreFiles.size());
-            for (Triple<Integer, RecipeFactory, String> triple : coreFiles) {
-                bar2.step(triple.getRight());
+            for (var triple : coreFiles) {
+                bar2.step(triple.name());
                 /*
                  * Always load core capacitors, even if core recipes are disabled -- none of those are optional.
                  */
                 config = readCoreFile(RecipeConfig.loadCoreRecipes.get() ? new Recipes() : new Capacitors(),
-                        NullHelper.first(triple.getMiddle(), recipeFactory),
-                        RECIPES_ROOT + "/" + triple.getRight()).addRecipes(config, Overrides.DENY);
+                        NullHelper.first(triple.factory(), recipeFactory),
+                        RECIPES_ROOT + "/" + triple.name()).addRecipes(config, Overrides.DENY);
             }
             ProgressManager.pop(bar2);
         } catch (InvalidRecipeConfigException e) {
@@ -210,7 +194,7 @@ public final class RecipeLoader {
                             target.newInstance();
                     if (recipe.getValue().getKey() == IMCTYPE.XML) {
                         try (InputStream is = IOUtils.toInputStream(recipe.getValue().getValue(),
-                                Charset.forName("UTF-8"))) {
+                                StandardCharsets.UTF_8)) {
                             recipes = RecipeFactory.readStax(recipes, RECIPES_ROOT, is,
                                     "IMC from mod '" + recipe.getKey() + "'");
                         }
@@ -326,7 +310,7 @@ public final class RecipeLoader {
     }
 
     public static void addIMCRecipe(String sender, boolean isFile, String recipe) throws XMLStreamException,
-                                                                                  IOException {
+            IOException {
         if (imcRecipes != null) {
             imcRecipes.add(Pair.of(sender, Pair.of(isFile ? IMCTYPE.FILE : IMCTYPE.XML, recipe)));
         } else {
@@ -342,7 +326,6 @@ public final class RecipeLoader {
                 }
                 recipes.enforceValidity();
                 recipes.register("IMC recipes", RecipeLevel.IGNORE);
-                return;
             } catch (InvalidRecipeConfigException e) {
                 recipeError(recipe + " (IMC from other mod)", e.getMessage());
             } catch (IOException e) {

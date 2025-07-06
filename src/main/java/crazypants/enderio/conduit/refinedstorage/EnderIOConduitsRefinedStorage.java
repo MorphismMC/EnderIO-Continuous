@@ -71,10 +71,9 @@ public class EnderIOConduitsRefinedStorage implements IEnderIOAddon {
     }
 
     @Override
-    @Nonnull
-    public NNList<Triple<Integer, RecipeFactory, String>> getRecipeFiles() {
+    public NNList<RecipeFile> getRecipeFileList() {
         if (isLoaded()) {
-            return new NNList<>(Triple.of(2, null, "conduits-refined-storage"));
+            return new NNList<>(new RecipeFile(2, "conduits-refined-storage"));
         }
         return NNList.emptyList();
     }

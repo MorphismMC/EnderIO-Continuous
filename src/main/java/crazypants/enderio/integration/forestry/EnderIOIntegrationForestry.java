@@ -1,8 +1,16 @@
 package crazypants.enderio.integration.forestry;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.enderio.core.common.Lang;
+import com.enderio.core.common.mixin.SimpleMixinLoader;
+import com.enderio.core.common.util.NNList;
+import crazypants.enderio.api.EIOTags;
+import crazypants.enderio.api.addon.IEnderIOAddon;
+import crazypants.enderio.base.Log;
+import crazypants.enderio.base.config.ConfigHandlerEIO;
+import crazypants.enderio.base.init.RegisterModObject;
+import crazypants.enderio.integration.forestry.config.Config;
+import crazypants.enderio.integration.forestry.init.ForestryIntegrationObject;
+import info.loenwind.autoconfig.ConfigHandler;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -13,21 +21,8 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import org.apache.commons.lang3.tuple.Triple;
-
-import com.enderio.core.common.Lang;
-import com.enderio.core.common.mixin.SimpleMixinLoader;
-import com.enderio.core.common.util.NNList;
-
-import crazypants.enderio.api.EIOTags;
-import crazypants.enderio.api.addon.IEnderIOAddon;
-import crazypants.enderio.base.Log;
-import crazypants.enderio.base.config.ConfigHandlerEIO;
-import crazypants.enderio.base.config.recipes.RecipeFactory;
-import crazypants.enderio.base.init.RegisterModObject;
-import crazypants.enderio.integration.forestry.config.Config;
-import crazypants.enderio.integration.forestry.init.ForestryIntegrationObject;
-import info.loenwind.autoconfig.ConfigHandler;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @Mod(modid = EnderIOIntegrationForestry.MODID,
      name = EnderIOIntegrationForestry.MOD_NAME,
@@ -95,11 +90,11 @@ public class EnderIOIntegrationForestry implements IEnderIOAddon {
     }
 
     @Override
-    @Nonnull
-    public NNList<Triple<Integer, RecipeFactory, String>> getRecipeFiles() {
+    public NNList<RecipeFile> getRecipeFileList() {
         if (isLoaded()) {
-            return new NNList<>(Triple.of(2, null, "integration-forestry"),
-                    Triple.of(2, null, "darksteel_upgrades_forestry"));
+            return new NNList<>(
+                    new RecipeFile(2, "integration-forestry"),
+                    new RecipeFile(2, "darksteel_upgrades_forestry"));
         }
         return NNList.emptyList();
     }

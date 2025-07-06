@@ -69,9 +69,10 @@ public class EnderIOEndergy implements IEnderIOAddon {
     }
 
     @Override
-    @Nonnull
-    public NNList<Triple<Integer, RecipeFactory, String>> getRecipeFiles() {
-        return new NNList<>(Triple.of(2, null, "endergy"), Triple.of(2, null, "endergy_balls"),
-                Triple.of(2, null, "hiding_endergy"));
+    public NNList<RecipeFile> getRecipeFileList() {
+        return new NNList<>(
+                new RecipeFile(2, "endergy"),
+                new RecipeFile(2, "endergy_balls"),
+                new RecipeFile(2, "hiding_endergy"));
     }
 }

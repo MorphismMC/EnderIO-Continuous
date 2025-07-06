@@ -302,14 +302,20 @@ public class EnderIO implements IEnderIOAddon {
     }
 
     @Override
-    @Nonnull
-    public NNList<Triple<Integer, RecipeFactory, String>> getRecipeFiles() {
-        return new NNList<>(Triple.of(0, null, "aliases"), Triple.of(1, null, "materials"), Triple.of(1, null, "items"),
-                Triple.of(1, null, "base"),
-                Triple.of(1, null, "balls"), Triple.of(9, null, "misc"), Triple.of(9, null, "capacitor"),
-                Triple.of(1, null, "hiding_base"),
-                Triple.of(1, null, "darksteel_upgrades"), Triple.of(1, null, "fuels"), Triple.of(1, null, "glass"),
-                Triple.of(1, null, "generated"));
+    public NNList<RecipeFile> getRecipeFileList() {
+        return new NNList<>(
+                new RecipeFile(0, "aliases"),
+                new RecipeFile(1, "materials"),
+                new RecipeFile(1, "items"),
+                new RecipeFile(1, "base"),
+                new RecipeFile(1, "balls"),
+                new RecipeFile(9, "misc"),
+                new RecipeFile(9, "capacitor"),
+                new RecipeFile(1, "hiding_base"),
+                new RecipeFile(1, "darksteel_upgrades"),
+                new RecipeFile(1, "fuels"),
+                new RecipeFile(1, "glass"),
+                new RecipeFile(1, "generated"));
     }
 
     @Override
