@@ -1,0 +1,22 @@
+package crazypants.enderio.conduit.gas.common.network;
+
+import javax.annotation.Nonnull;
+
+import crazypants.enderio.conduit.gas.EnderIOConduitsMekanism;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+
+import com.enderio.core.common.network.ThreadedNetworkWrapper;
+
+public class PacketHandler {
+
+    @Nonnull
+    private static final ThreadedNetworkWrapper INSTANCE = new ThreadedNetworkWrapper(EnderIOConduitsMekanism.MOD_ID);
+    private static int ID;
+
+    public static void init(FMLInitializationEvent event) {
+        INSTANCE.registerMessage(PacketConduitGasLevel.Handler.class, PacketConduitGasLevel.class, ID++, Side.CLIENT);
+        INSTANCE.registerMessage(PacketGasFilter.Handler.class, PacketGasFilter.class, ID++, Side.SERVER);
+        INSTANCE.registerMessage(PacketEnderGasConduit.Handler.class, PacketEnderGasConduit.class, ID++, Side.SERVER);
+    }
+}
