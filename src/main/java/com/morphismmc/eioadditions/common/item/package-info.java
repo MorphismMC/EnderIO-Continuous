@@ -1,7 +1,7 @@
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
-package gregtechlite.eioadditions.common.item;
+package com.morphismmc.eioadditions.common.item;
 
 import crazypants.enderio.api.annotation.FieldsAreNonnullByDefault;
 import crazypants.enderio.api.annotation.MethodsReturnNonnullByDefault;

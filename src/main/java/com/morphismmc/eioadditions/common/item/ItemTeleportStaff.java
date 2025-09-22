@@ -1,7 +1,8 @@
-package gregtechlite.eioadditions.common.item;
+package com.morphismmc.eioadditions.common.item;
 
 import com.enderio.core.api.client.gui.IAdvancedTooltipProvider;
 import com.enderio.core.client.handlers.SpecialTooltipHandler;
+import com.morphismmc.eioadditions.common.teleport.AdditionsTravelSource;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.api.teleport.IItemOfTravel;
 import crazypants.enderio.base.EnderIO;
@@ -12,7 +13,6 @@ import crazypants.enderio.base.teleport.TravelController;
 import crazypants.enderio.base.teleport.TravelUtil;
 import crazypants.enderio.util.ClientUtil;
 import crazypants.enderio.util.Mods;
-import gregtechlite.eioadditions.common.teleport.AdditionsTravelSource;
 import info.loenwind.autoconfig.factory.IValue;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;

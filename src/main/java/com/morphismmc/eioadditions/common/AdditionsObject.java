@@ -1,13 +1,13 @@
-package gregtechlite.eioadditions.common;
+package com.morphismmc.eioadditions.common;
 
 import com.enderio.core.common.util.NullHelper;
+import com.morphismmc.eioadditions.AdditionsConstants;
+import com.morphismmc.eioadditions.common.item.ItemTeleportStaff;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.api.IModTileEntity;
 import crazypants.enderio.base.EnderIOTab;
 import crazypants.enderio.base.init.IModObjectBase;
 import crazypants.enderio.base.init.ModObjectRegistry;
-import gregtechlite.eioadditions.AdditionsConstants;
-import gregtechlite.eioadditions.common.item.ItemTeleportStaff;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;

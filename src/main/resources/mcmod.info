@@ -166,7 +166,7 @@
     "description": "Additions to Ender IO",
     "version": "${version}",
     "mcversion": "${minecraft_version}",
-    "authorList": ["gateguardian"],
+    "authorList": [ "morphismmc" ],
     "parent": "enderio",
     "dependencies": [ "enderioconduits" ]
   }
