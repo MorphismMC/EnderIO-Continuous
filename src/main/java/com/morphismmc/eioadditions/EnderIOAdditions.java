@@ -1,15 +1,15 @@
-package gregtechlite.eioadditions;
+package com.morphismmc.eioadditions;
 
 import com.enderio.core.common.util.NNList;
+import com.morphismmc.eioadditions.common.AdditionsObject;
+import com.morphismmc.eioadditions.common.config.AdditionsConfig;
+import com.morphismmc.eioadditions.common.teleport.AdditionsTravelSource;
 import crazypants.enderio.api.addon.IEnderIOAddon;
 import crazypants.enderio.api.teleport.ITravelSource;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.config.ConfigHandlerEIO;
 import crazypants.enderio.base.config.recipes.RecipeFactory;
 import crazypants.enderio.base.init.RegisterModObject;
-import gregtechlite.eioadditions.common.AdditionsObject;
-import gregtechlite.eioadditions.common.config.AdditionsConfig;
-import gregtechlite.eioadditions.common.teleport.AdditionsTravelSource;
 import info.loenwind.autoconfig.ConfigHandler;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;

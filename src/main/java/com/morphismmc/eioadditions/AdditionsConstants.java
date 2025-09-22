@@ -1,4 +1,4 @@
-package gregtechlite.eioadditions;
+package com.morphismmc.eioadditions;
 
 import crazypants.enderio.api.EIOTags;
 

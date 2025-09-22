@@ -1,7 +1,7 @@
-package gregtechlite.eioadditions.common.config;
+package com.morphismmc.eioadditions.common.config;
 
+import com.morphismmc.eioadditions.AdditionsConstants;
 import crazypants.enderio.base.config.factory.ValueFactoryEIO;
-import gregtechlite.eioadditions.AdditionsConstants;
 
 public final class AdditionsConfig {
 

@@ -1,4 +1,4 @@
-package gregtechlite.eioadditions.common.config;
+package com.morphismmc.eioadditions.common.config;
 
 import info.loenwind.autoconfig.factory.IValue;
 import info.loenwind.autoconfig.factory.IValueFactory;

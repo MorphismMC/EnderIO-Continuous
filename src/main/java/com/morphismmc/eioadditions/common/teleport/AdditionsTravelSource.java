@@ -1,10 +1,10 @@
-package gregtechlite.eioadditions.common.teleport;
+package com.morphismmc.eioadditions.common.teleport;
 
 import crazypants.enderio.api.teleport.ITravelSource;
 import crazypants.enderio.base.sound.IModSound;
 import crazypants.enderio.base.sound.SoundRegistry;
-import gregtechlite.eioadditions.AdditionsConstants;
-import gregtechlite.eioadditions.common.config.AdditionsTeleportConfig;
+import com.morphismmc.eioadditions.AdditionsConstants;
+import com.morphismmc.eioadditions.common.config.AdditionsTeleportConfig;
 import net.minecraft.util.ResourceLocation;
 
 public enum AdditionsTravelSource implements ITravelSource {
