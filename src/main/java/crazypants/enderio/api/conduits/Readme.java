@@ -2,8 +2,8 @@ package crazypants.enderio.api.conduits;
 
 import net.minecraftforge.fml.common.Optional;
 
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitNetwork;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitNetwork;
 import crazypants.enderio.base.conduit.IConduitRenderer;
 import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
@@ -16,9 +16,9 @@ import crazypants.enderio.base.conduit.registry.ConduitRegistry;
  * <p>
  * So, to get started:
  * <ol>
- * <li>Write an interface defining your conduit that extends {@link IConduit}.
+ * <li>Write an interface defining your conduit that extends {@link Conduit}.
  * <li>Write one or more classes implementing that.
- * <li>Add an {@link IConduitNetwork} if you want.
+ * <li>Add an {@link ConduitNetwork} if you want.
  * <li>Add an {@link IConduitRenderer}.
  * <li>Write your item class.
  * <li>Use the {@link ConduitBuilder} to define your conduit (Note: You can leave out the offsets to get assigned the

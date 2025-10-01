@@ -92,7 +92,7 @@ public class AdvancedGasConduitNetwork extends AbstractGasTankConduitNetwork<Adv
                 }
                 con.getTank().setGas(g);
                 BlockPos pos = con.getBundle().getLocation();
-                con.getBundle().getEntity().getWorld().markChunkDirty(pos, con.getBundle().getEntity());
+                con.getBundle().getTileEntity().getWorld().markChunkDirty(pos, con.getBundle().getTileEntity());
             }
         }
     }

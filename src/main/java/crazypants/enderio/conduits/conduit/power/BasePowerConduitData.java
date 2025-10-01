@@ -10,7 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.enderio.core.client.render.IconUtil;
 
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.conduits.config.ConduitConfig;
 import crazypants.enderio.conduits.render.ConduitTextureWrapper;
@@ -47,7 +47,7 @@ public final class BasePowerConduitData implements IPowerConduitData {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public @Nonnull IConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+    public @Nonnull ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
         if (component.isCore()) {
             return PowerConduit.ICONS.get(PowerConduit.ICON_CORE_KEY + PowerConduit.POSTFIX[getID()]);
         }

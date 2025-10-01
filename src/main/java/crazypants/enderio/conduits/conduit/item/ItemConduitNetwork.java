@@ -37,7 +37,7 @@ public class ItemConduitNetwork extends AbstractConduitNetwork<IItemConduit, IIt
         super.addConduit(con);
         conMap.put(con.getBundle().getLocation(), con);
 
-        TileEntity te = con.getBundle().getEntity();
+        TileEntity te = con.getBundle().getTileEntity();
         for (EnumFacing direction : con.getExternalConnections()) {
             if (direction != null) {
                 IItemHandler extCon = con.getExternalInventory(direction);

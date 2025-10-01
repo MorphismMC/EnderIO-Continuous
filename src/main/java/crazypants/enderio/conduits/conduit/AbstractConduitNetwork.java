@@ -27,17 +27,17 @@ import com.enderio.core.common.util.NNList;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.Log;
 import crazypants.enderio.base.conduit.ConduitUtil;
-import crazypants.enderio.base.conduit.ConduitUtil.UnloadedBlockException;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
-import crazypants.enderio.base.conduit.IConduitNetwork;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.UnloadedBlockException;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.diagnostics.ConduitNeighborUpdateTracker;
 import crazypants.enderio.base.handler.ServerTickHandler;
 import crazypants.enderio.util.Neighbours;
 
 // I=base type, I is the base class of the implementations accepted by the network
-public abstract class AbstractConduitNetwork<T extends IServerConduit, I extends T> implements IConduitNetwork<T, I> {
+public abstract class AbstractConduitNetwork<T extends ConduitServer, I extends T> implements ConduitNetwork<T, I> {
 
     private final @Nonnull NNList<I> conduits = new NNList<>();
     private long lastConduitListCheck = -1L; // server tick of the last time a full check on the conduit list was run.
@@ -53,7 +53,7 @@ public abstract class AbstractConduitNetwork<T extends IServerConduit, I extends
     }
 
     @Override
-    public void init(@Nonnull IConduitBundle tile, Collection<I> connections,
+    public void init(@Nonnull ConduitBundle tile, Collection<I> connections,
                      @Nonnull World world) throws UnloadedBlockException {
         if (world.isRemote) {
             throw new UnsupportedOperationException();
@@ -61,7 +61,7 @@ public abstract class AbstractConduitNetwork<T extends IServerConduit, I extends
 
         // Destroy all existing networks around this block
         for (I con : connections) {
-            IConduitNetwork<?, ?> network = con.getNetwork();
+            ConduitNetwork<?, ?> network = con.getNetwork();
             if (network != null) {
                 network.destroyNetwork();
             }
@@ -75,16 +75,16 @@ public abstract class AbstractConduitNetwork<T extends IServerConduit, I extends
     }
 
     @Override
-    public void setNetwork(@Nonnull World world, @Nonnull IConduitBundle tile) throws UnloadedBlockException {
+    public void setNetwork(@Nonnull World world, @Nonnull ConduitBundle bundle) throws UnloadedBlockException {
         List<T> candidates = new LinkedList<>();
-        candidates.add(tile.getConduit(getBaseConduitType()));
+        candidates.add(bundle.getConduit(getBaseConduitType()));
 
         while (!candidates.isEmpty()) {
             T conduit = candidates.remove(0);
             if (conduit == null || !implClass.isAssignableFrom(conduit.getClass())) {
                 continue;
             }
-            IConduitNetwork<?, ?> network = conduit.getNetwork();
+            ConduitNetwork<?, ?> network = conduit.getNetwork();
             if (network == this) {
                 continue;
             } else if (network != null) {
@@ -93,7 +93,7 @@ public abstract class AbstractConduitNetwork<T extends IServerConduit, I extends
 
             if (conduit.setNetwork(this)) {
                 addConduit(implClass.cast(conduit));
-                candidates.addAll(ConduitUtil.getConnectedConduits(world, conduit.getBundle().getEntity().getPos(),
+                candidates.addAll(ConduitUtil.getConnectedConduits(world, conduit.getBundle().getTileEntity().getPos(),
                         getBaseConduitType()));
             }
 
@@ -119,8 +119,8 @@ public abstract class AbstractConduitNetwork<T extends IServerConduit, I extends
         BlockPos newPos = null;
         boolean error = false;
         // Step 1: Is the new conduit attached to a TE that is valid?
-        final IConduitBundle newBundle = newConduit.getBundle();
-        final TileEntity newte = newBundle.getEntity();
+        final ConduitBundle newBundle = newConduit.getBundle();
+        final TileEntity newte = newBundle.getTileEntity();
         if (!newte.hasWorld()) {
             Log.info("Tried to add invalid (no world) conduit to network: ", newConduit);
             error = true;
@@ -150,7 +150,7 @@ public abstract class AbstractConduitNetwork<T extends IServerConduit, I extends
                     // real dupe, ignore it
                     return;
                 }
-                if (oldConduit.getBundle().getEntity().getPos().equals(newPos)) {
+                if (oldConduit.getBundle().getTileEntity().getPos().equals(newPos)) {
                     // Something fishy is happening, we need to do the full check
                     doFullCheck = true;
                     break;
@@ -171,8 +171,8 @@ public abstract class AbstractConduitNetwork<T extends IServerConduit, I extends
                 continue;
             }
             // Step 2.2: Check if the old conduit's TE is valid
-            final IConduitBundle oldBundle = oldConduit.getBundle();
-            final TileEntity oldTe = oldBundle.getEntity();
+            final ConduitBundle oldBundle = oldConduit.getBundle();
+            final TileEntity oldTe = oldBundle.getTileEntity();
             if (oldTe.isInvalid() || !oldTe.hasWorld()) {
                 oldConduit.clearNetwork();
                 continue; // bad conduit, skip it
@@ -232,7 +232,7 @@ public abstract class AbstractConduitNetwork<T extends IServerConduit, I extends
         ConduitNeighborUpdateTracker tracker = null;
         Set<BlockPos> notified = new HashSet<BlockPos>();
         for (I con : conduits) {
-            TileEntity te = con.getBundle().getEntity();
+            TileEntity te = con.getBundle().getTileEntity();
             if (con.hasExternalConnections()) {
                 final BlockPos pos = te.getPos();
                 final Block blockType = te.getBlockType();
@@ -295,7 +295,7 @@ public abstract class AbstractConduitNetwork<T extends IServerConduit, I extends
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (IConduit con : conduits) {
+        for (Conduit con : conduits) {
             sb.append(con.getBundle().getLocation());
             sb.append(", ");
         }

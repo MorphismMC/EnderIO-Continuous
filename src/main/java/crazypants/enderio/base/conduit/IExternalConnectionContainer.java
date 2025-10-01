@@ -14,7 +14,7 @@ public interface IExternalConnectionContainer {
     /**
      * Allows all input/output slots to be made visible
      */
-    void setInOutSlotsVisible(boolean filtersVisible, boolean upgradesVisible, @Nonnull IConduit conduit);
+    void setInOutSlotsVisible(boolean filtersVisible, boolean upgradesVisible, @Nonnull Conduit conduit);
 
     /**
      * Returns true if there are speed upgrades

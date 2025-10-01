@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.util.EnumFacing;
 
-import crazypants.enderio.base.conduit.IConduit;
+import crazypants.enderio.base.conduit.Conduit;
 
 public class CollidableCache {
 
@@ -17,12 +17,12 @@ public class CollidableCache {
 
     private final Map<CacheKey, Collection<CollidableComponent>> cache = new HashMap<CollidableCache.CacheKey, Collection<CollidableComponent>>();
 
-    public @Nonnull CacheKey createKey(@Nonnull Class<? extends IConduit> baseType, @Nonnull Offset offset,
+    public @Nonnull CacheKey createKey(@Nonnull Class<? extends Conduit> baseType, @Nonnull Offset offset,
                                        @Nullable EnumFacing dir) {
         return new CacheKey(baseType, offset, dir);
     }
 
-    public Collection<CollidableComponent> getCollidables(@Nonnull CacheKey key, @Nonnull IConduit conduit) {
+    public Collection<CollidableComponent> getCollidables(@Nonnull CacheKey key, @Nonnull Conduit conduit) {
         Collection<CollidableComponent> result = cache.get(key);
         if (result == null) {
             result = conduit.createCollidables(key);
@@ -33,12 +33,12 @@ public class CollidableCache {
 
     public static class CacheKey {
 
-        public final @Nonnull Class<? extends IConduit> baseType;
+        public final @Nonnull Class<? extends Conduit> baseType;
         public final @Nonnull String className; // used to generate reliable equals / hashcode
         public final @Nonnull Offset offset;
         public final @Nullable EnumFacing dir;
 
-        public CacheKey(@Nonnull Class<? extends IConduit> baseType, @Nonnull Offset offset, @Nullable EnumFacing dir) {
+        public CacheKey(@Nonnull Class<? extends Conduit> baseType, @Nonnull Offset offset, @Nullable EnumFacing dir) {
             this.baseType = baseType;
             className = baseType.getCanonicalName();
             this.offset = offset;

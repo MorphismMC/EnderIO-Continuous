@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.util.EnumFacing;
 
-import crazypants.enderio.base.conduit.IConduit;
+import crazypants.enderio.base.conduit.Conduit;
 
 public class Offsets {
 
@@ -28,7 +28,7 @@ public class Offsets {
      * @return true if the offset was registered. false if the conduit already is registered or if one of the axis is
      *         already in use.
      */
-    public static boolean registerOffsets(Class<? extends IConduit> type, Offset none, Offset x, Offset y, Offset z) {
+    public static boolean registerOffsets(Class<? extends Conduit> type, Offset none, Offset x, Offset y, Offset z) {
         OffsetKey keyNone = key(type, Axis.NONE);
         OffsetKey keyX = key(type, Axis.X);
         OffsetKey keyY = key(type, Axis.Y);
@@ -66,7 +66,7 @@ public class Offsets {
     // new ConduitRegistry.ConduitInfo(getBaseConduitType(), Offset.SOUTH_DOWN, Offset.SOUTH_DOWN, Offset.SOUTH_EAST,
     // Offset.EAST_DOWN);
 
-    public static @Nonnull Offset get(Class<? extends IConduit> type, EnumFacing dir) {
+    public static @Nonnull Offset get(Class<? extends Conduit> type, EnumFacing dir) {
         Offset res = OFFSETS.get(key(type, getAxisForDir(dir)));
         if (res == null) {
             res = Offset.NONE;
@@ -74,7 +74,7 @@ public class Offsets {
         return res;
     }
 
-    public static OffsetKey key(Class<? extends IConduit> type, Axis axis) {
+    public static OffsetKey key(Class<? extends Conduit> type, Axis axis) {
         return new OffsetKey(type, axis);
     }
 
@@ -106,7 +106,7 @@ public class Offsets {
         String typeName;
         Axis axis;
 
-        private OffsetKey(Class<? extends IConduit> type, Axis axis) {
+        private OffsetKey(Class<? extends Conduit> type, Axis axis) {
             this.typeName = type.getCanonicalName();
             this.axis = axis;
         }

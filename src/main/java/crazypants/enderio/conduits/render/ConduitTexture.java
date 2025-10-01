@@ -4,10 +4,9 @@ import javax.annotation.Nonnull;
 
 import com.enderio.core.common.vecmath.Vector4f;
 
-import crazypants.enderio.base.conduit.IConduitTexture;
 import crazypants.enderio.base.render.registry.TextureRegistry.TextureSupplier;
 
-public class ConduitTexture implements IConduitTexture {
+public class ConduitTexture implements crazypants.enderio.base.conduit.ConduitTexture {
 
     public static final @Nonnull Vector4f FULL = new Vector4f(0, 0, 1, 1);
     private static final @Nonnull Vector4f CORE = new Vector4f(2 / 16f, 14 / 16f, 14 / 16f, 2 / 16f);
@@ -19,15 +18,15 @@ public class ConduitTexture implements IConduitTexture {
     public static @Nonnull Vector4f core(int idx) {
         switch (idx) {
             case 0:
-                return ConduitTexture.CORE0;
+                return crazypants.enderio.conduits.render.ConduitTexture.CORE0;
             case 1:
-                return ConduitTexture.CORE1;
+                return crazypants.enderio.conduits.render.ConduitTexture.CORE1;
             case 2:
-                return ConduitTexture.CORE2;
+                return crazypants.enderio.conduits.render.ConduitTexture.CORE2;
             case 3:
-                return ConduitTexture.CORE3;
+                return crazypants.enderio.conduits.render.ConduitTexture.CORE3;
             default:
-                return ConduitTexture.CORE;
+                return crazypants.enderio.conduits.render.ConduitTexture.CORE;
         }
     }
 

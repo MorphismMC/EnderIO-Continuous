@@ -27,7 +27,7 @@ import crazypants.enderio.base.Log;
 import crazypants.enderio.base.TileEntityEio;
 import crazypants.enderio.base.capacitor.DefaultCapacitorData;
 import crazypants.enderio.base.conduit.ConduitUtil;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.config.config.DiagnosticsConfig;
 import crazypants.enderio.base.machine.gui.IPowerBarData;
 import crazypants.enderio.base.machine.interfaces.IIoConfigurable;
@@ -218,7 +218,7 @@ public class TileCapBank extends TileEntityEio
             return IoMode.DISABLED;
         }
         if (curMode == IoMode.DISABLED) {
-            if (rec == null || rec.getProvider() instanceof IConduitBundle) {
+            if (rec == null || rec.getProvider() instanceof ConduitBundle) {
                 setIoMode(faceHit, IoMode.NONE, true);
                 return IoMode.NONE;
             }
@@ -234,7 +234,7 @@ public class TileCapBank extends TileEntityEio
         }
         IPowerInterface rec = getReceptorForFace(faceHit);
         if (mode == IoMode.NONE) {
-            return rec == null || rec.getProvider() instanceof IConduitBundle;
+            return rec == null || rec.getProvider() instanceof ConduitBundle;
         }
         return true;
     }

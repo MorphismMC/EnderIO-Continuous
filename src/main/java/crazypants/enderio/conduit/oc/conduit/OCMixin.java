@@ -6,7 +6,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.enderio.core.common.mixin.SimpleMixin;
 
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.conduits.conduit.TileConduitBundle;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
@@ -14,7 +14,7 @@ import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.SidedEnvironment;
 
 @SimpleMixin(value = TileConduitBundle.class, dependencies = "opencomputersapi|network")
-public interface OCMixin extends IConduitBundle, Environment, SidedEnvironment {
+public interface OCMixin extends ConduitBundle, Environment, SidedEnvironment {
 
     // == Environment == //
 

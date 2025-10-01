@@ -35,7 +35,7 @@ import com.enderio.core.common.vecmath.Vector4f;
 import com.enderio.core.common.vecmath.Vertex;
 
 import crazypants.enderio.base.EnderIO;
-import crazypants.enderio.base.conduit.IConduit;
+import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.config.config.PersonalConfig;
 import crazypants.enderio.base.events.EnderIOLifecycleEvent;
 
@@ -145,7 +145,7 @@ public final class ConduitGeometryUtil {
         return EXTERNAL_CONNECTOR_BOUNDS.get(dir);
     }
 
-    public @Nonnull BoundingBox getBoundingBox(@Nonnull Class<? extends IConduit> type, EnumFacing dir,
+    public @Nonnull BoundingBox getBoundingBox(@Nonnull Class<? extends Conduit> type, EnumFacing dir,
                                                @Nonnull Offset offset) {
         GeometryKey key = new GeometryKey(dir, offset, type);
         BoundingBox result = boundsCache.get(key);
@@ -185,12 +185,12 @@ public final class ConduitGeometryUtil {
         return bb;
     }
 
-    private @Nonnull BoundingBox createConduitBounds(@Nonnull Class<? extends IConduit> type,
+    private @Nonnull BoundingBox createConduitBounds(@Nonnull Class<? extends Conduit> type,
                                                      @Nonnull GeometryKey key) {
         return createConduitBounds(type, key.dir, key.offset);
     }
 
-    private @Nonnull BoundingBox createConduitBounds(Class<? extends IConduit> type, EnumFacing dir,
+    private @Nonnull BoundingBox createConduitBounds(Class<? extends Conduit> type, EnumFacing dir,
                                                      @Nonnull Offset offset) {
         BoundingBox bb = CORE_BOUNDS;
 

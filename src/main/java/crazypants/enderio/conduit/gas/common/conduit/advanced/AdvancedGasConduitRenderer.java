@@ -19,11 +19,11 @@ import com.enderio.core.common.vecmath.Vector3d;
 import com.enderio.core.common.vecmath.Vertex;
 
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IClientConduit.WithDefaultRendering;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.ConduitClient.WithDefaultRendering;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.conduits.render.BakedQuadBuilder;
 import crazypants.enderio.conduits.render.ConduitBundleRenderManager;
@@ -35,7 +35,7 @@ import mekanism.api.gas.GasStack;
 public class AdvancedGasConduitRenderer extends DefaultConduitRenderer {
 
     @Override
-    public boolean isRendererForConduit(@Nonnull IConduit conduit) {
+    public boolean isRendererForConduit(@Nonnull Conduit conduit) {
         return conduit instanceof AdvancedGasConduit;
     }
 
@@ -45,8 +45,8 @@ public class AdvancedGasConduitRenderer extends DefaultConduitRenderer {
     }
 
     @Override
-    protected void addConduitQuads(@Nonnull IConduitBundle bundle, @Nonnull IClientConduit conduit,
-                                   @Nonnull IConduitTexture tex, @Nonnull CollidableComponent component,
+    protected void addConduitQuads(@Nonnull ConduitBundle bundle, @Nonnull ConduitClient conduit,
+                                   @Nonnull ConduitTexture tex, @Nonnull CollidableComponent component,
                                    float selfIllum, BlockRenderLayer layer, @Nonnull List<BakedQuad> quads) {
         super.addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);
         ConduitInOutRenderer.renderIO(bundle, conduit, component, layer, quads, DyeColor.RED, DyeColor.RED);

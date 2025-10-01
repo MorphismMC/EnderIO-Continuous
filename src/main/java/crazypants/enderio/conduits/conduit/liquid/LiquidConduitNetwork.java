@@ -15,7 +15,7 @@ import net.minecraftforge.fluids.FluidStack;
 import com.enderio.core.common.fluid.IFluidWrapper;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
-import crazypants.enderio.base.conduit.ConduitUtil.UnloadedBlockException;
+import crazypants.enderio.base.conduit.UnloadedBlockException;
 import crazypants.enderio.base.diagnostics.Prof;
 
 public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidConduit> {
@@ -64,7 +64,7 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
         }
 
         ticksEmpty = 0;
-        long curTime = cons.get(0).getBundle().getEntity().getWorld().getTotalWorldTime();
+        long curTime = cons.get(0).getBundle().getTileEntity().getWorld().getTotalWorldTime();
 
         // 1000 water, 6000 lava
         if (liquidType != null && liquidType.getFluid() != null && !isEmpty()) {
@@ -195,7 +195,7 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
         // First flow all we can down, then balance the rest
         if (con.getConduitConnections().contains(EnumFacing.DOWN)) {
             BlockPos pos = con.getBundle().getLocation().offset(EnumFacing.DOWN);
-            ILiquidConduit dc = ConduitUtil.getConduit(con.getBundle().getEntity().getWorld(), pos,
+            ILiquidConduit dc = ConduitUtil.getConduit(con.getBundle().getTileEntity().getWorld(), pos,
                     ILiquidConduit.class);
             if (dc instanceof LiquidConduit && getConduits().contains(dc)) {
                 LiquidConduit downCon = (LiquidConduit) dc;
@@ -258,7 +258,7 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
         try {
             BlockPos pos = con.getBundle().getLocation();
             Collection<ILiquidConduit> connections = ConduitUtil.getConnectedConduits(
-                    con.getBundle().getEntity().getWorld(), pos.getX(), pos.getY(), pos.getZ(),
+                    con.getBundle().getTileEntity().getWorld(), pos.getX(), pos.getY(), pos.getZ(),
                     ILiquidConduit.class);
             for (ILiquidConduit n : connections) {
                 LiquidConduit neighbour = (LiquidConduit) n;

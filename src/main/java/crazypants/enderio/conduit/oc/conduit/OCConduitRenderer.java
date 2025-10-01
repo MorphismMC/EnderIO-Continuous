@@ -10,10 +10,10 @@ import net.minecraftforge.client.model.ModelLoader.White;
 
 import com.enderio.core.client.render.ColorUtil;
 
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.conduits.render.BakedQuadBuilder;
 import crazypants.enderio.conduits.render.DefaultConduitRenderer;
@@ -21,7 +21,7 @@ import crazypants.enderio.conduits.render.DefaultConduitRenderer;
 public class OCConduitRenderer extends DefaultConduitRenderer {
 
     @Override
-    public boolean isRendererForConduit(@Nonnull IConduit conduit) {
+    public boolean isRendererForConduit(@Nonnull Conduit conduit) {
         return conduit instanceof IOCConduit;
     }
 
@@ -32,8 +32,8 @@ public class OCConduitRenderer extends DefaultConduitRenderer {
      */
 
     @Override
-    protected void addConduitQuads(@Nonnull IConduitBundle bundle, @Nonnull IClientConduit conduit,
-                                   @Nonnull IConduitTexture tex,
+    protected void addConduitQuads(@Nonnull ConduitBundle bundle, @Nonnull ConduitClient conduit,
+                                   @Nonnull ConduitTexture tex,
                                    @Nonnull CollidableComponent component, float selfIllum, BlockRenderLayer layer,
                                    @Nonnull List<BakedQuad> quads) {
         if (IOCConduit.COLOR_CONTROLLER_ID.equals(component.data)) {

@@ -20,7 +20,7 @@ import com.enderio.core.client.gui.widget.GhostSlot;
 import com.enderio.core.common.ContainerEnderCap;
 import com.enderio.core.common.util.NNList;
 
-import crazypants.enderio.base.conduit.IConduit;
+import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.conduit.IExternalConnectionContainer;
 import crazypants.enderio.base.filter.IFilter;
 import crazypants.enderio.base.filter.IFilterContainer;
@@ -45,7 +45,7 @@ public class ExternalConnectionContainer extends ContainerEnderCap<InventoryUpgr
     private final @Nonnull EnumFacing dir;
     private final @Nonnull EntityPlayer player;
 
-    private IConduit currentCon;
+    private Conduit currentCon;
 
     public ExternalConnectionContainer(@Nonnull InventoryPlayer playerInv, @Nonnull EnumFacing dir,
                                        @Nonnull TileConduitBundle bundle) {
@@ -120,7 +120,7 @@ public class ExternalConnectionContainer extends ContainerEnderCap<InventoryUpgr
     }
 
     @Override
-    public void setInOutSlotsVisible(boolean filterVisible, boolean upgradeVisible, @Nonnull IConduit conduit) {
+    public void setInOutSlotsVisible(boolean filterVisible, boolean upgradeVisible, @Nonnull Conduit conduit) {
         World world = getTileEntityNN().getBundleworld();
 
         boolean hasFilterHolder = false;

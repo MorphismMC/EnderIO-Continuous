@@ -6,17 +6,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.IItemHandler;
 
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.IExtractor;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.filter.item.IItemFilter;
 import crazypants.enderio.conduits.conduit.IEnderConduit;
 
-public interface IItemConduit extends IExtractor, IServerConduit, IClientConduit, IEnderConduit {
+public interface IItemConduit extends IExtractor, ConduitServer, ConduitClient, IEnderConduit {
 
     // Textures
-    IConduitTexture getEnderIcon();
+    ConduitTexture getEnderIcon();
 
     IItemHandler getExternalInventory(@Nonnull EnumFacing direction);
 

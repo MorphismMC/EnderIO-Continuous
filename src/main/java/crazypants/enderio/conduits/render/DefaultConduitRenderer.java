@@ -32,12 +32,12 @@ import com.enderio.core.common.vecmath.Vector4f;
 import com.enderio.core.common.vecmath.Vertex;
 
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IClientConduit.WithDefaultRendering;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.ConduitClient.WithDefaultRendering;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.conduit.IConduitRenderer;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 
 public class DefaultConduitRenderer implements IConduitRenderer {
@@ -53,7 +53,7 @@ public class DefaultConduitRenderer implements IConduitRenderer {
     protected float transmissionScaleFactor;
 
     @Override
-    public boolean isRendererForConduit(@Nonnull IConduit conduit) {
+    public boolean isRendererForConduit(@Nonnull Conduit conduit) {
         return true;
     }
 
@@ -65,22 +65,22 @@ public class DefaultConduitRenderer implements IConduitRenderer {
 
     @Override
     public void addBakedQuads(@Nonnull TileEntitySpecialRenderer<?> conduitBundleRenderer,
-                              @Nonnull IConduitBundle bundle,
-                              @Nonnull IClientConduit.WithDefaultRendering conduit, float brightness,
+                              @Nonnull ConduitBundle bundle,
+                              @Nonnull ConduitClient.WithDefaultRendering conduit, float brightness,
                               @Nullable BlockRenderLayer layer, @Nonnull List<BakedQuad> quads) {
         Collection<CollidableComponent> components = conduit.getCollidableComponents();
         transmissionScaleFactor = conduit.getTransmitionGeometryScale();
         for (CollidableComponent component : components) {
             if (component != null && renderComponent(component)) {
                 float selfIllum = Math.max(brightness, conduit.getSelfIlluminationForState(component));
-                final IConduitTexture transmitionTextureForState = conduit.getTransmitionTextureForState(component);
+                final ConduitTexture transmitionTextureForState = conduit.getTransmitionTextureForState(component);
                 if (layer != null && component.isDirectional() && transmitionTextureForState != null &&
                         component.data == null) {
                     Vector4f color = conduit.getTransmitionTextureColorForState(component);
                     addTransmissionQuads(transmitionTextureForState, color, layer, conduit, component, selfIllum,
                             quads);
                 }
-                IConduitTexture tex = conduit.getTextureForState(component);
+                ConduitTexture tex = conduit.getTextureForState(component);
                 addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);
             }
         }
@@ -106,8 +106,8 @@ public class DefaultConduitRenderer implements IConduitRenderer {
 
     private static final @Nonnull Vector4f COLOR_ERROR = new Vector4f(1, 0, 0, 1);
 
-    protected void addConduitQuads(@Nonnull IConduitBundle bundle, @Nonnull IClientConduit conduit,
-                                   @Nonnull IConduitTexture tex,
+    protected void addConduitQuads(@Nonnull ConduitBundle bundle, @Nonnull ConduitClient conduit,
+                                   @Nonnull ConduitTexture tex,
                                    @Nonnull CollidableComponent component, float selfIllum, BlockRenderLayer layer,
                                    @Nonnull List<BakedQuad> quads) {
         if (component.isDirectional()) {
@@ -136,7 +136,7 @@ public class DefaultConduitRenderer implements IConduitRenderer {
         }
     }
 
-    protected void addQuadsForSection(@Nonnull BoundingBox bb, @Nonnull IConduitTexture tex, @Nonnull EnumFacing dir,
+    protected void addQuadsForSection(@Nonnull BoundingBox bb, @Nonnull ConduitTexture tex, @Nonnull EnumFacing dir,
                                       @Nonnull List<BakedQuad> quads,
                                       @Nullable Vector4f color) {
         boolean rotateSides = dir == UP || dir == DOWN;
@@ -161,8 +161,8 @@ public class DefaultConduitRenderer implements IConduitRenderer {
         }
     }
 
-    protected void addTransmissionQuads(@Nonnull IConduitTexture tex, Vector4f color, @Nonnull BlockRenderLayer layer,
-                                        @Nonnull IConduit conduit,
+    protected void addTransmissionQuads(@Nonnull ConduitTexture tex, Vector4f color, @Nonnull BlockRenderLayer layer,
+                                        @Nonnull Conduit conduit,
                                         @Nonnull CollidableComponent component, float selfIllum,
                                         @Nonnull List<BakedQuad> quads) {
         if (layer != getTransmissionQuadsLayer()) {
@@ -184,28 +184,28 @@ public class DefaultConduitRenderer implements IConduitRenderer {
 
     @Override
     public void renderDynamicEntity(@Nonnull TileEntitySpecialRenderer<?> conduitBundleRenderer,
-                                    @Nonnull IConduitBundle te,
-                                    @Nonnull IClientConduit.WithDefaultRendering conduit, double x, double y, double z,
+                                    @Nonnull ConduitBundle te,
+                                    @Nonnull ConduitClient.WithDefaultRendering conduit, double x, double y, double z,
                                     float partialTick, float worldLight) {
         Collection<CollidableComponent> components = conduit.getCollidableComponents();
         transmissionScaleFactor = conduit.getTransmitionGeometryScale();
         for (CollidableComponent component : components) {
             if (component != null && renderComponent(component)) {
                 float selfIllum = Math.max(worldLight, conduit.getSelfIlluminationForState(component));
-                final IConduitTexture transmitionTextureForState = conduit.getTransmitionTextureForState(component);
+                final ConduitTexture transmitionTextureForState = conduit.getTransmitionTextureForState(component);
                 if (component.isDirectional() && transmitionTextureForState != null) {
                     Vector4f color = conduit.getTransmitionTextureColorForState(component);
                     renderTransmissionDynamic(conduit, transmitionTextureForState, color, component, selfIllum);
                 }
 
-                IConduitTexture tex = conduit.getTextureForState(component);
+                ConduitTexture tex = conduit.getTextureForState(component);
                 renderConduitDynamic(tex, conduit, component, selfIllum);
             }
         }
     }
 
-    protected void renderConduitDynamic(@Nonnull IConduitTexture tex,
-                                        @Nonnull IClientConduit.WithDefaultRendering conduit,
+    protected void renderConduitDynamic(@Nonnull ConduitTexture tex,
+                                        @Nonnull ConduitClient.WithDefaultRendering conduit,
                                         @Nonnull CollidableComponent component, float brightness) {
         GlStateManager.color(1, 1, 1);
         if (component.isDirectional() && component.data == null) {
@@ -239,7 +239,7 @@ public class DefaultConduitRenderer implements IConduitRenderer {
         }
     }
 
-    protected void renderTransmissionDynamic(@Nonnull IConduit conduit, @Nonnull IConduitTexture tex,
+    protected void renderTransmissionDynamic(@Nonnull Conduit conduit, @Nonnull ConduitTexture tex,
                                              @Nullable Vector4f color,
                                              @Nonnull CollidableComponent component, float selfIllum) {
         float scaleFactor = 0.6f;

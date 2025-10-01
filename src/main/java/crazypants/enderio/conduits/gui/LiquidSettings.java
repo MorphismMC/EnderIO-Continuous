@@ -20,7 +20,7 @@ import com.enderio.core.common.util.NNList;
 
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
+import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.IGuiExternalConnection;
 import crazypants.enderio.base.filter.gui.FilterGuiUtil;
 import crazypants.enderio.base.gui.IconEIO;
@@ -67,7 +67,7 @@ public class LiquidSettings extends BaseSettingsPanel {
 
     private final @Nonnull ILiquidConduit conduit;
 
-    public LiquidSettings(@Nonnull final IGuiExternalConnection gui, @Nonnull IClientConduit con) {
+    public LiquidSettings(@Nonnull final IGuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_FLUID, ConduitObject.item_liquid_conduit.getUnlocalisedName(), gui, con,
                 "in_out_settings");
 

@@ -35,12 +35,12 @@ import com.enderio.core.common.util.NNList;
 import com.enderio.core.common.util.NullHelper;
 
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IClientConduit.WithDefaultRendering;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.ConduitClient.WithDefaultRendering;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.conduit.IConduitRenderer;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.conduit.geom.ConduitConnectorType;
 import crazypants.enderio.base.conduit.geom.ConduitGeometryUtil;
@@ -70,7 +70,7 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
     @Override
     public void render(@Nonnull TileConduitBundle te, double x, double y, double z, float partialTick, int b,
                        float alpha) {
-        IConduitBundle bundle = te;
+        ConduitBundle bundle = te;
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (bundle.hasFacade() && !YetaUtil.isFacadeHidden(bundle, player)) {
             final IBlockState paintSource = bundle.getPaintSource();
@@ -84,7 +84,7 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
             return;
         }
 
-        float brightness = bundle.getEntity().getWorld().getLightFor(EnumSkyBlock.SKY, bundle.getLocation());
+        float brightness = bundle.getTileEntity().getWorld().getLightFor(EnumSkyBlock.SKY, bundle.getLocation());
 
         RenderUtil.setupLightmapCoords(te.getPos(), te.getWorld());
         RenderUtil.bindBlockTexture();
@@ -121,7 +121,7 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
         TileEntity tileEntity = state.getTileEntity();
 
         if (tileEntity instanceof TileConduitBundle) {
-            IConduitBundle bundle = (IConduitBundle) tileEntity;
+            ConduitBundle bundle = (ConduitBundle) tileEntity;
             if (layer == null) {
                 addBreakingQuads(bundle, result);
             } else {
@@ -129,7 +129,7 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
                 if (!ConduitConfig.updateLightingWhenHidingFacades.get() && bundle.hasFacade()) {
                     brightness = 15 << 20 | 15 << 4;
                 } else {
-                    brightness = bundle.getEntity().getWorld().getLightFor(EnumSkyBlock.SKY, bundle.getLocation());
+                    brightness = bundle.getTileEntity().getWorld().getLightFor(EnumSkyBlock.SKY, bundle.getLocation());
                 }
 
                 // TODO: check if this is the client thread, if not, make a copy of the bundle and its conduits in a
@@ -141,7 +141,7 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
         return result;
     }
 
-    private void addConduitQuads(@Nonnull IBlockStateWrapper state, @Nonnull IConduitBundle bundle, float brightness,
+    private void addConduitQuads(@Nonnull IBlockStateWrapper state, @Nonnull ConduitBundle bundle, float brightness,
                                  @Nonnull BlockRenderLayer layer,
                                  @Nonnull List<BakedQuad> quads) {
         // Conduits
@@ -152,9 +152,9 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
             wireBounds.add(BoundingBox.UNIT_CUBE);
         }
 
-        for (IClientConduit c : bundle.getClientConduits()) {
-            if (c instanceof IClientConduit.WithDefaultRendering) {
-                IClientConduit.WithDefaultRendering con = (IClientConduit.WithDefaultRendering) c;
+        for (ConduitClient c : bundle.getClientConduits()) {
+            if (c instanceof ConduitClient.WithDefaultRendering) {
+                ConduitClient.WithDefaultRendering con = (ConduitClient.WithDefaultRendering) c;
                 if (state.getYetaDisplayMode().renderConduit(con)) {
                     IConduitRenderer renderer = getRendererForConduit(con);
                     if (renderer.canRenderInLayer(con, layer)) {
@@ -194,13 +194,13 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
         for (CollidableComponent component : connectors) {
             if (component != null && (component == conBB || conBB == null || !conBB.bound.contains(component.bound))) {
                 if (component.conduitType != null) {
-                    IClientConduit.WithDefaultRendering conduit = (IClientConduit.WithDefaultRendering) bundle
+                    ConduitClient.WithDefaultRendering conduit = (ConduitClient.WithDefaultRendering) bundle
                             .getConduit(component.conduitType);
                     if (conduit != null) {
                         IConduitRenderer renderer = getRendererForConduit(conduit);
                         if (state.getYetaDisplayMode().renderConduit(component.conduitType)) {
                             if (renderer.getCoreLayer() == layer) {
-                                IConduitTexture tex = conduit.getTextureForState(component);
+                                ConduitTexture tex = conduit.getTextureForState(component);
                                 BakedQuadBuilder.addBakedQuads(quads, component.bound, tex.getUv(), tex.getSprite());
                             }
                         } else if (layer == BlockRenderLayer.CUTOUT) {
@@ -247,18 +247,18 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
 
     private boolean breakingAnimOnWholeConduit = false;
 
-    private void addBreakingQuads(@Nonnull IConduitBundle bundle, @Nonnull List<BakedQuad> quads) {
-        Class<? extends IConduit> conduitType = null;
+    private void addBreakingQuads(@Nonnull ConduitBundle bundle, @Nonnull List<BakedQuad> quads) {
+        Class<? extends Conduit> conduitType = null;
         RayTraceResult hit = Minecraft.getMinecraft().objectMouseOver;
         if (NullHelper.untrust(hit) != null && (hit.hitInfo instanceof CollidableComponent)) {
             conduitType = ((CollidableComponent) hit.hitInfo).conduitType;
         }
 
         if (breakingAnimOnWholeConduit) {
-            for (IClientConduit c : bundle.getClientConduits()) {
+            for (ConduitClient c : bundle.getClientConduits()) {
                 if (conduitType == c.getClass() || conduitType == c.getBaseConduitType()) {
                     IConduitRenderer renderer = getRendererForConduit(c);
-                    renderer.addBakedQuads(this, bundle, (IClientConduit.WithDefaultRendering) c, 1,
+                    renderer.addBakedQuads(this, bundle, (ConduitClient.WithDefaultRendering) c, 1,
                             BlockRenderLayer.CUTOUT, quads);
                 }
             }
@@ -268,10 +268,10 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
         for (CollidableComponent component : connectors) {
             if (component != null) {
                 if (component.conduitType == conduitType || conduitType == null) {
-                    IClientConduit.WithDefaultRendering conduit = (IClientConduit.WithDefaultRendering) bundle
+                    ConduitClient.WithDefaultRendering conduit = (ConduitClient.WithDefaultRendering) bundle
                             .getConduit(component.conduitType);
                     if (conduit != null) {
-                        IConduitTexture tex = conduit.getTextureForState(component);
+                        ConduitTexture tex = conduit.getTextureForState(component);
                         BakedQuadBuilder.addBakedQuads(quads, component.bound, tex.getSprite());
                     }
                 }
@@ -301,7 +301,7 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
         }
     }
 
-    public @Nonnull IConduitRenderer getRendererForConduit(@Nonnull IConduit conduit) {
+    public @Nonnull IConduitRenderer getRendererForConduit(@Nonnull Conduit conduit) {
         for (IConduitRenderer renderer : conduitRenderers) {
             if (renderer.isRendererForConduit(conduit)) {
                 return renderer;
@@ -310,17 +310,17 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
         return dcr;
     }
 
-    protected @Nonnull NNList<RenderPair> getDynamicRenderersForConduitBundle(IConduitBundle b, EntityPlayerSP player) {
+    protected @Nonnull NNList<RenderPair> getDynamicRenderersForConduitBundle(ConduitBundle b, EntityPlayerSP player) {
         NNList<RenderPair> result = null;
 
         for (IConduitRenderer conduitRenderer : dynamicCnduitRenderers) {
-            for (IClientConduit conduit : b.getClientConduits()) {
-                if (conduit instanceof IClientConduit.WithDefaultRendering && conduitRenderer != null &&
+            for (ConduitClient conduit : b.getClientConduits()) {
+                if (conduit instanceof ConduitClient.WithDefaultRendering && conduitRenderer != null &&
                         conduitRenderer.isRendererForConduit(conduit) && YetaUtil.renderConduit(player, conduit)) {
                     if (result == null) {
                         result = new NNList<>();
                     }
-                    result.add(new RenderPair(conduitRenderer, (IClientConduit.WithDefaultRendering) conduit));
+                    result.add(new RenderPair(conduitRenderer, (ConduitClient.WithDefaultRendering) conduit));
                 }
             }
         }
@@ -330,7 +330,7 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
 
     static class RenderPair {
 
-        private final @Nonnull IClientConduit.WithDefaultRendering conduit;
+        private final @Nonnull ConduitClient.WithDefaultRendering conduit;
         private final @Nonnull IConduitRenderer renderer;
 
         RenderPair(@Nonnull IConduitRenderer renderer, @Nonnull WithDefaultRendering conduit) {
@@ -339,7 +339,7 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
         }
 
         @Nonnull
-        IClientConduit.WithDefaultRendering getConduit() {
+        ConduitClient.WithDefaultRendering getConduit() {
             return conduit;
         }
 

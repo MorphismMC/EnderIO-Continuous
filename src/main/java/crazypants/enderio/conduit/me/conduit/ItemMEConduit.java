@@ -12,8 +12,8 @@ import appeng.api.AEApi;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConduitDisplayMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.conduit.geom.Offset;
 import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
@@ -46,12 +46,12 @@ public class ItemMEConduit extends AbstractItemConduit {
     }
 
     @Override
-    public @Nonnull Class<? extends IConduit> getBaseConduitType() {
+    public @Nonnull Class<? extends Conduit> getBaseConduitType() {
         return IMEConduit.class;
     }
 
     @Override
-    public IServerConduit createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
+    public ConduitServer createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
         MEConduit con = new MEConduit(item.getItemDamage());
         con.setPlayerID(AEApi.instance().registries().players().getID(player));
         return con;

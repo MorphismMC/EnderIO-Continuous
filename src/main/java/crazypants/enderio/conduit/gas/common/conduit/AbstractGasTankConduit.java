@@ -19,8 +19,8 @@ import com.enderio.core.common.vecmath.Vector4f;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IConduitNetwork;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.tool.ToolUtil;
@@ -49,7 +49,7 @@ public abstract class AbstractGasTankConduit extends AbstractGasConduit {
         }
         AbstractGasTankConduitNetwork<? extends AbstractGasTankConduit> network = getTankNetwork();
         if (ToolUtil.isToolEquipped(player, hand)) {
-            if (!getBundle().getEntity().getWorld().isRemote) {
+            if (!getBundle().getTileEntity().getWorld().isRemote) {
                 CollidableComponent component = res.component;
                 if (component != null) {
                     EnumFacing faceHit = res.movingObjectPosition.sideHit;
@@ -60,7 +60,7 @@ public abstract class AbstractGasTankConduit extends AbstractGasConduit {
                         }
                         // Attempt to join networks
                         BlockPos pos = getBundle().getLocation().offset(faceHit);
-                        IGasConduit gasConduit = ConduitUtil.getConduit(getBundle().getEntity().getWorld(), pos.getX(),
+                        IGasConduit gasConduit = ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(), pos.getX(),
                                 pos.getY(), pos.getZ(), IGasConduit.class);
                         if (!(gasConduit instanceof AbstractGasTankConduit) || !canJoinNeighbour(gasConduit)) {
                             return false;
@@ -89,8 +89,8 @@ public abstract class AbstractGasTankConduit extends AbstractGasConduit {
             }
             return true;
         } else if (heldItem.getItem() == Items.BUCKET) {
-            if (!getBundle().getEntity().getWorld().isRemote) {
-                long curTick = getBundle().getEntity().getWorld().getTotalWorldTime();
+            if (!getBundle().getTileEntity().getWorld().isRemote) {
+                long curTick = getBundle().getTileEntity().getWorld().getTotalWorldTime();
                 if (curTick - lastEmptyTick < 20) {
                     numEmptyEvents++;
                 } else {
@@ -114,7 +114,7 @@ public abstract class AbstractGasTankConduit extends AbstractGasConduit {
         } else {
             GasStack gas = GasUtil.getGasTypeFromItem(heldItem);
             if (gas != null) {
-                if (!getBundle().getEntity().getWorld().isRemote) {
+                if (!getBundle().getTileEntity().getWorld().isRemote) {
                     if (network != null && (network.getGasType() == null || network.getTotalVolume() < 500 ||
                             GasConduitNetwork.areGasesCompatible(getGasType(), gas))) {
                         network.setGasType(gas);
@@ -138,7 +138,7 @@ public abstract class AbstractGasTankConduit extends AbstractGasConduit {
     }
 
     private void setGasTypeOnNetwork(AbstractGasTankConduit con, GasStack type) {
-        IConduitNetwork<?, ?> n = con.getNetwork();
+        ConduitNetwork<?, ?> n = con.getNetwork();
         if (n != null) {
             AbstractGasTankConduitNetwork<?> network = (AbstractGasTankConduitNetwork<?>) n;
             network.setGasType(type);
@@ -184,29 +184,29 @@ public abstract class AbstractGasTankConduit extends AbstractGasConduit {
     protected abstract void updateTank();
 
     @Override
-    public void readFromNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.readFromNBT(nbtRoot);
+    public void readFromNBT(@Nonnull NBTTagCompound data) {
+        super.readFromNBT(data);
         updateTank();
-        if (nbtRoot.hasKey("tank")) {
-            GasStack gas = GasStack.readFromNBT(nbtRoot.getCompoundTag("tank"));
+        if (data.hasKey("tank")) {
+            GasStack gas = GasStack.readFromNBT(data.getCompoundTag("tank"));
             tank.setGas(gas);
         } else {
             tank.setGas(null);
         }
-        gasTypeLocked = nbtRoot.getBoolean("gasLocked");
+        gasTypeLocked = data.getBoolean("gasLocked");
     }
 
     @Override
-    public void writeToNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.writeToNBT(nbtRoot);
+    public void writeToNBT(@Nonnull NBTTagCompound data) {
+        super.writeToNBT(data);
         GasStack gt = getGasType();
         if (gt != null) {
             updateTank();
             gt = gt.copy();
             gt.amount = tank.getStored();
-            nbtRoot.setTag("tank", gt.write(new NBTTagCompound()));
+            data.setTag("tank", gt.write(new NBTTagCompound()));
         }
-        nbtRoot.setBoolean("gasLocked", gasTypeLocked);
+        data.setBoolean("gasLocked", gasTypeLocked);
     }
 
     @Override
@@ -235,7 +235,7 @@ public abstract class AbstractGasTankConduit extends AbstractGasConduit {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
+    public ConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
         if (tank.getGas() != null && tank.getGasType() != null && tank.getFilledRatio() > 0.01F) {
             return new ConduitTextureWrapper(GasRenderUtil.getStillTexture(tank.getGas()));
         }

@@ -7,14 +7,14 @@ import net.minecraft.util.EnumFacing;
 
 import com.raoulvdberge.refinedstorage.api.network.node.INetworkNodeProxy;
 
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.filter.IFilter;
 import crazypants.enderio.base.filter.capability.IFilterHolder;
 import crazypants.enderio.conduits.capability.IUpgradeHolder;
 
 public interface IRefinedStorageConduit
-                                        extends IClientConduit, IServerConduit,
+                                        extends ConduitClient, ConduitServer,
                                         INetworkNodeProxy<ConduitRefinedStorageNode>, IUpgradeHolder,
                                         IFilterHolder<IFilter> {
 

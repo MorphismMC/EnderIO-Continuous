@@ -28,10 +28,10 @@ import com.enderio.core.common.vecmath.Vector3d;
 import com.enderio.core.common.vecmath.Vector4f;
 import com.enderio.core.common.vecmath.Vertex;
 
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.conduit.geom.ConduitGeometryUtil;
 import crazypants.enderio.conduits.render.DefaultConduitRenderer;
@@ -55,7 +55,7 @@ public class LiquidConduitRenderer extends DefaultConduitRenderer implements IRe
     }
 
     @Override
-    public boolean isRendererForConduit(@Nonnull IConduit conduit) {
+    public boolean isRendererForConduit(@Nonnull Conduit conduit) {
         if (conduit instanceof LiquidConduit) {
             return true;
         }
@@ -68,16 +68,16 @@ public class LiquidConduitRenderer extends DefaultConduitRenderer implements IRe
     }
 
     @Override
-    protected void addTransmissionQuads(@Nonnull IConduitTexture tex, Vector4f color, @Nonnull BlockRenderLayer layer,
-                                        @Nonnull IConduit conduit,
+    protected void addTransmissionQuads(@Nonnull ConduitTexture tex, Vector4f color, @Nonnull BlockRenderLayer layer,
+                                        @Nonnull Conduit conduit,
                                         @Nonnull CollidableComponent component, float selfIllum,
                                         @Nonnull List<BakedQuad> quads) {
         // Handled in dynamic render
     }
 
     @Override
-    protected void renderConduitDynamic(@Nonnull IConduitTexture tex,
-                                        @Nonnull IClientConduit.WithDefaultRendering conduit,
+    protected void renderConduitDynamic(@Nonnull ConduitTexture tex,
+                                        @Nonnull ConduitClient.WithDefaultRendering conduit,
                                         @Nonnull CollidableComponent component, float brightness) {
         if (component.isDirectional()) {
             LiquidConduit lc = (LiquidConduit) conduit;
@@ -90,15 +90,15 @@ public class LiquidConduitRenderer extends DefaultConduitRenderer implements IRe
 
     @Override
     public void renderDynamicEntity(@Nonnull TileEntitySpecialRenderer<?> conduitBundleRenderer,
-                                    @Nonnull IConduitBundle te,
-                                    @Nonnull IClientConduit.WithDefaultRendering conduit, double x, double y, double z,
+                                    @Nonnull ConduitBundle te,
+                                    @Nonnull ConduitClient.WithDefaultRendering conduit, double x, double y, double z,
                                     float partialTick, float worldLight) {
         calculateRatios((LiquidConduit) conduit);
         super.renderDynamicEntity(conduitBundleRenderer, te, conduit, x, y, z, partialTick, worldLight);
     }
 
     @Override
-    protected void renderTransmissionDynamic(@Nonnull IConduit conduit, @Nonnull IConduitTexture tex,
+    protected void renderTransmissionDynamic(@Nonnull Conduit conduit, @Nonnull ConduitTexture tex,
                                              @Nullable Vector4f color,
                                              @Nonnull CollidableComponent component, float selfIllum) {
         final float filledRatio = ((LiquidConduit) conduit).getTank().getFilledRatio();

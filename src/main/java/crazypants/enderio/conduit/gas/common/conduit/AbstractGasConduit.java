@@ -20,9 +20,9 @@ import com.enderio.core.common.util.DyeColor;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.conduit.IGuiExternalConnection;
 import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.conduits.conduit.AbstractConduit;
@@ -42,7 +42,7 @@ public abstract class AbstractGasConduit extends AbstractConduit implements IGas
 
     public static IGasHandler getExternalGasHandler(@Nonnull IBlockAccess world, @Nonnull BlockPos pos,
                                                     @Nonnull EnumFacing side) {
-        return world.getTileEntity(pos) instanceof IConduitBundle ? null : GasWrapper.getGasHandler(world, pos, side);
+        return world.getTileEntity(pos) instanceof ConduitBundle ? null : GasWrapper.getGasHandler(world, pos, side);
     }
 
     public IGasHandler getExternalHandler(@Nonnull EnumFacing direction) {
@@ -57,7 +57,7 @@ public abstract class AbstractGasConduit extends AbstractConduit implements IGas
 
     @Override
     @Nonnull
-    public Class<? extends IConduit> getBaseConduitType() {
+    public Class<? extends Conduit> getBaseConduitType() {
         return IGasConduit.class;
     }
 
@@ -125,37 +125,37 @@ public abstract class AbstractGasConduit extends AbstractConduit implements IGas
     }
 
     @Override
-    public void writeToNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.writeToNBT(nbtRoot);
+    public void writeToNBT(@Nonnull NBTTagCompound data) {
+        super.writeToNBT(data);
 
         for (Entry<EnumFacing, RedstoneControlMode> entry : extractionModes.entrySet()) {
             if (entry.getValue() != null) {
-                nbtRoot.setShort("extRM." + entry.getKey().name(), (short) entry.getValue().ordinal());
+                data.setShort("extRM." + entry.getKey().name(), (short) entry.getValue().ordinal());
             }
         }
 
         for (Entry<EnumFacing, DyeColor> entry : extractionColors.entrySet()) {
             if (entry.getValue() != null) {
-                nbtRoot.setShort("extSC." + entry.getKey().name(), (short) entry.getValue().ordinal());
+                data.setShort("extSC." + entry.getKey().name(), (short) entry.getValue().ordinal());
             }
         }
     }
 
     @Override
-    public void readFromNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.readFromNBT(nbtRoot);
+    public void readFromNBT(@Nonnull NBTTagCompound data) {
+        super.readFromNBT(data);
 
         for (EnumFacing dir : EnumFacing.VALUES) {
             String key = "extRM." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                short ord = nbtRoot.getShort(key);
+            if (data.hasKey(key)) {
+                short ord = data.getShort(key);
                 if (ord >= 0 && ord < RedstoneControlMode.values().length) {
                     extractionModes.put(dir, EnumReader.get(RedstoneControlMode.class, ord));
                 }
             }
             key = "extSC." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                short ord = nbtRoot.getShort(key);
+            if (data.hasKey(key)) {
+                short ord = data.getShort(key);
                 if (ord >= 0 && ord < DyeColor.values().length) {
                     extractionColors.put(dir, EnumReader.get(DyeColor.class, ord));
                 }
@@ -166,8 +166,8 @@ public abstract class AbstractGasConduit extends AbstractConduit implements IGas
     @SideOnly(Side.CLIENT)
     @Nonnull
     @Override
-    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull IClientConduit con) {
-        return new GasSettings(gui, con);
+    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull ConduitClient conduit) {
+        return new GasSettings(gui, conduit);
     }
 
     @Override

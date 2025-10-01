@@ -23,7 +23,7 @@ import com.enderio.core.common.util.UserIdent;
 
 import crazypants.enderio.api.ILocalizable;
 import crazypants.enderio.base.block.painted.TileEntityTwicePaintedBlock;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.machine.base.te.AbstractCapabilityMachineEntity;
 import crazypants.enderio.base.machine.base.te.AbstractMachineEntity;
 import crazypants.enderio.base.machine.baselegacy.AbstractPoweredTaskEntity;
@@ -128,7 +128,7 @@ class TOPData {
                 if (te.getCurrentTask() instanceof ContinuousTask) {
                     hasProgress = false;
                 }
-            } else if (tileEntity instanceof IConduitBundle) {
+            } else if (tileEntity instanceof ConduitBundle) {
                 hasProgress = false;
             }
         }

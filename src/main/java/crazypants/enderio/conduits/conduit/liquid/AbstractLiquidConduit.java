@@ -28,9 +28,9 @@ import com.enderio.core.common.util.DyeColor;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.conduit.IGuiExternalConnection;
 import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.conduits.conduit.AbstractConduit;
@@ -49,7 +49,7 @@ public abstract class AbstractLiquidConduit extends AbstractConduit implements I
         IBlockAccess world = getBundle().getBundleworld();
         BlockPos pos = getBundle().getLocation().offset(direction);
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof IConduitBundle) {
+        if (tileEntity instanceof ConduitBundle) {
             return null;
         }
         return FluidWrapper.wrap(tileEntity, direction.getOpposite());
@@ -62,7 +62,7 @@ public abstract class AbstractLiquidConduit extends AbstractConduit implements I
 
     @Override
     @Nonnull
-    public Class<? extends IConduit> getBaseConduitType() {
+    public Class<? extends Conduit> getBaseConduitType() {
         return ILiquidConduit.class;
     }
 
@@ -195,39 +195,39 @@ public abstract class AbstractLiquidConduit extends AbstractConduit implements I
     }
 
     @Override
-    public void writeToNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.writeToNBT(nbtRoot);
+    public void writeToNBT(@Nonnull NBTTagCompound data) {
+        super.writeToNBT(data);
 
         for (Entry<EnumFacing, RedstoneControlMode> entry : extractionModes.entrySet()) {
             if (entry.getValue() != null) {
                 short ord = (short) entry.getValue().ordinal();
-                nbtRoot.setShort("extRM." + entry.getKey().name(), ord);
+                data.setShort("extRM." + entry.getKey().name(), ord);
             }
         }
 
         for (Entry<EnumFacing, DyeColor> entry : extractionColors.entrySet()) {
             if (entry.getValue() != null) {
                 short ord = (short) entry.getValue().ordinal();
-                nbtRoot.setShort("extSC." + entry.getKey().name(), ord);
+                data.setShort("extSC." + entry.getKey().name(), ord);
             }
         }
     }
 
     @Override
-    public void readFromNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.readFromNBT(nbtRoot);
+    public void readFromNBT(@Nonnull NBTTagCompound data) {
+        super.readFromNBT(data);
 
         for (EnumFacing dir : EnumFacing.VALUES) {
             String key = "extRM." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                short ord = nbtRoot.getShort(key);
+            if (data.hasKey(key)) {
+                short ord = data.getShort(key);
                 if (ord >= 0 && ord < RedstoneControlMode.values().length) {
                     extractionModes.put(dir, RedstoneControlMode.values()[ord]);
                 }
             }
             key = "extSC." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                short ord = nbtRoot.getShort(key);
+            if (data.hasKey(key)) {
+                short ord = data.getShort(key);
                 if (ord >= 0 && ord < DyeColor.values().length) {
                     extractionColors.put(dir, DyeColor.values()[ord]);
                 }
@@ -238,8 +238,8 @@ public abstract class AbstractLiquidConduit extends AbstractConduit implements I
     @SideOnly(Side.CLIENT)
     @Nonnull
     @Override
-    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull IClientConduit con) {
-        return new LiquidSettings(gui, con);
+    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull ConduitClient conduit) {
+        return new LiquidSettings(gui, conduit);
     }
 
     @Override

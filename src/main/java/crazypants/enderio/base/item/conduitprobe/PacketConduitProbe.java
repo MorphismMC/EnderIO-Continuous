@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import com.enderio.core.common.util.NNList;
 import com.enderio.core.common.util.NullHelper;
 
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.power.forge.tile.ILegacyPoweredTile;
 import io.netty.buffer.ByteBuf;
 
@@ -25,7 +25,7 @@ public class PacketConduitProbe implements IMessage {
 
     public static boolean canCreatePacket(@Nonnull World world, @Nonnull BlockPos pos) {
         TileEntity te = world.getTileEntity(pos);
-        if (te instanceof IConduitBundle) {
+        if (te instanceof ConduitBundle) {
             return true;
         }
         if (te instanceof ILegacyPoweredTile) {

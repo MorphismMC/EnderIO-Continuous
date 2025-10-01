@@ -27,8 +27,8 @@ import com.enderio.core.common.TileEntityBase;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.api.tool.IHideFacades;
 import crazypants.enderio.base.EnderIOTab;
-import crazypants.enderio.base.conduit.IConduitBundle;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.lang.Lang;
 import crazypants.enderio.base.network.PacketHandler;
 import crazypants.enderio.base.render.IHaveRenderers;
@@ -47,7 +47,7 @@ public class ItemConduitProbe extends Item implements IResourceTooltipProvider, 
     }
 
     public static boolean copyPasteSettings(@Nonnull EntityPlayer player, @Nonnull ItemStack stack,
-                                            @Nonnull IConduitBundle bundle, @Nonnull EnumFacing dir) {
+                                            @Nonnull ConduitBundle bundle, @Nonnull EnumFacing dir) {
         if (player.world.isRemote) {
             return true;
         }
@@ -60,7 +60,7 @@ public class ItemConduitProbe extends Item implements IResourceTooltipProvider, 
     }
 
     public static boolean pasteSettings(@Nonnull EntityPlayer player, @Nonnull ItemStack stack,
-                                        @Nonnull IConduitBundle bundle, @Nonnull EnumFacing dir) {
+                                        @Nonnull ConduitBundle bundle, @Nonnull EnumFacing dir) {
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt == null || nbt.isEmpty()) {
             return false;
@@ -68,7 +68,7 @@ public class ItemConduitProbe extends Item implements IResourceTooltipProvider, 
 
         boolean performedAction = false;
 
-        for (IServerConduit conduit : bundle.getServerConduits()) {
+        for (ConduitServer conduit : bundle.getServerConduits()) {
             if (conduit.readConduitSettingsFromNBT(dir, nbt)) {
                 performedAction = true;
             }
@@ -82,10 +82,10 @@ public class ItemConduitProbe extends Item implements IResourceTooltipProvider, 
     }
 
     public static boolean copySettings(@Nonnull EntityPlayer player, @Nonnull ItemStack stack,
-                                       @Nonnull IConduitBundle bundle, @Nonnull EnumFacing dir) {
+                                       @Nonnull ConduitBundle bundle, @Nonnull EnumFacing dir) {
         NBTTagCompound nbt = new NBTTagCompound();
 
-        for (IServerConduit conduit : bundle.getServerConduits()) {
+        for (ConduitServer conduit : bundle.getServerConduits()) {
             if (conduit.getExternalConnections().contains(dir)) {
                 conduit.writeConnectionSettingsToNBT(dir, nbt);
             }

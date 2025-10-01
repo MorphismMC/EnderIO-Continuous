@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import org.lwjgl.input.Keyboard;
 
-import crazypants.enderio.api.tool.IConduitControl;
+import crazypants.enderio.api.tool.ConduitControllable;
 import crazypants.enderio.api.upgrades.IDarkSteelUpgrade;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConduitDisplayMode;
@@ -196,7 +196,7 @@ public enum KeyTracker {
             if (Prep.isInvalid(equipped)) {
                 return;
             }
-            if (equipped.getItem() instanceof IConduitControl) {
+            if (equipped.getItem() instanceof ConduitControllable) {
                 ConduitDisplayMode curMode = ConduitDisplayMode.getDisplayMode(equipped);
                 ConduitDisplayMode newMode = player.isSneaking() ? curMode.previous() : curMode.next();
                 ConduitDisplayMode.setDisplayMode(equipped, newMode);

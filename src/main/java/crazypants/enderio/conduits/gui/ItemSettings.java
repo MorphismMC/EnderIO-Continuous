@@ -16,7 +16,7 @@ import com.enderio.core.client.render.EnderWidget;
 import com.enderio.core.common.util.DyeColor;
 
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
+import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.IGuiExternalConnection;
 import crazypants.enderio.base.filter.gui.FilterGuiUtil;
 import crazypants.enderio.base.gui.IconEIO;
@@ -57,7 +57,7 @@ public class ItemSettings extends BaseSettingsPanel {
     private int priLeft = 46;
     private int priWidth = 32;
 
-    public ItemSettings(@Nonnull final IGuiExternalConnection gui, @Nonnull IClientConduit con) {
+    public ItemSettings(@Nonnull final IGuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_ITEM, ConduitObject.item_item_conduit.getUnlocalisedName(), gui, con,
                 "filter_upgrade_settings");
         itemConduit = (IItemConduit) con;

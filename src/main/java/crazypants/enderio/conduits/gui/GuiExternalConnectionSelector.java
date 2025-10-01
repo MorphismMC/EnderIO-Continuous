@@ -33,8 +33,8 @@ import com.enderio.core.client.render.ColorUtil;
 import com.enderio.core.common.util.NullHelper;
 
 import crazypants.enderio.base.EnderIO;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.conduit.PacketOpenConduitUI;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.init.ModObject;
@@ -47,7 +47,7 @@ public class GuiExternalConnectionSelector extends GuiScreen {
     private static int BUTTON_WIDTH = 60;
 
     Set<EnumFacing> cons;
-    IConduitBundle cb;
+    ConduitBundle cb;
     EnumMap<EnumFacing, Point> textPositions = new EnumMap<EnumFacing, Point>(EnumFacing.class);
     EnumMap<EnumFacing, ItemStack> stacks = new EnumMap<EnumFacing, ItemStack>(EnumFacing.class);
     EnumMap<EnumFacing, Point> stackPositions = new EnumMap<EnumFacing, Point>(EnumFacing.class);
@@ -55,10 +55,10 @@ public class GuiExternalConnectionSelector extends GuiScreen {
 
     private long keyLock = Minecraft.getSystemTime() + 2000;
 
-    public GuiExternalConnectionSelector(IConduitBundle cb) {
+    public GuiExternalConnectionSelector(ConduitBundle cb) {
         this.cb = cb;
         cons = new HashSet<EnumFacing>();
-        for (IClientConduit conduit : cb.getClientConduits()) {
+        for (ConduitClient conduit : cb.getClientConduits()) {
             if (ConduitRegistry.getNetwork(conduit).canConnectToAnything()) {
                 Set<EnumFacing> conCons = conduit.getConduitConnections();
                 for (EnumFacing dir : EnumFacing.VALUES) {
@@ -118,7 +118,7 @@ public class GuiExternalConnectionSelector extends GuiScreen {
 
                 ConduitRegistry.getConduitModObjectNN().openClientGui(mc.world, goPos, mc.player, null, 0);
             } else {
-                PacketHandler.INSTANCE.sendToServer(new PacketOpenConduitUI(cb.getEntity(), dir));
+                PacketHandler.INSTANCE.sendToServer(new PacketOpenConduitUI(cb.getTileEntity(), dir));
             }
         }
     }
@@ -150,11 +150,11 @@ public class GuiExternalConnectionSelector extends GuiScreen {
                 neighborPositions.put(direction, blockPos);
                 stacks.put(direction, new ItemStack(ModObject.itemConduitFacade.getItemNN())); // fallback
                 TileEntity te = world.getTileEntity(blockPos);
-                if (te instanceof IConduitBundle) {
-                    IConduitBundle conduit = (IConduitBundle) te;
-                    Iterator<IClientConduit> iterator = conduit.getClientConduits().iterator();
+                if (te instanceof ConduitBundle) {
+                    ConduitBundle conduit = (ConduitBundle) te;
+                    Iterator<ConduitClient> iterator = conduit.getClientConduits().iterator();
                     while (iterator.hasNext()) {
-                        IClientConduit next = iterator.next();
+                        ConduitClient next = iterator.next();
                         if (next != null) {
                             stacks.put(direction, next.createItem());
                             break;

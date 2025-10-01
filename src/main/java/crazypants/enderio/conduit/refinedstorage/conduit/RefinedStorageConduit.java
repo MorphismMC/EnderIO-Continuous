@@ -31,10 +31,10 @@ import com.raoulvdberge.refinedstorage.api.network.node.INetworkNodeManager;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitNetwork;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.IGuiExternalConnection;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
@@ -52,16 +52,15 @@ import crazypants.enderio.conduit.refinedstorage.conduit.gui.RefinedStorageSetti
 import crazypants.enderio.conduit.refinedstorage.init.ConduitRefinedStorageObject;
 import crazypants.enderio.conduits.capability.CapabilityUpgradeHolder;
 import crazypants.enderio.conduits.conduit.AbstractConduit;
-import crazypants.enderio.conduits.render.ConduitTexture;
 
 public class RefinedStorageConduit extends AbstractConduit implements IRefinedStorageConduit {
 
-    static final Map<String, IConduitTexture> ICONS = new HashMap<>();
+    static final Map<String, ConduitTexture> ICONS = new HashMap<>();
 
     static {
-        ICONS.put(ICON_KEY, new ConduitTexture(TextureRegistry.registerTexture(ICON_KEY), ConduitTexture.arm(0)));
+        ICONS.put(ICON_KEY, new crazypants.enderio.conduits.render.ConduitTexture(TextureRegistry.registerTexture(ICON_KEY), crazypants.enderio.conduits.render.ConduitTexture.arm(0)));
         ICONS.put(ICON_CORE_KEY,
-                new ConduitTexture(TextureRegistry.registerTexture(ICON_CORE_KEY), ConduitTexture.core()));
+                new crazypants.enderio.conduits.render.ConduitTexture(TextureRegistry.registerTexture(ICON_CORE_KEY), crazypants.enderio.conduits.render.ConduitTexture.core()));
     }
 
     private Map<EnumFacing, ItemStack> upgrades = new EnumMap<EnumFacing, ItemStack>(EnumFacing.class);
@@ -99,7 +98,7 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
 
     @Override
     public boolean canConnectToExternal(@Nonnull EnumFacing direction, boolean ignoreConnectionMode) {
-        TileEntity te = getBundle().getEntity();
+        TileEntity te = getBundle().getTileEntity();
         World world = te.getWorld();
         TileEntity test = world.getTileEntity(te.getPos().offset(direction));
         if (test == null) {
@@ -116,8 +115,8 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
 
     @Override
     @Nonnull
-    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull IClientConduit con) {
-        return new RefinedStorageSettings(gui, con);
+    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull ConduitClient conduit) {
+        return new RefinedStorageSettings(gui, conduit);
     }
 
     @Override
@@ -135,7 +134,7 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
 
     @Override
     @Nonnull
-    public Class<? extends IConduit> getBaseConduitType() {
+    public Class<? extends Conduit> getBaseConduitType() {
         return IRefinedStorageConduit.class;
     }
 
@@ -213,7 +212,7 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
     }
 
     @Override
-    public boolean setNetwork(@Nonnull IConduitNetwork<?, ?> network) {
+    public boolean setNetwork(@Nonnull ConduitNetwork<?, ?> network) {
         this.network = (RefinedStorageConduitNetwork) network;
         return super.setNetwork(network);
     }
@@ -265,7 +264,7 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
     public boolean onBlockActivated(@Nonnull EntityPlayer player, @Nonnull EnumHand hand, @Nonnull RaytraceResult res,
                                     @Nonnull List<RaytraceResult> all) {
         if (ToolUtil.isToolEquipped(player, hand)) {
-            if (!getBundle().getEntity().getWorld().isRemote) {
+            if (!getBundle().getTileEntity().getWorld().isRemote) {
                 final CollidableComponent component = res.component;
                 if (component != null) {
                     EnumFacing faceHit = res.movingObjectPosition.sideHit;
@@ -302,28 +301,28 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
     }
 
     @Override
-    public void setConnectionMode(@Nonnull EnumFacing dir, @Nonnull ConnectionMode mode) {
-        super.setConnectionMode(dir, mode);
+    public void setConnectionMode(@Nonnull EnumFacing direction, @Nonnull ConnectionMode mode) {
+        super.setConnectionMode(direction, mode);
         getNode().onConduitConnectionChange();
     }
 
     @Override
-    public @Nonnull ConnectionMode getNextConnectionMode(@Nonnull EnumFacing dir) {
-        ConnectionMode mode = getConnectionMode(dir);
+    public @Nonnull ConnectionMode getNextConnectionMode(@Nonnull EnumFacing direction) {
+        ConnectionMode mode = getConnectionMode(direction);
         mode = mode == ConnectionMode.IN_OUT ? ConnectionMode.DISABLED : ConnectionMode.IN_OUT;
         return mode;
     }
 
     @Override
-    public void writeToNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.writeToNBT(nbtRoot);
+    public void writeToNBT(@Nonnull NBTTagCompound data) {
+        super.writeToNBT(data);
 
         for (Entry<EnumFacing, ItemStack> entry : upgrades.entrySet()) {
             if (entry.getValue() != null) {
                 ItemStack up = entry.getValue();
                 NBTTagCompound itemRoot = new NBTTagCompound();
                 up.writeToNBT(itemRoot);
-                nbtRoot.setTag("upgrades." + entry.getKey().name(), itemRoot);
+                data.setTag("upgrades." + entry.getKey().name(), itemRoot);
             }
         }
 
@@ -333,7 +332,7 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
                 if (!isDefault(f)) {
                     NBTTagCompound itemRoot = new NBTTagCompound();
                     FilterRegistry.writeFilterToNbt(f, itemRoot);
-                    nbtRoot.setTag("inFilts." + entry.getKey().name(), itemRoot);
+                    data.setTag("inFilts." + entry.getKey().name(), itemRoot);
                 }
             }
         }
@@ -344,7 +343,7 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
                 if (!isDefault(f)) {
                     NBTTagCompound itemRoot = new NBTTagCompound();
                     FilterRegistry.writeFilterToNbt(f, itemRoot);
-                    nbtRoot.setTag("outFilts." + entry.getKey().name(), itemRoot);
+                    data.setTag("outFilts." + entry.getKey().name(), itemRoot);
                 }
             }
         }
@@ -357,7 +356,7 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
 
                 NBTTagCompound itemRoot = new NBTTagCompound();
                 up.writeToNBT(itemRoot);
-                nbtRoot.setTag("inputFilterUpgrades." + entry.getKey().name(), itemRoot);
+                data.setTag("inputFilterUpgrades." + entry.getKey().name(), itemRoot);
             }
         }
 
@@ -369,7 +368,7 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
 
                 NBTTagCompound itemRoot = new NBTTagCompound();
                 up.writeToNBT(itemRoot);
-                nbtRoot.setTag("outputFilterUpgrades." + entry.getKey().name(), itemRoot);
+                data.setTag("outputFilterUpgrades." + entry.getKey().name(), itemRoot);
             }
 
         }
@@ -383,41 +382,41 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
     }
 
     @Override
-    public void readFromNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.readFromNBT(nbtRoot);
+    public void readFromNBT(@Nonnull NBTTagCompound data) {
+        super.readFromNBT(data);
 
         for (EnumFacing dir : EnumFacing.VALUES) {
             String key = "upgrades." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound upTag = (NBTTagCompound) nbtRoot.getTag(key);
+            if (data.hasKey(key)) {
+                NBTTagCompound upTag = (NBTTagCompound) data.getTag(key);
                 ItemStack ups = new ItemStack(upTag);
                 upgrades.put(dir, ups);
             }
 
             key = "inFilts." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound filterTag = (NBTTagCompound) nbtRoot.getTag(key);
+            if (data.hasKey(key)) {
+                NBTTagCompound filterTag = (NBTTagCompound) data.getTag(key);
                 IFilter filter = FilterRegistry.loadFilterFromNbt(filterTag);
                 inputFilters.put(dir, filter);
             }
 
             key = "inputFilterUpgrades." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound upTag = (NBTTagCompound) nbtRoot.getTag(key);
+            if (data.hasKey(key)) {
+                NBTTagCompound upTag = (NBTTagCompound) data.getTag(key);
                 ItemStack ups = new ItemStack(upTag);
                 inputFilterUpgrades.put(dir, ups);
             }
 
             key = "outputFilterUpgrades." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound upTag = (NBTTagCompound) nbtRoot.getTag(key);
+            if (data.hasKey(key)) {
+                NBTTagCompound upTag = (NBTTagCompound) data.getTag(key);
                 ItemStack ups = new ItemStack(upTag);
                 outputFilterUpgrades.put(dir, ups);
             }
 
             key = "outFilts." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound filterTag = (NBTTagCompound) nbtRoot.getTag(key);
+            if (data.hasKey(key)) {
+                NBTTagCompound filterTag = (NBTTagCompound) data.getTag(key);
                 IFilter filter = FilterRegistry.loadFilterFromNbt(filterTag);
                 outputFilters.put(dir, filter);
             }
@@ -430,7 +429,7 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
 
     @Override
     @Nonnull
-    public IConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+    public ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
         if (component.isCore()) {
             return ICONS.get(ICON_CORE_KEY);
         }
@@ -438,7 +437,7 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
     }
 
     @Override
-    public IConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
+    public ConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
         return null;
     }
 

@@ -20,7 +20,7 @@ import com.enderio.core.common.util.NNList;
 
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
+import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.IGuiExternalConnection;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.gui.RedstoneModeButton;
@@ -71,7 +71,7 @@ public class GasSettings extends BaseSettingsPanel {
     @Nonnull
     private final IGasConduit conduit;
 
-    public GasSettings(@Nonnull final IGuiExternalConnection gui, @Nonnull IClientConduit con) {
+    public GasSettings(@Nonnull final IGuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_GAS, GasConduitObject.itemGasConduit.getUnlocalisedName(), gui, con,
                 "in_out_settings");
 

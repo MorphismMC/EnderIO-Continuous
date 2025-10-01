@@ -20,8 +20,8 @@ import com.enderio.core.common.util.ForgeDirectionOffsets;
 import com.enderio.core.common.vecmath.Vector3d;
 
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.conduit.IExtractor;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.conduit.geom.ConduitGeometryUtil;
@@ -57,7 +57,7 @@ public class ConduitInOutRenderer {
     public static final @Nonnull TextureSupplier ICON_INOUT_OUT = TextureRegistry
             .registerTexture("blocks/item_conduit_in_out_out");
 
-    public static void renderIO(@Nonnull IConduitBundle bundle, @Nonnull IClientConduit conduit,
+    public static void renderIO(@Nonnull ConduitBundle bundle, @Nonnull ConduitClient conduit,
                                 @Nonnull CollidableComponent component, BlockRenderLayer layer,
                                 @Nonnull List<BakedQuad> quads, @Nonnull DyeColor inChannel,
                                 @Nonnull DyeColor outChannel) {
@@ -104,7 +104,7 @@ public class ConduitInOutRenderer {
         }
     }
 
-    private static void addColorBand(@Nonnull IClientConduit conduit, @Nonnull CollidableComponent component,
+    private static void addColorBand(@Nonnull ConduitClient conduit, @Nonnull CollidableComponent component,
                                      @Nonnull List<BakedQuad> quads,
                                      @Nonnull EnumFacing dir, @Nonnull ConnectionMode mode) {
         if (IPowerConduit.COLOR_CONTROLLER_ID.equals(component.data) && (conduit instanceof IExtractor)) {

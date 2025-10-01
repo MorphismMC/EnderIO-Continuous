@@ -27,16 +27,16 @@ import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.BlockEio;
 import crazypants.enderio.base.EnderIOTab;
 import crazypants.enderio.base.conduit.ConduitUtil;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
-import crazypants.enderio.base.conduit.IConduitItem;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
+import crazypants.enderio.base.conduit.ConduitItem;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.render.IHaveRenderers;
 import crazypants.enderio.conduits.lang.Lang;
 import crazypants.enderio.util.ClientUtil;
 
-public abstract class AbstractItemConduit extends Item implements IConduitItem, IHaveRenderers {
+public abstract class AbstractItemConduit extends Item implements ConduitItem, IHaveRenderers {
 
     protected final ItemConduitSubtype[] subtypes;
 
@@ -77,7 +77,7 @@ public abstract class AbstractItemConduit extends Item implements IConduitItem, 
             if (!world.isRemote) {
                 if (world.setBlockState(placeAt, ConduitRegistry.getConduitModObjectNN().getBlockNN().getDefaultState(),
                         1)) {
-                    IConduitBundle bundle = BlockConduitBundle.getAnyTileEntity(world, placeAt, IConduitBundle.class);
+                    ConduitBundle bundle = BlockConduitBundle.getAnyTileEntity(world, placeAt, ConduitBundle.class);
                     if (bundle != null) {
                         if (bundle.addConduit(createConduit(held, player))) {
                             ConduitUtil.playBreakSound(SoundType.METAL, world, placeAt);
@@ -98,13 +98,13 @@ public abstract class AbstractItemConduit extends Item implements IConduitItem, 
             BlockPos place = pos.offset(side);
 
             if (world.getBlockState(place).getBlock() == ConduitRegistry.getConduitModObjectNN().getBlockNN()) {
-                IConduitBundle bundle = BlockConduitBundle.getAnyTileEntity(world, place, IConduitBundle.class);
+                ConduitBundle bundle = BlockConduitBundle.getAnyTileEntity(world, place, ConduitBundle.class);
                 if (bundle == null) {
                     return EnumActionResult.PASS;
                 }
                 if (!bundle.hasType(getBaseConduitType())) {
                     if (!world.isRemote) {
-                        IServerConduit con = createConduit(held, player);
+                        ConduitServer con = createConduit(held, player);
                         if (con == null) {
                             return EnumActionResult.PASS;
                         }
@@ -133,18 +133,18 @@ public abstract class AbstractItemConduit extends Item implements IConduitItem, 
         if (player.isSneaking()) {
             return EnumActionResult.PASS;
         }
-        IConduitBundle bundle = BlockEio.getAnyTileEntity(world, pos, IConduitBundle.class);
+        ConduitBundle bundle = BlockEio.getAnyTileEntity(world, pos, ConduitBundle.class);
         if (bundle == null) {
             return EnumActionResult.PASS;
         }
-        IConduit existingConduit = bundle.getConduit(getBaseConduitType());
+        Conduit existingConduit = bundle.getConduit(getBaseConduitType());
         if (existingConduit == null) {
             return EnumActionResult.PASS;
         }
         ItemStack existingConduitAsItemStack = existingConduit.createItem();
         if (!ItemUtil.areStacksEqual(existingConduitAsItemStack, held)) {
             if (!world.isRemote) {
-                IServerConduit newConduit = createConduit(held, player);
+                ConduitServer newConduit = createConduit(held, player);
                 if (newConduit == null) {
                     return EnumActionResult.PASS;
                 }

@@ -11,8 +11,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import crazypants.enderio.base.Log;
 import crazypants.enderio.base.conduit.ConduitUtil;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.util.NbtValue;
 import info.loenwind.autosave.Registry;
 import info.loenwind.autosave.exceptions.NoHandlerFoundException;
@@ -20,23 +20,23 @@ import info.loenwind.autosave.handlers.IHandler;
 import info.loenwind.autosave.handlers.java.util.HandleSimpleCollection;
 import info.loenwind.autosave.util.NBTAction;
 
-public class HandleIConduit implements IHandler<IConduit> {
+public class HandleIConduit implements IHandler<Conduit> {
 
     @Override
     public @Nonnull Class<?> getRootType() {
-        return IConduit.class;
+        return Conduit.class;
     }
 
     @Override
     public boolean store(@Nonnull Registry registry, @Nonnull Set<NBTAction> phase, @Nonnull NBTTagCompound nbt,
-                         @Nonnull Type type, @Nonnull String name, @Nonnull IConduit object)
+                         @Nonnull Type type, @Nonnull String name, @Nonnull Conduit object)
                                                                                              throws IllegalArgumentException,
                                                                                              IllegalAccessException,
                                                                                              InstantiationException,
                                                                                              NoHandlerFoundException {
-        if (object instanceof IServerConduit) {
+        if (object instanceof ConduitServer) {
             NBTTagCompound root = new NBTTagCompound();
-            ConduitUtil.writeToNBT((IServerConduit) object, root);
+            ConduitUtil.writeToNBT((ConduitServer) object, root);
             nbt.setTag(name, root);
         } else {
             Log.error("Logic error: Attempting to store client conduit procy as NBT for phase(S) " + phase);
@@ -45,9 +45,9 @@ public class HandleIConduit implements IHandler<IConduit> {
     }
 
     @Override
-    public IConduit read(@Nonnull Registry registry, @Nonnull Set<NBTAction> phase, @Nonnull NBTTagCompound nbt,
-                         @Nonnull Type type, @Nonnull String name,
-                         @Nullable IConduit object) throws IllegalArgumentException, IllegalAccessException,
+    public Conduit read(@Nonnull Registry registry, @Nonnull Set<NBTAction> phase, @Nonnull NBTTagCompound nbt,
+                        @Nonnull Type type, @Nonnull String name,
+                        @Nullable Conduit object) throws IllegalArgumentException, IllegalAccessException,
                                                     InstantiationException, NoHandlerFoundException {
         if (nbt.hasKey(name)) {
             NBTTagCompound root = nbt.getCompoundTag(name);
@@ -63,42 +63,42 @@ public class HandleIConduit implements IHandler<IConduit> {
         return object;
     }
 
-    private IConduit read(@Nonnull Set<NBTAction> phase, @Nonnull NBTTagCompound conduitTag) {
+    private Conduit read(@Nonnull Set<NBTAction> phase, @Nonnull NBTTagCompound conduitTag) {
         return phase.contains(NBTAction.CLIENT) ? ConduitUtil.readClientConduitFromNBT(conduitTag) :
                 ConduitUtil.readConduitFromNBT(conduitTag);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static class List extends HandleSimpleCollection<CopyOnWriteArrayList<IConduit>> {
+    public static class List extends HandleSimpleCollection<CopyOnWriteArrayList<Conduit>> {
 
         public List() throws NoHandlerFoundException {
-            super((Class<CopyOnWriteArrayList<IConduit>>) (Class) CopyOnWriteArrayList.class);
+            super((Class<CopyOnWriteArrayList<Conduit>>) (Class) CopyOnWriteArrayList.class);
         }
 
         protected List(Registry registry) throws NoHandlerFoundException {
-            super((Class<CopyOnWriteArrayList<IConduit>>) (Class) CopyOnWriteArrayList.class, CopyOnWriteArrayList::new,
-                    registry, IConduit.class);
+            super((Class<CopyOnWriteArrayList<Conduit>>) (Class) CopyOnWriteArrayList.class, CopyOnWriteArrayList::new,
+                    registry, Conduit.class);
         }
 
         @Override
-        protected IHandler<? extends CopyOnWriteArrayList<IConduit>> create(@Nonnull Registry registry,
-                                                                            @Nonnull Type... types) throws NoHandlerFoundException {
-            if (types[0] == IConduit.class) {
+        protected IHandler<? extends CopyOnWriteArrayList<Conduit>> create(@Nonnull Registry registry,
+                                                                           @Nonnull Type... types) throws NoHandlerFoundException {
+            if (types[0] == Conduit.class) {
                 return new List(registry);
             }
             return null;
         }
 
         @Override
-        public CopyOnWriteArrayList<IConduit> read(@Nonnull Registry registry, @Nonnull Set<NBTAction> phase,
-                                                   @Nonnull NBTTagCompound nbt, @Nonnull Type type,
-                                                   @Nonnull String name,
-                                                   @Nullable CopyOnWriteArrayList<IConduit> object)
+        public CopyOnWriteArrayList<Conduit> read(@Nonnull Registry registry, @Nonnull Set<NBTAction> phase,
+                                                  @Nonnull NBTTagCompound nbt, @Nonnull Type type,
+                                                  @Nonnull String name,
+                                                  @Nullable CopyOnWriteArrayList<Conduit> object)
                                                                                                     throws IllegalArgumentException,
                                                                                                     IllegalAccessException,
                                                                                                     InstantiationException,
                                                                                                     NoHandlerFoundException {
-            final CopyOnWriteArrayList<IConduit> result = super.read(registry, phase, nbt, type, name, object);
+            final CopyOnWriteArrayList<Conduit> result = super.read(registry, phase, nbt, type, name, object);
             if (result != null) {
                 // Remove null (missing) conduits
                 while (result.remove(null)) {}

@@ -20,7 +20,7 @@ import com.enderio.core.common.util.NNList;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitNetwork;
 import crazypants.enderio.base.machine.baselegacy.AbstractPoweredTaskEntity;
 import crazypants.enderio.base.machine.baselegacy.SlotDefinition;
 import crazypants.enderio.base.machine.interfaces.IPoweredTask;
@@ -201,7 +201,7 @@ public class TilePowerMonitor extends AbstractPoweredTaskEntity
                 if (dir != null && dir != found) {
                     IPowerConduit con = ConduitUtil.getConduit(world, TilePowerMonitor.this, dir, IPowerConduit.class);
                     if (con != null && con.getEffectiveConnectionMode(dir.getOpposite()).isActive()) {
-                        IConduitNetwork<?, ?> n = con.getNetwork();
+                        ConduitNetwork<?, ?> n = con.getNetwork();
                         if (n instanceof PowerConduitNetwork) {
                             NetworkPowerManager pm = ((PowerConduitNetwork) n).getPowerManager();
                             if (pm != null) {

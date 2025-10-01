@@ -9,13 +9,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import com.enderio.core.client.render.IconUtil;
 
 import crazypants.enderio.api.IModObject;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 import crazypants.enderio.conduits.conduit.power.IPowerConduit;
 import crazypants.enderio.conduits.conduit.power.IPowerConduitData;
-import crazypants.enderio.conduits.render.ConduitTexture;
 import crazypants.enderio.conduits.render.ConduitTextureWrapper;
 import crazypants.enderio.endergy.config.EndergyConfig;
 import crazypants.enderio.endergy.init.EndergyObject;
@@ -49,16 +48,16 @@ public final class EndergyPowerConduitData implements IPowerConduitData {
         };
 
         @Nonnull
-        ConduitTexture corefile(@Nonnull String key) {
+        crazypants.enderio.conduits.render.ConduitTexture corefile(@Nonnull String key) {
             // return new ConduitTexture(TextureRegistry.registerTexture(key + postfix), ConduitTexture.CORE);
-            return new ConduitTexture(TextureRegistry.registerTexture(key + "_endergy_" + file),
-                    ConduitTexture.core(idx));
+            return new crazypants.enderio.conduits.render.ConduitTexture(TextureRegistry.registerTexture(key + "_endergy_" + file),
+                    crazypants.enderio.conduits.render.ConduitTexture.core(idx));
         }
 
         @Nonnull
-        ConduitTexture armfile(@Nonnull String key) {
-            return new ConduitTexture(TextureRegistry.registerTexture(key + "_endergy_" + file),
-                    ConduitTexture.arm(idx));
+        crazypants.enderio.conduits.render.ConduitTexture armfile(@Nonnull String key) {
+            return new crazypants.enderio.conduits.render.ConduitTexture(TextureRegistry.registerTexture(key + "_endergy_" + file),
+                    crazypants.enderio.conduits.render.ConduitTexture.arm(idx));
         }
 
         @Override
@@ -96,9 +95,9 @@ public final class EndergyPowerConduitData implements IPowerConduitData {
     }
 
     private final int id;
-    private final @Nonnull IConduitTexture icon, core;
+    private final @Nonnull ConduitTexture icon, core;
 
-    public EndergyPowerConduitData(int id, @Nonnull IConduitTexture icon, @Nonnull IConduitTexture core) {
+    public EndergyPowerConduitData(int id, @Nonnull ConduitTexture icon, @Nonnull ConduitTexture core) {
         this.id = OFFSET + id;
         this.icon = icon;
         this.core = core;
@@ -121,7 +120,7 @@ public final class EndergyPowerConduitData implements IPowerConduitData {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public @Nonnull IConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+    public @Nonnull ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
         if (component.isCore()) {
             return core;
         }

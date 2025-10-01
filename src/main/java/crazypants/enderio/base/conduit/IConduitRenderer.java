@@ -8,22 +8,22 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.BlockRenderLayer;
 
-import crazypants.enderio.base.conduit.IClientConduit.WithDefaultRendering;
+import crazypants.enderio.base.conduit.ConduitClient.WithDefaultRendering;
 
 public interface IConduitRenderer {
 
-    boolean isRendererForConduit(@Nonnull IConduit conduit);
+    boolean isRendererForConduit(@Nonnull Conduit conduit);
 
-    void addBakedQuads(@Nonnull TileEntitySpecialRenderer<?> conduitBundleRenderer, @Nonnull IConduitBundle bundle,
-                       @Nonnull IClientConduit.WithDefaultRendering conduit, float brightness,
+    void addBakedQuads(@Nonnull TileEntitySpecialRenderer<?> conduitBundleRenderer, @Nonnull ConduitBundle bundle,
+                       @Nonnull ConduitClient.WithDefaultRendering conduit, float brightness,
                        @Nonnull BlockRenderLayer layer, @Nonnull List<BakedQuad> quads);
 
     // -----------------------
     // DYNAMIC
     // -----------------------
 
-    void renderDynamicEntity(@Nonnull TileEntitySpecialRenderer<?> conduitBundleRenderer, @Nonnull IConduitBundle te,
-                             @Nonnull IClientConduit.WithDefaultRendering conduit, double x, double y, double z,
+    void renderDynamicEntity(@Nonnull TileEntitySpecialRenderer<?> conduitBundleRenderer, @Nonnull ConduitBundle te,
+                             @Nonnull ConduitClient.WithDefaultRendering conduit, double x, double y, double z,
                              float partialTick, float worldLight);
 
     default boolean isDynamic() {

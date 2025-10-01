@@ -8,14 +8,14 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import crazypants.enderio.base.conduit.IConduit;
+import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.filter.FilterRegistry;
 import crazypants.enderio.base.filter.IFilter;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
 import crazypants.enderio.base.filter.capability.IFilterHolder;
 import io.netty.buffer.ByteBuf;
 
-public class PacketConduitFilter<T extends IConduit> extends AbstractConduitPacket.Sided<T> {
+public class PacketConduitFilter<T extends Conduit> extends AbstractConduitPacket.Sided<T> {
 
     protected IFilter inputFilter;
     protected IFilter outputFilter;
@@ -54,7 +54,7 @@ public class PacketConduitFilter<T extends IConduit> extends AbstractConduitPack
 
         @Override
         public IMessage onMessage(PacketConduitFilter message, MessageContext ctx) {
-            IConduit conduit = message.getConduit(ctx);
+            Conduit conduit = message.getConduit(ctx);
             if (conduit != null) {
                 final IFilter inputFilter = message.inputFilter;
                 if (inputFilter != null) {
@@ -71,7 +71,7 @@ public class PacketConduitFilter<T extends IConduit> extends AbstractConduitPack
             return null;
         }
 
-        private void applyFilter(@Nonnull EnumFacing dir, @Nonnull IConduit conduit, @Nonnull IFilter filter,
+        private void applyFilter(@Nonnull EnumFacing dir, @Nonnull Conduit conduit, @Nonnull IFilter filter,
                                  boolean isInput) {
             if (conduit.hasInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, dir)) {
                 IFilterHolder<IFilter> filterHolder = conduit

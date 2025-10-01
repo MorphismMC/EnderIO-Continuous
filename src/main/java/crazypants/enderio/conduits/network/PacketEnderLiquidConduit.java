@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.enderio.core.common.util.DyeColor;
 
-import crazypants.enderio.base.conduit.IConduit;
+import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.filter.IFilter;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
 import crazypants.enderio.base.filter.capability.IFilterHolder;
@@ -83,7 +83,7 @@ public class PacketEnderLiquidConduit extends PacketConduitFilter<EnderLiquidCon
             return null;
         }
 
-        private void applyFilter(@Nonnull EnumFacing dir, @Nonnull IConduit conduit, @Nonnull IFilter filter,
+        private void applyFilter(@Nonnull EnumFacing dir, @Nonnull Conduit conduit, @Nonnull IFilter filter,
                                  boolean isInput) {
             if (conduit.hasInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, dir)) {
                 IFilterHolder<IFilter> filterHolder = conduit

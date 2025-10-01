@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.util.EnumFacing;
 
-import crazypants.enderio.base.conduit.IConduit;
+import crazypants.enderio.base.conduit.Conduit;
 
 public final class GeometryKey {
 
@@ -12,7 +12,7 @@ public final class GeometryKey {
     public final @Nonnull Offset offset;
     public final String className;
 
-    public GeometryKey(EnumFacing dir, @Nonnull Offset offset, Class<? extends IConduit> type) {
+    public GeometryKey(EnumFacing dir, @Nonnull Offset offset, Class<? extends Conduit> type) {
         this.dir = dir;
         this.offset = offset;
         className = type != null ? type.getName() : null;

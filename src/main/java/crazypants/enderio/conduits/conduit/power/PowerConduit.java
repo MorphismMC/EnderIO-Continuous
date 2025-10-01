@@ -42,11 +42,11 @@ import com.enderio.core.common.vecmath.Vector4f;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
-import crazypants.enderio.base.conduit.IConduitNetwork;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.IGuiExternalConnection;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableCache.CacheKey;
@@ -62,12 +62,11 @@ import crazypants.enderio.conduits.conduit.AbstractConduit;
 import crazypants.enderio.conduits.config.ConduitConfig;
 import crazypants.enderio.conduits.gui.PowerSettings;
 import crazypants.enderio.conduits.render.BlockStateWrapperConduitBundle;
-import crazypants.enderio.conduits.render.ConduitTexture;
 import crazypants.enderio.powertools.lang.Lang;
 
 public class PowerConduit extends AbstractConduit implements IPowerConduit {
 
-    static final Map<String, IConduitTexture> ICONS = new HashMap<>();
+    static final Map<String, ConduitTexture> ICONS = new HashMap<>();
 
     static final String[] POSTFIX = new String[] { "", "_enhanced", "_ender" };
 
@@ -75,9 +74,9 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
         int i = 0;
         for (String pf : POSTFIX) {
             ICONS.put(ICON_KEY + pf,
-                    new ConduitTexture(TextureRegistry.registerTexture(ICON_KEY), ConduitTexture.arm(i)));
-            ICONS.put(ICON_CORE_KEY + pf, new ConduitTexture(TextureRegistry.registerTexture("blocks/conduit_core_0"),
-                    ConduitTexture.core(i++)));
+                    new crazypants.enderio.conduits.render.ConduitTexture(TextureRegistry.registerTexture(ICON_KEY), crazypants.enderio.conduits.render.ConduitTexture.arm(i)));
+            ICONS.put(ICON_CORE_KEY + pf, new crazypants.enderio.conduits.render.ConduitTexture(TextureRegistry.registerTexture("blocks/conduit_core_0"),
+                    crazypants.enderio.conduits.render.ConduitTexture.core(i++)));
         }
     }
 
@@ -188,7 +187,7 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
                 setExtractionSignalColor(component.getDirection(), col);
                 return true;
             } else if (ToolUtil.isToolEquipped(player, hand)) {
-                if (!getBundle().getEntity().getWorld().isRemote) {
+                if (!getBundle().getTileEntity().getWorld().isRemote) {
                     if (component != null) {
                         EnumFacing faceHit = res.movingObjectPosition.sideHit;
                         if (component.isCore()) {
@@ -268,48 +267,48 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
     }
 
     @Override
-    public void writeToNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.writeToNBT(nbtRoot);
-        nbtRoot.setShort("subtype", (short) subtype.getID());
-        nbtRoot.setInteger("energyStoredRF", energyStoredRF);
+    public void writeToNBT(@Nonnull NBTTagCompound data) {
+        super.writeToNBT(data);
+        data.setShort("subtype", (short) subtype.getID());
+        data.setInteger("energyStoredRF", energyStoredRF);
 
         for (Entry<EnumFacing, RedstoneControlMode> entry : rsModes.entrySet()) {
             if (entry.getValue() != null) {
                 short ord = (short) entry.getValue().ordinal();
-                nbtRoot.setShort("pRsMode." + entry.getKey().name(), ord);
+                data.setShort("pRsMode." + entry.getKey().name(), ord);
             }
         }
 
         for (Entry<EnumFacing, DyeColor> entry : rsColors.entrySet()) {
             if (entry.getValue() != null) {
                 short ord = (short) entry.getValue().ordinal();
-                nbtRoot.setShort("pRsCol." + entry.getKey().name(), ord);
+                data.setShort("pRsCol." + entry.getKey().name(), ord);
             }
         }
     }
 
     @Override
-    public void readFromNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.readFromNBT(nbtRoot);
-        subtype = IPowerConduitData.Registry.fromID(nbtRoot.getShort("subtype"));
+    public void readFromNBT(@Nonnull NBTTagCompound data) {
+        super.readFromNBT(data);
+        subtype = IPowerConduitData.Registry.fromID(data.getShort("subtype"));
 
-        if (nbtRoot.hasKey("energyStored")) {
-            nbtRoot.setInteger("energyStoredRF", (int) (nbtRoot.getFloat("energyStored") * 10));
+        if (data.hasKey("energyStored")) {
+            data.setInteger("energyStoredRF", (int) (data.getFloat("energyStored") * 10));
 
         }
-        setEnergyStored(nbtRoot.getInteger("energyStoredRF"));
+        setEnergyStored(data.getInteger("energyStoredRF"));
 
         for (EnumFacing dir : EnumFacing.VALUES) {
             String key = "pRsMode." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                short ord = nbtRoot.getShort(key);
+            if (data.hasKey(key)) {
+                short ord = data.getShort(key);
                 if (ord >= 0 && ord < RedstoneControlMode.values().length) {
                     rsModes.put(dir, RedstoneControlMode.values()[ord]);
                 }
             }
             key = "pRsCol." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                short ord = nbtRoot.getShort(key);
+            if (data.hasKey(key)) {
+                short ord = data.getShort(key);
                 if (ord >= 0 && ord < DyeColor.values().length) {
                     rsColors.put(dir, DyeColor.values()[ord]);
                 }
@@ -415,18 +414,18 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
     }
 
     @Override
-    public void setConnectionMode(@Nonnull EnumFacing dir, @Nonnull ConnectionMode mode) {
-        super.setConnectionMode(dir, mode);
+    public void setConnectionMode(@Nonnull EnumFacing direction, @Nonnull ConnectionMode mode) {
+        super.setConnectionMode(direction, mode);
         recievedTicks = null;
     }
 
     @Override
-    public @Nullable IConduitNetwork<?, ?> getNetwork() {
+    public @Nullable ConduitNetwork<?, ?> getNetwork() {
         return network;
     }
 
     @Override
-    public boolean setNetwork(@Nonnull IConduitNetwork<?, ?> network) {
+    public boolean setNetwork(@Nonnull ConduitNetwork<?, ?> network) {
         this.network = (PowerConduitNetwork) network;
         return super.setNetwork(network);
     }
@@ -443,7 +442,7 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
     }
 
     @Override
-    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull IConduit conduit) {
+    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull Conduit conduit) {
         boolean res = super.canConnectToConduit(direction, conduit);
         if (!res) {
             return false;
@@ -462,7 +461,7 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
     public void externalConnectionAdded(@Nonnull EnumFacing direction) {
         super.externalConnectionAdded(direction);
         if (network != null) {
-            TileEntity te = getBundle().getEntity();
+            TileEntity te = getBundle().getTileEntity();
             BlockPos p = te.getPos().offset(direction);
             network.powerReceptorAdded(this, direction, p);
         }
@@ -472,7 +471,7 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
     public void externalConnectionRemoved(@Nonnull EnumFacing direction) {
         super.externalConnectionRemoved(direction);
         if (network != null) {
-            TileEntity te = getBundle().getEntity();
+            TileEntity te = getBundle().getTileEntity();
             BlockPos p = te.getPos().offset(direction);
             network.powerReceptorRemoved(this, direction, p);
         }
@@ -480,13 +479,13 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
 
     @Override
     public IPowerInterface getExternalPowerReceptor(@Nonnull EnumFacing direction) {
-        TileEntity te = getBundle().getEntity();
+        TileEntity te = getBundle().getTileEntity();
         World world = te.getWorld();
         TileEntity test = world.getTileEntity(te.getPos().offset(direction));
         if (test == null) {
             return null;
         }
-        if (test instanceof IConduitBundle) {
+        if (test instanceof ConduitBundle) {
             return null;
         }
         return PowerHandlerUtil.getPowerInterface(test, direction.getOpposite());
@@ -500,19 +499,19 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
 
     @Override
     @Nonnull
-    public Class<? extends IConduit> getBaseConduitType() {
+    public Class<? extends Conduit> getBaseConduitType() {
         return IPowerConduit.class;
     }
 
     // Rendering
     @Override
     @Nonnull
-    public IConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+    public ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
         return subtype.getTextureForState(component);
     }
 
     @Override
-    public @Nullable IConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
+    public @Nullable ConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
         return null;
     }
 
@@ -566,8 +565,8 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
     @SideOnly(Side.CLIENT)
     @Nonnull
     @Override
-    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull IClientConduit con) {
-        return new PowerSettings(gui, con);
+    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull ConduitClient conduit) {
+        return new PowerSettings(gui, conduit);
     }
 
     @Override

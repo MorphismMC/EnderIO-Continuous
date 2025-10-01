@@ -36,10 +36,10 @@ import com.enderio.core.common.vecmath.Vector4f;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitNetwork;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.IGuiExternalConnection;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableCache.CacheKey;
@@ -51,7 +51,6 @@ import crazypants.enderio.conduit.oc.gui.OCSettings;
 import crazypants.enderio.conduits.conduit.AbstractConduit;
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
 import crazypants.enderio.conduits.render.BlockStateWrapperConduitBundle.ConduitCacheKey;
-import crazypants.enderio.conduits.render.ConduitTexture;
 import crazypants.enderio.util.FuncUtil;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
@@ -64,12 +63,12 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
 
     private final Map<EnumFacing, DyeColor> signalColors = new EnumMap<EnumFacing, DyeColor>(EnumFacing.class);
 
-    private static final @Nonnull IConduitTexture coreTextureA = new ConduitTexture(
+    private static final @Nonnull ConduitTexture coreTextureA = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("blocks/oc_conduit_core_anim"),
-            ConduitTexture.core());
-    private static final @Nonnull IConduitTexture longTextureA = new ConduitTexture(
+            crazypants.enderio.conduits.render.ConduitTexture.core());
+    private static final @Nonnull ConduitTexture longTextureA = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("blocks/oc_conduit_anim"),
-            ConduitTexture.arm(0));
+            crazypants.enderio.conduits.render.ConduitTexture.arm(0));
 
     public OCConduit() {
         super();
@@ -118,8 +117,8 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
     }
 
     @Override
-    public void writeToNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.writeToNBT(nbtRoot);
+    public void writeToNBT(@Nonnull NBTTagCompound data) {
+        super.writeToNBT(data);
         if (!signalColors.isEmpty()) {
             byte[] modes = new byte[6];
             int i = 0;
@@ -132,15 +131,15 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
                 }
                 i++;
             }
-            nbtRoot.setByteArray("signalColors", modes);
+            data.setByteArray("signalColors", modes);
         }
     }
 
     @Override
-    public void readFromNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.readFromNBT(nbtRoot);
+    public void readFromNBT(@Nonnull NBTTagCompound data) {
+        super.readFromNBT(data);
         signalColors.clear();
-        byte[] cols = nbtRoot.getByteArray("signalColors");
+        byte[] cols = data.getByteArray("signalColors");
         if (cols.length == 6) {
             int i = 0;
             for (EnumFacing dir : EnumFacing.values()) {
@@ -165,7 +164,7 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
 
     @Override
     @Nonnull
-    public Class<? extends IConduit> getBaseConduitType() {
+    public Class<? extends Conduit> getBaseConduitType() {
         return IOCConduit.class;
     }
 
@@ -181,7 +180,7 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
     }
 
     @Override
-    public boolean setNetwork(@Nonnull IConduitNetwork<?, ?> network) {
+    public boolean setNetwork(@Nonnull ConduitNetwork<?, ?> network) {
         this.network = (OCConduitNetwork) network;
         addMissingNodeConnections();
         return super.setNetwork(network);
@@ -281,7 +280,7 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
             }
             return true;
         } else if (ToolUtil.isToolEquipped(player, hand)) {
-            if (!getBundle().getEntity().getWorld().isRemote) {
+            if (!getBundle().getTileEntity().getWorld().isRemote) {
                 EnumFacing faceHit = res.movingObjectPosition.sideHit;
                 if (component.isCore()) {
                     if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
@@ -311,11 +310,11 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
     }
 
     @Override
-    public void setConnectionMode(@Nonnull EnumFacing dir, @Nonnull ConnectionMode mode) {
+    public void setConnectionMode(@Nonnull EnumFacing direction, @Nonnull ConnectionMode mode) {
         if (mode == ConnectionMode.DISABLED) {
-            disconnectNode(dir);
+            disconnectNode(direction);
         }
-        super.setConnectionMode(dir, mode);
+        super.setConnectionMode(direction, mode);
     }
 
     @Override
@@ -458,16 +457,16 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
 
     @Override
     @Nonnull
-    public ConnectionMode getNextConnectionMode(@Nonnull EnumFacing dir) {
-        ConnectionMode mode = getConnectionMode(dir);
+    public ConnectionMode getNextConnectionMode(@Nonnull EnumFacing direction) {
+        ConnectionMode mode = getConnectionMode(direction);
         mode = mode == ConnectionMode.IN_OUT ? ConnectionMode.DISABLED : ConnectionMode.IN_OUT;
         return mode;
     }
 
     @Override
     @Nonnull
-    public ConnectionMode getPreviousConnectionMode(@Nonnull EnumFacing dir) {
-        return getNextConnectionMode(dir);
+    public ConnectionMode getPreviousConnectionMode(@Nonnull EnumFacing direction) {
+        return getNextConnectionMode(direction);
     }
 
     @Override
@@ -527,7 +526,7 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
 
     @Override
     @Nonnull
-    public IConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+    public ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
         // TODO
         // if (Config.enableOCConduitsAnimatedTexture) {
         if (component.isCore()) {
@@ -545,7 +544,7 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
     }
 
     @Override
-    public @Nullable IConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
+    public @Nullable ConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
         return null;
     }
 
@@ -563,15 +562,15 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
 
     @Override
     @Nonnull
-    public IConduitNetwork<?, ?> createNetworkForType() {
+    public ConduitNetwork<?, ?> createNetworkForType() {
         return new OCConduitNetwork();
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     @Nonnull
-    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull IClientConduit con) {
-        return new OCSettings(gui, con);
+    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull ConduitClient conduit) {
+        return new OCSettings(gui, conduit);
     }
 
     @Override

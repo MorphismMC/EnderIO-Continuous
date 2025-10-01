@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Interface for items which support the overlay and conduit view modes
  */
-public interface IConduitControl extends IHideFacades {
+public interface ConduitControllable extends IHideFacades {
 
     /**
      * Controls whether the overlay is shown and the player can change the display mode.

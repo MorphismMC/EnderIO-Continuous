@@ -25,9 +25,9 @@ import com.enderio.core.common.vecmath.Vector3d;
 import com.enderio.core.common.vecmath.Vector4f;
 import com.enderio.core.common.vecmath.Vertex;
 
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.conduit.geom.ConduitGeometryUtil;
 import crazypants.enderio.conduits.render.DefaultConduitRenderer;
@@ -49,21 +49,21 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
     }
 
     @Override
-    public boolean isRendererForConduit(@Nonnull IConduit conduit) {
+    public boolean isRendererForConduit(@Nonnull Conduit conduit) {
         return conduit instanceof GasConduit;
     }
 
     @Override
-    protected void addTransmissionQuads(@Nonnull IConduitTexture tex, Vector4f color, @Nonnull BlockRenderLayer layer,
-                                        @Nonnull IConduit conduit,
+    protected void addTransmissionQuads(@Nonnull ConduitTexture tex, Vector4f color, @Nonnull BlockRenderLayer layer,
+                                        @Nonnull Conduit conduit,
                                         @Nonnull CollidableComponent component, float selfIllum,
                                         @Nonnull List<BakedQuad> quads) {
         // Handled in dynamic render
     }
 
     @Override
-    protected void renderConduitDynamic(@Nonnull IConduitTexture tex,
-                                        @Nonnull IClientConduit.WithDefaultRendering conduit,
+    protected void renderConduitDynamic(@Nonnull ConduitTexture tex,
+                                        @Nonnull ConduitClient.WithDefaultRendering conduit,
                                         @Nonnull CollidableComponent component, float brightness) {
         if (component.isDirectional()) {
             GasConduit lc = (GasConduit) conduit;
@@ -75,7 +75,7 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
     }
 
     @Override
-    protected void renderTransmissionDynamic(@Nonnull IConduit conduit, @Nonnull IConduitTexture tex,
+    protected void renderTransmissionDynamic(@Nonnull Conduit conduit, @Nonnull ConduitTexture tex,
                                              @Nullable Vector4f color, @Nonnull CollidableComponent component,
                                              float selfIllum) {
         float filledRatio = ((GasConduit) conduit).getTank().getFilledRatio();

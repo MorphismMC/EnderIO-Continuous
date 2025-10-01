@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.enderio.core.common.util.NullHelper;
 
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 
 public interface IPowerConduitData {
@@ -52,5 +52,5 @@ public interface IPowerConduitData {
 
     @SideOnly(Side.CLIENT)
     @Nonnull
-    IConduitTexture getTextureForState(@Nonnull CollidableComponent component);
+    ConduitTexture getTextureForState(@Nonnull CollidableComponent component);
 }

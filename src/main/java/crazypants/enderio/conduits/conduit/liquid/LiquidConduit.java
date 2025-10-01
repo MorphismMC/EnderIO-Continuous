@@ -27,33 +27,32 @@ import com.enderio.core.common.vecmath.Vector4f;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitNetwork;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.network.PacketHandler;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.conduits.config.ConduitConfig;
-import crazypants.enderio.conduits.render.ConduitTexture;
 import crazypants.enderio.conduits.render.ConduitTextureWrapper;
 
 public class LiquidConduit extends AbstractTankConduit {
 
     static final int VOLUME_PER_CONNECTION = Fluid.BUCKET_VOLUME / 4;
 
-    public static final IConduitTexture ICON_KEY = new ConduitTexture(
-            TextureRegistry.registerTexture("blocks/liquid_conduit"), ConduitTexture.arm(0));
-    public static final IConduitTexture ICON_KEY_LOCKED = new ConduitTexture(
+    public static final ConduitTexture ICON_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/liquid_conduit"), crazypants.enderio.conduits.render.ConduitTexture.arm(0));
+    public static final ConduitTexture ICON_KEY_LOCKED = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("blocks/liquid_conduit_locked"));
-    public static final IConduitTexture ICON_CORE_KEY = new ConduitTexture(
-            TextureRegistry.registerTexture("blocks/conduit_core_1"), ConduitTexture.core(0));
-    public static final IConduitTexture ICON_EXTRACT_KEY = new ConduitTexture(
+    public static final ConduitTexture ICON_CORE_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/conduit_core_1"), crazypants.enderio.conduits.render.ConduitTexture.core(0));
+    public static final ConduitTexture ICON_EXTRACT_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("blocks/liquid_conduit_extract"));
-    public static final IConduitTexture ICON_EMPTY_EXTRACT_KEY = new ConduitTexture(
+    public static final ConduitTexture ICON_EMPTY_EXTRACT_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("blocks/empty_liquid_conduit_extract"));
-    public static final IConduitTexture ICON_INSERT_KEY = new ConduitTexture(
+    public static final ConduitTexture ICON_INSERT_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("blocks/liquid_conduit_insert"));
-    public static final IConduitTexture ICON_EMPTY_INSERT_KEY = new ConduitTexture(
+    public static final ConduitTexture ICON_EMPTY_INSERT_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("blocks/empty_liquid_conduit_insert"));
 
     private LiquidConduitNetwork network;
@@ -230,7 +229,7 @@ public class LiquidConduit extends AbstractTankConduit {
     }
 
     private ILiquidConduit getFluidConduit(@Nonnull EnumFacing dir) {
-        TileEntity ent = getBundle().getEntity();
+        TileEntity ent = getBundle().getTileEntity();
         return ConduitUtil.getConduit(ent.getWorld(), ent, dir, ILiquidConduit.class);
     }
 
@@ -267,12 +266,12 @@ public class LiquidConduit extends AbstractTankConduit {
     }
 
     @Override
-    public @Nonnull IConduitNetwork<?, ?> getNetwork() {
+    public @Nonnull ConduitNetwork<?, ?> getNetwork() {
         return network;
     }
 
     @Override
-    public boolean setNetwork(@Nonnull IConduitNetwork<?, ?> network) {
+    public boolean setNetwork(@Nonnull ConduitNetwork<?, ?> network) {
         if (!(network instanceof AbstractTankConduitNetwork)) {
             return false;
         }
@@ -296,7 +295,7 @@ public class LiquidConduit extends AbstractTankConduit {
     }
 
     @Override
-    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull IConduit con) {
+    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull Conduit con) {
         if (!super.canConnectToConduit(direction, con)) {
             return false;
         }
@@ -312,7 +311,7 @@ public class LiquidConduit extends AbstractTankConduit {
     @SideOnly(Side.CLIENT)
     @Override
     @Nonnull
-    public IConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+    public ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
         if (component.isCore()) {
             return ICON_CORE_KEY;
         }
@@ -328,7 +327,7 @@ public class LiquidConduit extends AbstractTankConduit {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
+    public ConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
         if (tank.getFluid() != null && tank.getFluid().getFluid() != null) {
             return new ConduitTextureWrapper(RenderUtil.getStillTexture(tank.getFluid()));
         }
@@ -408,7 +407,7 @@ public class LiquidConduit extends AbstractTankConduit {
 
     @Override
     @Nonnull
-    public Class<? extends IConduit> getCollidableType() {
+    public Class<? extends Conduit> getCollidableType() {
         return LiquidConduit.class;
     }
 }

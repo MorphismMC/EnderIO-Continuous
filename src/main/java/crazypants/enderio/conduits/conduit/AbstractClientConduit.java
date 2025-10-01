@@ -21,9 +21,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import com.enderio.core.common.util.NullHelper;
 
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableCache;
 import crazypants.enderio.base.conduit.geom.CollidableCache.CacheKey;
@@ -31,7 +31,7 @@ import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.conduit.geom.ConduitGeometryUtil;
 import crazypants.enderio.conduits.render.BlockStateWrapperConduitBundle;
 
-public abstract class AbstractClientConduit implements IClientConduit.WithDefaultRendering {
+public abstract class AbstractClientConduit implements ConduitClient.WithDefaultRendering {
 
     public static final float TRANSMISSION_SCALE = 0.3f;
 
@@ -44,14 +44,14 @@ public abstract class AbstractClientConduit implements IClientConduit.WithDefaul
     protected final @Nonnull EnumMap<EnumFacing, ConnectionMode> conectionModes = new EnumMap<EnumFacing, ConnectionMode>(
             EnumFacing.class);
 
-    protected @Nullable IConduitBundle bundle;
+    protected @Nullable ConduitBundle bundle;
 
     protected AbstractClientConduit() {}
 
     @Override
     @Nonnull
-    public ConnectionMode getConnectionMode(@Nonnull EnumFacing dir) {
-        ConnectionMode res = conectionModes.get(dir);
+    public ConnectionMode getConnectionMode(@Nonnull EnumFacing direction) {
+        ConnectionMode res = conectionModes.get(direction);
         if (res == null) {
             return getDefaultConnectionMode();
         }
@@ -69,13 +69,13 @@ public abstract class AbstractClientConduit implements IClientConduit.WithDefaul
     }
 
     @Override
-    public void setBundle(@Nullable IConduitBundle tileConduitBundle) {
+    public void setBundle(@Nullable ConduitBundle tileConduitBundle) {
         bundle = tileConduitBundle;
     }
 
     @Override
     @Nonnull
-    public IConduitBundle getBundle() {
+    public ConduitBundle getBundle() {
         return NullHelper.notnull(bundle, "Logic error in conduit---no bundle set");
     }
 
@@ -87,8 +87,8 @@ public abstract class AbstractClientConduit implements IClientConduit.WithDefaul
     }
 
     @Override
-    public boolean containsConduitConnection(@Nonnull EnumFacing dir) {
-        return conduitConnections.contains(dir);
+    public boolean containsConduitConnection(@Nonnull EnumFacing direction) {
+        return conduitConnections.contains(direction);
     }
 
     @Override
@@ -113,8 +113,8 @@ public abstract class AbstractClientConduit implements IClientConduit.WithDefaul
     }
 
     @Override
-    public boolean containsExternalConnection(@Nonnull EnumFacing dir) {
-        return externalConnections.contains(dir);
+    public boolean containsExternalConnection(@Nonnull EnumFacing direction) {
+        return externalConnections.contains(direction);
     }
 
     @Override
@@ -123,21 +123,21 @@ public abstract class AbstractClientConduit implements IClientConduit.WithDefaul
     }
 
     @Override
-    public void readFromNBT(@Nonnull NBTTagCompound conduitBody) {
+    public void readFromNBT(@Nonnull NBTTagCompound data) {
         conduitConnections.clear();
-        int[] dirs = conduitBody.getIntArray("connections");
+        int[] dirs = data.getIntArray("connections");
         for (int i = 0; i < dirs.length; i++) {
             conduitConnections.add(EnumFacing.values()[dirs[i]]);
         }
 
         externalConnections.clear();
-        dirs = conduitBody.getIntArray("externalConnections");
+        dirs = data.getIntArray("externalConnections");
         for (int i = 0; i < dirs.length; i++) {
             externalConnections.add(EnumFacing.values()[dirs[i]]);
         }
 
         conectionModes.clear();
-        byte[] modes = conduitBody.getByteArray("conModes");
+        byte[] modes = data.getByteArray("conModes");
         if (modes.length == 6) {
             int i = 0;
             for (EnumFacing dir : EnumFacing.VALUES) {
@@ -189,7 +189,7 @@ public abstract class AbstractClientConduit implements IClientConduit.WithDefaul
 
     @Override
     @Nonnull
-    public Class<? extends IConduit> getCollidableType() {
+    public Class<? extends Conduit> getCollidableType() {
         return getBaseConduitType();
     }
 

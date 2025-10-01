@@ -11,8 +11,8 @@ import net.minecraft.util.ResourceLocation;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConduitDisplayMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.conduit.geom.Offset;
 import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
@@ -40,12 +40,12 @@ public class ItemRefinedStorageConduit extends AbstractItemConduit {
 
     @Override
     @Nonnull
-    public Class<? extends IConduit> getBaseConduitType() {
+    public Class<? extends Conduit> getBaseConduitType() {
         return IRefinedStorageConduit.class;
     }
 
     @Override
-    public IServerConduit createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
+    public ConduitServer createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
         return new RefinedStorageConduit();
     }
 

@@ -29,7 +29,7 @@ import com.enderio.core.common.util.NNList.Callback;
 
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.BlockEio;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.power.PowerHandlerUtil;
 import crazypants.enderio.base.render.IHaveTESR;
 import crazypants.enderio.base.render.IRenderMapper.IItemRenderMapper;
@@ -134,7 +134,7 @@ public class BlockGauge extends BlockEio<TileGauge>
             public void apply(@Nonnull EnumFacing face) {
                 BlockPos neighbor = pos.offset(face);
                 TileEntity tile = getAnyTileEntitySafe(world, neighbor);
-                if (!(tile instanceof TileCapBank) && !(tile instanceof IConduitBundle)) {
+                if (!(tile instanceof TileCapBank) && !(tile instanceof ConduitBundle)) {
                     IEnergyStorage eh = PowerHandlerUtil.getCapability(tile, face.getOpposite());
                     if (eh != null) {
                         sides.put(face, eh);

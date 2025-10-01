@@ -13,8 +13,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import crazypants.enderio.base.conduit.ConduitUtil.UnloadedBlockException;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.UnloadedBlockException;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.power.IPowerInterface;
 import crazypants.enderio.base.power.PowerHandlerUtil;
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
@@ -32,7 +32,7 @@ public class PowerConduitNetwork extends AbstractConduitNetwork<IPowerConduit, I
     }
 
     @Override
-    public void init(@Nonnull IConduitBundle tile, Collection<IPowerConduit> connections,
+    public void init(@Nonnull ConduitBundle tile, Collection<IPowerConduit> connections,
                      @Nonnull World world) throws UnloadedBlockException {
         super.init(tile, connections, world);
         powerManager = new NetworkPowerManager(this, world);
@@ -62,7 +62,7 @@ public class PowerConduitNetwork extends AbstractConduitNetwork<IPowerConduit, I
             if (dir != null) {
                 IPowerInterface pr = con.getExternalPowerReceptor(dir);
                 if (pr != null) {
-                    TileEntity te = con.getBundle().getEntity();
+                    TileEntity te = con.getBundle().getTileEntity();
                     BlockPos p = te.getPos().offset(dir);
                     powerReceptorAdded(con, dir, p);
                 }

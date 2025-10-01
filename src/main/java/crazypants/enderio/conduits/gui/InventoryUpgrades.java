@@ -10,7 +10,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import com.enderio.core.common.util.NNList;
 
-import crazypants.enderio.base.conduit.IConduit;
+import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.conduit.item.ItemFunctionUpgrade;
 import crazypants.enderio.base.filter.IFilter;
 import crazypants.enderio.base.filter.capability.IFilterHolder;
@@ -111,7 +111,7 @@ public class InventoryUpgrades implements IItemHandlerModifiable {
         }
     }
 
-    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack, IConduit con) {
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack, Conduit con) {
         if (stack.isEmpty()) {
             return false;
         }
@@ -126,14 +126,14 @@ public class InventoryUpgrades implements IItemHandlerModifiable {
         return false;
     }
 
-    private boolean isFilterUpgradeAccepted(@Nonnull ItemStack stack, IConduit con, boolean isInput) {
+    private boolean isFilterUpgradeAccepted(@Nonnull ItemStack stack, Conduit con, boolean isInput) {
         if (con instanceof IFilterHolder) {
             return ((IFilterHolder<?>) con).isFilterUpgradeAccepted(stack, isInput);
         }
         return false;
     }
 
-    private boolean isFunctionUpgradeAccepted(@Nonnull ItemStack stack, IConduit con) {
+    private boolean isFunctionUpgradeAccepted(@Nonnull ItemStack stack, Conduit con) {
         if (stack.getItem() instanceof ItemFunctionUpgrade && con instanceof IUpgradeHolder) {
             return ((IUpgradeHolder) con).isFunctionUpgradeAccepted(stack);
         }

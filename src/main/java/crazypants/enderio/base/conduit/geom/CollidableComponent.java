@@ -8,16 +8,16 @@ import net.minecraft.util.EnumFacing;
 import com.enderio.core.client.render.BoundingBox;
 import com.enderio.core.common.util.NullHelper;
 
-import crazypants.enderio.base.conduit.IConduit;
+import crazypants.enderio.base.conduit.Conduit;
 
 public class CollidableComponent {
 
-    public final @Nullable Class<? extends IConduit> conduitType;
+    public final @Nullable Class<? extends Conduit> conduitType;
     public final @Nonnull BoundingBox bound;
     private final @Nullable EnumFacing dir;
     public final @Nullable Object data;
 
-    public CollidableComponent(@Nullable Class<? extends IConduit> conduitType, @Nonnull BoundingBox bound,
+    public CollidableComponent(@Nullable Class<? extends Conduit> conduitType, @Nonnull BoundingBox bound,
                                @Nullable EnumFacing id, @Nullable Object data) {
         this.conduitType = conduitType;
         this.bound = bound;

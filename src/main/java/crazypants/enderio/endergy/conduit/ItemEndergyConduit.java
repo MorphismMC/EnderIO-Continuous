@@ -15,8 +15,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIO;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.lang.LangPower;
 import crazypants.enderio.conduits.conduit.AbstractItemConduit;
 import crazypants.enderio.conduits.conduit.power.IPowerConduit;
@@ -34,12 +34,12 @@ public class ItemEndergyConduit extends AbstractItemConduit {
     }
 
     @Override
-    public @Nonnull Class<? extends IConduit> getBaseConduitType() {
+    public @Nonnull Class<? extends Conduit> getBaseConduitType() {
         return IPowerConduit.class;
     }
 
     @Override
-    public IServerConduit createConduit(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
+    public ConduitServer createConduit(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
         return new PowerConduit(
                 IPowerConduitData.Registry.fromID(EndergyPowerConduitData.damage2id(stack.getItemDamage())));
     }

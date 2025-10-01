@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.machine.modes.IoMode;
 import crazypants.enderio.base.power.IPowerInterface;
 import crazypants.enderio.conduits.conduit.power.IPowerConduit;
@@ -24,8 +24,8 @@ public class EnergyReceptor {
         this.receptor = receptor;
         fromDir = dir;
         mode = cb.getIoMode(dir);
-        if (receptor.getProvider() instanceof IConduitBundle) {
-            conduit = ((IConduitBundle) receptor.getProvider()).getConduit(IPowerConduit.class);
+        if (receptor.getProvider() instanceof ConduitBundle) {
+            conduit = ((ConduitBundle) receptor.getProvider()).getConduit(IPowerConduit.class);
         } else {
             conduit = null;
         }
