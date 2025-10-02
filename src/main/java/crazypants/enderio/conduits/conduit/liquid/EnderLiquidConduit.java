@@ -57,7 +57,7 @@ import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.tool.ToolUtil;
 import crazypants.enderio.conduits.capability.CapabilityUpgradeHolder;
 import crazypants.enderio.conduits.capability.IUpgradeHolder;
-import crazypants.enderio.conduits.conduit.IEnderConduit;
+import crazypants.enderio.conduits.conduit.ConduitEnder;
 import crazypants.enderio.conduits.conduit.item.ItemConduitImpl;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
 import crazypants.enderio.conduits.conduit.power.PowerConduitImpl;
@@ -68,7 +68,7 @@ import crazypants.enderio.util.EnumReader;
 import crazypants.enderio.util.Prep;
 
 public class EnderLiquidConduit extends AbstractLiquidConduit
-                                implements IFilterHolder<IFluidFilter>, IUpgradeHolder, IEnderConduit {
+                                implements IFilterHolder<IFluidFilter>, IUpgradeHolder, ConduitEnder {
 
     public static final ConduitTexture ICON_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("blocks/liquid_conduit"), crazypants.enderio.conduits.render.ConduitTexture.arm(3));
@@ -661,17 +661,17 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     }
 
     @Override
-    public void setClientDirty() {
+    public void markDirty() {
         setClientStateDirty();
         collidablesDirty = true;
     }
 
     @Override
-    public void refreshConnection(@Nonnull EnumFacing dir) {
+    public void refreshConnection(@Nonnull EnumFacing direction) {
         if (network == null) {
             return;
         }
-        network.connectionChanged(this, dir);
+        network.connectionChanged(this, direction);
     }
 
     // -------------------------------

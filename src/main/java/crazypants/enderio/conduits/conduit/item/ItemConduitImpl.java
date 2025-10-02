@@ -463,13 +463,13 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
     }
 
     @Override
-    public void setClientDirty() {
+    public void markDirty() {
         setClientStateDirty();
         collidablesDirty = true;
     }
 
     @Override
-    public void refreshConnection(@Nonnull EnumFacing dir) {
+    public void refreshConnection(@Nonnull EnumFacing direction) {
         if (network == null) {
             return;
         }

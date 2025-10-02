@@ -11,9 +11,9 @@ import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.ConduitExtractor;
 import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.filter.item.IItemFilter;
-import crazypants.enderio.conduits.conduit.IEnderConduit;
+import crazypants.enderio.conduits.conduit.ConduitEnder;
 
-public interface ItemConduit extends ConduitExtractor, ConduitServer, ConduitClient, IEnderConduit {
+public interface ItemConduit extends ConduitExtractor, ConduitServer, ConduitClient, ConduitEnder {
 
     // Textures
     ConduitTexture getEnderIcon();

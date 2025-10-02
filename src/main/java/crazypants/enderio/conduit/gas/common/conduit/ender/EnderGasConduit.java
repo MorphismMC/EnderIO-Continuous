@@ -48,7 +48,7 @@ import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.tool.ToolUtil;
 import crazypants.enderio.conduits.capability.CapabilityUpgradeHolder;
 import crazypants.enderio.conduits.capability.IUpgradeHolder;
-import crazypants.enderio.conduits.conduit.IEnderConduit;
+import crazypants.enderio.conduits.conduit.ConduitEnder;
 import crazypants.enderio.conduits.conduit.item.ItemConduitImpl;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
 import crazypants.enderio.conduits.conduit.power.PowerConduitImpl;
@@ -71,7 +71,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 
 public class EnderGasConduit extends AbstractGasConduit
-                             implements IFilterHolder<IGasFilter>, IUpgradeHolder, IEnderConduit {
+                             implements IFilterHolder<IGasFilter>, IUpgradeHolder, ConduitEnder {
 
     public static final ConduitTexture ICON_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit", false), crazypants.enderio.conduits.render.ConduitTexture.arm(3));
@@ -651,17 +651,17 @@ public class EnderGasConduit extends AbstractGasConduit
     }
 
     @Override
-    public void setClientDirty() {
+    public void markDirty() {
         setClientStateDirty();
         collidablesDirty = true;
     }
 
     @Override
-    public void refreshConnection(@Nonnull EnumFacing dir) {
+    public void refreshConnection(@Nonnull EnumFacing direction) {
         if (network == null) {
             return;
         }
-        network.connectionChanged(this, dir);
+        network.connectionChanged(this, direction);
     }
 
     // -------------------------------
