@@ -28,8 +28,8 @@ import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.render.registry.TextureRegistry.TextureSupplier;
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduitImpl;
 import crazypants.enderio.conduits.render.BlockStateWrapperConduitBundle;
 import crazypants.enderio.conduits.render.ConduitTextureWrapper;
 import crazypants.enderio.conduit.gas.GasConduitsConstants;
@@ -196,7 +196,7 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
         if (component.isCore()) {
             return ICON_CORE_KEY;
         }
-        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data())) {
+        if (PowerConduitImpl.COLOR_CONTROLLER_ID.equals(component.data())) {
             return new ConduitTextureWrapper(IconUtil.instance.whiteTexture);
         }
         return gasTypeLocked ? ICON_KEY_LOCKED : ICON_KEY;
@@ -268,7 +268,7 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
 
         BoundingBox bb = ConduitGeometryUtil.getINSTANCE().createBoundsForConnectionController(keyDir, key.offset);
         CollidableComponent cc = new CollidableComponent(IGasConduit.class, bb, keyDir,
-                IPowerConduit.COLOR_CONTROLLER_ID);
+                PowerConduit.COLOR_CONTROLLER_ID);
 
         List<CollidableComponent> result = new ArrayList<>(baseCollidables);
         result.add(cc);

@@ -21,7 +21,7 @@ public class PowerConduitRenderer extends DefaultConduitRenderer {
 
     @Override
     public boolean isRendererForConduit(@Nonnull Conduit conduit) {
-        return conduit instanceof IPowerConduit;
+        return conduit instanceof PowerConduit;
     }
 
     @Override

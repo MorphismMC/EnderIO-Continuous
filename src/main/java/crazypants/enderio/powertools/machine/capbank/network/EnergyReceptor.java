@@ -8,7 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.machine.modes.IoMode;
 import crazypants.enderio.base.power.IPowerInterface;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduit;
 import crazypants.enderio.powertools.machine.capbank.TileCapBank;
 
 public class EnergyReceptor {
@@ -18,21 +18,21 @@ public class EnergyReceptor {
     private final @Nonnull IoMode mode;
     private final BlockPos location;
 
-    private final IPowerConduit conduit;
+    private final PowerConduit conduit;
 
     public EnergyReceptor(@Nonnull TileCapBank cb, @Nonnull IPowerInterface receptor, @Nonnull EnumFacing dir) {
         this.receptor = receptor;
         fromDir = dir;
         mode = cb.getIoMode(dir);
         if (receptor.getProvider() instanceof ConduitBundle) {
-            conduit = ((ConduitBundle) receptor.getProvider()).getConduit(IPowerConduit.class);
+            conduit = ((ConduitBundle) receptor.getProvider()).getConduit(PowerConduit.class);
         } else {
             conduit = null;
         }
         location = cb.getLocation();
     }
 
-    public IPowerConduit getConduit() {
+    public PowerConduit getConduit() {
         return conduit;
     }
 

@@ -13,7 +13,7 @@ import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.gui.RedstoneModeButton;
 import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.network.PacketHandler;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduit;
 import crazypants.enderio.conduits.init.ConduitObject;
 import crazypants.enderio.conduits.lang.Lang;
 import crazypants.enderio.conduits.network.PacketExtractMode;
@@ -24,14 +24,14 @@ public class PowerSettings extends BaseSettingsPanel {
 
     private static final int ID_COLOR_BUTTON = crazypants.enderio.conduits.gui.GuiExternalConnection.nextButtonId();
 
-    private IPowerConduit conduit;
+    private PowerConduit conduit;
     private RedstoneModeButton<?> rsB;
     private ColorButton colorB;
 
     public PowerSettings(@Nonnull final GuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_POWER, ConduitObject.item_power_conduit.getUnlocalisedName(), gui, con,
                 "in_out_settings");
-        conduit = (IPowerConduit) con;
+        conduit = (PowerConduit) con;
 
         int x = rightColumn;
         int y = customTop;

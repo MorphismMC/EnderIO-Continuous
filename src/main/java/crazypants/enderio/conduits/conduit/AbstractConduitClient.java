@@ -31,6 +31,7 @@ import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.conduit.geom.ConduitGeometryUtil;
 import crazypants.enderio.conduits.render.BlockStateWrapperConduitBundle;
 
+// TODO: Does we need this class? If not needed just deleted it.
 public abstract class AbstractConduitClient implements ConduitClient.WithDefaultRendering {
 
     public static final float TRANSMISSION_SCALE = 0.3f;

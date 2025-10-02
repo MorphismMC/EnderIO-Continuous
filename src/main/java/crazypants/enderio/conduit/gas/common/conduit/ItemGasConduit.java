@@ -25,7 +25,7 @@ import crazypants.enderio.base.conduit.geom.Offset;
 import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.gui.IconEIO;
-import crazypants.enderio.conduits.conduit.AbstractItemConduit;
+import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 import crazypants.enderio.conduits.render.ConduitBundleRenderManager;
 import crazypants.enderio.conduit.gas.common.conduit.advanced.AdvancedGasConduit;
@@ -36,7 +36,7 @@ import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduit;
 import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduitRenderer;
 import crazypants.enderio.conduit.gas.common.config.GasConduitConfig;
 
-public class ItemGasConduit extends AbstractItemConduit implements IAdvancedTooltipProvider {
+public class ItemGasConduit extends AbstractConduitItem implements IAdvancedTooltipProvider {
 
     public static ItemGasConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemGasConduit(modObject);

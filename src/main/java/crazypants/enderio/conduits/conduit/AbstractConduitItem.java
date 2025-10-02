@@ -36,18 +36,18 @@ import crazypants.enderio.base.render.IHaveRenderers;
 import crazypants.enderio.conduits.lang.Lang;
 import crazypants.enderio.util.ClientUtil;
 
-public abstract class AbstractItemConduit extends Item implements ConduitItem, IHaveRenderers {
+public abstract class AbstractConduitItem extends Item implements ConduitItem, IHaveRenderers {
 
     protected final ItemConduitSubtype[] subtypes;
 
-    protected AbstractItemConduit(@Nonnull IModObject modObj, ItemConduitSubtype... subtypes) {
+    protected AbstractConduitItem(@Nonnull IModObject modObj, ItemConduitSubtype... subtypes) {
         this(modObj.getUnlocalisedName(), subtypes);
     }
 
     /**
      * Constructor for addons that don't use the modObject system
      */
-    protected AbstractItemConduit(@Nonnull String name, ItemConduitSubtype... subtypes) {
+    protected AbstractConduitItem(@Nonnull String name, ItemConduitSubtype... subtypes) {
         this.subtypes = subtypes;
         setCreativeTab(EnderIOTab.tabEnderIOConduits);
         setTranslationKey(name);

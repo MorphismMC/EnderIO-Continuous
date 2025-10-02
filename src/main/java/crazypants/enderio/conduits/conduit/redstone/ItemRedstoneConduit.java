@@ -19,11 +19,11 @@ import crazypants.enderio.base.conduit.geom.Offset;
 import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.gui.IconEIO;
-import crazypants.enderio.conduits.conduit.AbstractItemConduit;
+import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 import crazypants.enderio.conduits.render.ConduitBundleRenderManager;
 
-public class ItemRedstoneConduit extends AbstractItemConduit {
+public class ItemRedstoneConduit extends AbstractConduitItem {
 
     public static ItemRedstoneConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemRedstoneConduit(modObject);

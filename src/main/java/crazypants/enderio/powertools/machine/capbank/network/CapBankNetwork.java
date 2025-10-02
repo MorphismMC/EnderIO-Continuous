@@ -31,7 +31,7 @@ import crazypants.enderio.base.power.IPowerInterface;
 import crazypants.enderio.base.power.IPowerStorage;
 import crazypants.enderio.base.power.PerTickIntAverageCalculator;
 import crazypants.enderio.base.power.PowerHandlerUtil;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduit;
 import crazypants.enderio.powertools.machine.capbank.CapBankType;
 import crazypants.enderio.powertools.machine.capbank.TileCapBank;
 import crazypants.enderio.powertools.machine.capbank.packet.PacketNetworkEnergyResponse;
@@ -243,7 +243,7 @@ public class CapBankNetwork implements ICapBankNetwork, ServerTickHandler.IServe
     private int sendPowerTo(EnergyReceptor next, int available) {
         // Can only send to power conduits if we are in push mode or the conduit is in pull mode
         // With default setting interaction between conduits and Cap Banks is handled by NetworkPowerManager
-        IPowerConduit con = next.getConduit();
+        PowerConduit con = next.getConduit();
         if (con != null && next.getMode() == IoMode.NONE &&
                 con.getConnectionMode(next.getDir().getOpposite()) == ConnectionMode.IN_OUT) {
             return 0;

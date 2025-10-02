@@ -24,11 +24,11 @@ import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.lang.LangPower;
-import crazypants.enderio.conduits.conduit.AbstractItemConduit;
+import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 import crazypants.enderio.conduits.render.ConduitBundleRenderManager;
 
-public class ItemPowerConduit extends AbstractItemConduit {
+public class ItemPowerConduit extends AbstractConduitItem {
 
     public static ItemPowerConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
         ItemPowerConduit result = new ItemPowerConduit(modObject);
@@ -45,7 +45,7 @@ public class ItemPowerConduit extends AbstractItemConduit {
                 .setClass(getBaseConduitType())
                 .setOffsets(Offset.DOWN, Offset.DOWN, Offset.SOUTH, Offset.DOWN).build()
                 .setUUID(new ResourceLocation(EnderIO.DOMAIN, "power_conduit"))
-                .setClass(PowerConduit.class).build().finish());
+                .setClass(PowerConduitImpl.class).build().finish());
         ConduitDisplayMode.registerDisplayMode(new ConduitDisplayMode(getBaseConduitType(),
                 IconEIO.WRENCH_OVERLAY_POWER, IconEIO.WRENCH_OVERLAY_POWER_OFF));
     }
@@ -59,12 +59,12 @@ public class ItemPowerConduit extends AbstractItemConduit {
 
     @Override
     public @Nonnull Class<? extends Conduit> getBaseConduitType() {
-        return IPowerConduit.class;
+        return PowerConduit.class;
     }
 
     @Override
     public ConduitServer createConduit(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
-        return new PowerConduit(IPowerConduitData.Registry.fromID(stack.getItemDamage()));
+        return new PowerConduitImpl(PowerConduitData.Registry.fromID(stack.getItemDamage()));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ItemPowerConduit extends AbstractItemConduit {
                                @Nonnull ITooltipFlag flag) {
         String prefix = EnderIO.lang.localize("power.max_output") + " ";
         super.addInformation(itemStack, world, list, flag);
-        int cap = PowerConduit.getMaxEnergyIO(IPowerConduitData.Registry.fromID(itemStack.getItemDamage()));
+        int cap = PowerConduitImpl.getMaxEnergyIO(PowerConduitData.Registry.fromID(itemStack.getItemDamage()));
         list.add(prefix + LangPower.RFt(cap));
     }
 

@@ -20,7 +20,7 @@ public class ItemConduitRenderer extends DefaultConduitRenderer {
 
     @Override
     public boolean isRendererForConduit(@Nonnull Conduit conduit) {
-        if (conduit instanceof IItemConduit) {
+        if (conduit instanceof ItemConduit) {
             return true;
         }
         return false;
@@ -33,7 +33,7 @@ public class ItemConduitRenderer extends DefaultConduitRenderer {
                                    @Nonnull List<BakedQuad> quads) {
         super.addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);
 
-        IItemConduit pc = (IItemConduit) conduit;
+        ItemConduit pc = (ItemConduit) conduit;
         EnumFacing dir = component.direction();
         ConduitInOutRenderer.renderIO(bundle, conduit, component, layer, quads, pc.getInputColor(dir),
                 pc.getOutputColor(dir));

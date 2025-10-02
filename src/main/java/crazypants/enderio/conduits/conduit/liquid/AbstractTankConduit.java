@@ -59,7 +59,7 @@ public abstract class AbstractTankConduit extends AbstractLiquidConduit {
                         }
                         // Attempt to join networks
                         BlockPos pos = getBundle().getLocation().offset(faceHit);
-                        ILiquidConduit liquidConduit = ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(), pos, ILiquidConduit.class);
+                        LiquidConduit liquidConduit = ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(), pos, LiquidConduit.class);
                         if (!(liquidConduit instanceof AbstractTankConduit) || !canJoinNeighbour(liquidConduit)) {
                             return false;
                         }
@@ -150,7 +150,7 @@ public abstract class AbstractTankConduit extends AbstractLiquidConduit {
         }
     }
 
-    protected abstract boolean canJoinNeighbour(ILiquidConduit n);
+    protected abstract boolean canJoinNeighbour(LiquidConduit n);
 
     public abstract AbstractTankConduitNetwork<? extends AbstractTankConduit> getTankNetwork();
 

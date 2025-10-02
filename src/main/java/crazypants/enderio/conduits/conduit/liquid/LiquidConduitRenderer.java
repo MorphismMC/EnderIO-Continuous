@@ -56,7 +56,7 @@ public class LiquidConduitRenderer extends DefaultConduitRenderer implements IRe
 
     @Override
     public boolean isRendererForConduit(@Nonnull Conduit conduit) {
-        if (conduit instanceof LiquidConduit) {
+        if (conduit instanceof LiquidConduitImpl) {
             return true;
         }
         return false;
@@ -80,7 +80,7 @@ public class LiquidConduitRenderer extends DefaultConduitRenderer implements IRe
                                         @Nonnull ConduitClient.WithDefaultRendering conduit,
                                         @Nonnull CollidableComponent component, float brightness) {
         if (component.isDirectional()) {
-            LiquidConduit lc = (LiquidConduit) conduit;
+            LiquidConduitImpl lc = (LiquidConduitImpl) conduit;
             FluidStack fluid = lc.getFluidType();
             if (fluid != null) {
                 renderFluidOutline(component, fluid);
@@ -93,7 +93,7 @@ public class LiquidConduitRenderer extends DefaultConduitRenderer implements IRe
                                     @Nonnull ConduitBundle bundle,
                                     @Nonnull ConduitClient.WithDefaultRendering conduit, double x, double y, double z,
                                     float partialTick, float worldLight) {
-        calculateRatios((LiquidConduit) conduit);
+        calculateRatios((LiquidConduitImpl) conduit);
         super.renderDynamicEntity(conduitBundleRenderer, bundle, conduit, x, y, z, partialTick, worldLight);
     }
 
@@ -101,7 +101,7 @@ public class LiquidConduitRenderer extends DefaultConduitRenderer implements IRe
     protected void renderTransmissionDynamic(@Nonnull Conduit conduit, @Nonnull ConduitTexture tex,
                                              @Nullable Vector4f color,
                                              @Nonnull CollidableComponent component, float selfIllum) {
-        final float filledRatio = ((LiquidConduit) conduit).getTank().getFilledRatio();
+        final float filledRatio = ((LiquidConduitImpl) conduit).getTank().getFilledRatio();
         if (filledRatio <= 0) {
             return;
         }
@@ -258,17 +258,17 @@ public class LiquidConduitRenderer extends DefaultConduitRenderer implements IRe
         setupVertices(bound.translate(translation));
     }
 
-    private void calculateRatios(LiquidConduit conduit) {
+    private void calculateRatios(LiquidConduitImpl conduit) {
         ConduitTank tank = conduit.getTank();
         int totalAmount = tank.getFluidAmount();
 
         int upCapacity = 0;
         if (conduit.containsConduitConnection(EnumFacing.UP) || conduit.containsExternalConnection(EnumFacing.UP)) {
-            upCapacity = LiquidConduit.VOLUME_PER_CONNECTION;
+            upCapacity = LiquidConduitImpl.VOLUME_PER_CONNECTION;
         }
         int downCapacity = 0;
         if (conduit.containsConduitConnection(EnumFacing.DOWN) || conduit.containsExternalConnection(EnumFacing.DOWN)) {
-            downCapacity = LiquidConduit.VOLUME_PER_CONNECTION;
+            downCapacity = LiquidConduitImpl.VOLUME_PER_CONNECTION;
         }
 
         int flatCapacity = tank.getCapacity() - upCapacity - downCapacity;

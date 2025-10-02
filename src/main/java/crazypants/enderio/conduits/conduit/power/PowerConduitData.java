@@ -15,12 +15,12 @@ import com.enderio.core.common.util.NullHelper;
 import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 
-public interface IPowerConduitData {
+public interface PowerConduitData {
 
     public static class Registry {
 
-        private static final @Nonnull List<IPowerConduitData> data = new ArrayList<>();
-        private static final @Nonnull IPowerConduitData fallback;
+        private static final @Nonnull List<PowerConduitData> data = new ArrayList<>();
+        private static final @Nonnull PowerConduitData fallback;
 
         static {
             register(fallback = new BasePowerConduitData(0));
@@ -28,11 +28,11 @@ public interface IPowerConduitData {
             register(new BasePowerConduitData(2));
         }
 
-        public static @Nonnull IPowerConduitData fromID(int id) {
+        public static @Nonnull PowerConduitData fromID(int id) {
             return NullHelper.first(data.get(MathHelper.clamp(id, 0, data.size() - 1)), fallback);
         }
 
-        public static void register(@Nonnull IPowerConduitData pcd) {
+        public static void register(@Nonnull PowerConduitData pcd) {
             while (pcd.getID() >= data.size()) {
                 data.add(null);
             }

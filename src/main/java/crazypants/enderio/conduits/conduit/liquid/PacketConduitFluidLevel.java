@@ -11,13 +11,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import crazypants.enderio.conduits.network.AbstractConduitPacket;
 import io.netty.buffer.ByteBuf;
 
-public class PacketConduitFluidLevel extends AbstractConduitPacket<ILiquidConduit> {
+public class PacketConduitFluidLevel extends AbstractConduitPacket<LiquidConduit> {
 
     public NBTTagCompound tc;
 
     public PacketConduitFluidLevel() {}
 
-    public PacketConduitFluidLevel(@Nonnull ILiquidConduit conduit) {
+    public PacketConduitFluidLevel(@Nonnull LiquidConduit conduit) {
         super(conduit);
         tc = new NBTTagCompound();
         conduit.writeToNBT(tc);
@@ -40,7 +40,7 @@ public class PacketConduitFluidLevel extends AbstractConduitPacket<ILiquidCondui
         @Override
         public IMessage onMessage(PacketConduitFluidLevel message, MessageContext ctx) {
             final NBTTagCompound nbt = message.tc;
-            final ILiquidConduit conduit = message.getConduit(ctx);
+            final LiquidConduit conduit = message.getConduit(ctx);
             if (nbt != null && conduit != null) {
                 conduit.readFromNBT(nbt);
             }

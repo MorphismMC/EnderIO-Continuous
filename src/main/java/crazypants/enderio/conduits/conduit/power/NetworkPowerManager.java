@@ -41,7 +41,7 @@ public class NetworkPowerManager {
 
     private boolean receptorsDirty = true;
 
-    private final @Nonnull Map<IPowerConduit, PowerTracker> powerTrackers = new HashMap<IPowerConduit, PowerTracker>();
+    private final @Nonnull Map<PowerConduit, PowerTracker> powerTrackers = new HashMap<PowerConduit, PowerTracker>();
 
     private final @Nonnull PowerTracker networkPowerTracker = new PowerTracker();
 
@@ -52,7 +52,7 @@ public class NetworkPowerManager {
         maxEnergyStored = 64;
     }
 
-    public @Nullable PowerTracker getTracker(@Nonnull IPowerConduit conduit) {
+    public @Nullable PowerTracker getTracker(@Nonnull PowerConduit conduit) {
         return powerTrackers.get(conduit);
     }
 
@@ -215,7 +215,7 @@ public class NetworkPowerManager {
         if (!ConduitConfig.detailedTracking.get()) {
             return;
         }
-        for (IPowerConduit con : network.getConduits()) {
+        for (PowerConduit con : network.getConduits()) {
             if (con.hasExternalConnections()) {
                 PowerTracker tracker = getOrCreateTracker(con);
                 tracker.tickStart(con.getEnergyStored());
@@ -223,7 +223,7 @@ public class NetworkPowerManager {
         }
     }
 
-    private void trackerSend(@Nonnull IPowerConduit con, int sent, boolean fromBank) {
+    private void trackerSend(@Nonnull PowerConduit con, int sent, boolean fromBank) {
         if (!fromBank) {
             networkPowerTracker.powerSent(sent);
         }
@@ -233,7 +233,7 @@ public class NetworkPowerManager {
         getOrCreateTracker(con).powerSent(sent);
     }
 
-    private void trackerRecieve(@Nonnull IPowerConduit con, int recieved, boolean fromBank) {
+    private void trackerRecieve(@Nonnull PowerConduit con, int recieved, boolean fromBank) {
         if (!fromBank) {
             networkPowerTracker.powerRecieved(recieved);
         }
@@ -247,7 +247,7 @@ public class NetworkPowerManager {
         if (!ConduitConfig.detailedTracking.get()) {
             return;
         }
-        for (IPowerConduit con : network.getConduits()) {
+        for (PowerConduit con : network.getConduits()) {
             if (con.hasExternalConnections()) {
                 PowerTracker tracker = getOrCreateTracker(con);
                 tracker.tickEnd(con.getEnergyStored());
@@ -255,7 +255,7 @@ public class NetworkPowerManager {
         }
     }
 
-    private PowerTracker getOrCreateTracker(@Nonnull IPowerConduit con) {
+    private PowerTracker getOrCreateTracker(@Nonnull PowerConduit con) {
         PowerTracker result = powerTrackers.get(con);
         if (result == null) {
             result = new PowerTracker();
@@ -266,7 +266,7 @@ public class NetworkPowerManager {
 
     private void distributeStorageToConduits() {
         if (maxEnergyStored <= 0 || energyStored <= 0) {
-            for (IPowerConduit con : network.getConduits()) {
+            for (PowerConduit con : network.getConduits()) {
                 con.setEnergyStored(0);
             }
             return;
@@ -276,7 +276,7 @@ public class NetworkPowerManager {
         float filledRatio = (float) energyStored / maxEnergyStored;
         long energyLeft = energyStored;
 
-        for (IPowerConduit con : network.getConduits()) {
+        for (PowerConduit con : network.getConduits()) {
             if (energyLeft > 0) {
                 // NB: use ceil() to ensure we don't throw away any energy due to
                 // rounding errors
@@ -294,7 +294,7 @@ public class NetworkPowerManager {
     private void updateNetworkStorage() {
         maxEnergyStored = 0;
         energyStored = 0;
-        for (IPowerConduit con : network.getConduits()) {
+        for (PowerConduit con : network.getConduits()) {
             maxEnergyStored += con.getMaxEnergyStored();
             energyStored += con.getEnergyStored();
         }
@@ -501,11 +501,11 @@ public class NetworkPowerManager {
         final int canExtract;
         final int canFill;
         int toBalance;
-        final @Nonnull IPowerConduit emmiter;
+        final @Nonnull PowerConduit emmiter;
         final @Nonnull EnumFacing direction;
 
         private CapBankSupplyEntry(@Nonnull IPowerStorage capBank, int available, int canFill,
-                                   @Nonnull IPowerConduit emmiter, @Nonnull EnumFacing direction) {
+                                   @Nonnull PowerConduit emmiter, @Nonnull EnumFacing direction) {
             this.capBank = capBank;
             this.canExtract = available;
             this.canFill = canFill;

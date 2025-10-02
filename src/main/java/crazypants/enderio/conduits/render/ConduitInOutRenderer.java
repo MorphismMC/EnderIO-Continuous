@@ -31,7 +31,7 @@ import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.render.registry.TextureRegistry.TextureSupplier;
 import crazypants.enderio.conduits.EnderIOConduits;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduit;
 import crazypants.enderio.conduits.conduit.redstone.IRedstoneConduit;
 
 @EventBusSubscriber(modid = EnderIOConduits.MODID, value = Side.CLIENT)
@@ -107,7 +107,7 @@ public class ConduitInOutRenderer {
     private static void addColorBand(@Nonnull ConduitClient conduit, @Nonnull CollidableComponent component,
                                      @Nonnull List<BakedQuad> quads,
                                      @Nonnull EnumFacing dir, @Nonnull ConnectionMode mode) {
-        if (IPowerConduit.COLOR_CONTROLLER_ID.equals(component.data()) && (conduit instanceof ConduitExtractor)) {
+        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data()) && (conduit instanceof ConduitExtractor)) {
             ConduitExtractor pc = (ConduitExtractor) conduit;
             final RedstoneControlMode extractionRedstoneMode = pc.getExtractionRedstoneMode(dir);
             if (extractionRedstoneMode != RedstoneControlMode.IGNORE &&

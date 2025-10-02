@@ -13,10 +13,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import crazypants.enderio.base.filter.fluid.FluidFilter;
 import crazypants.enderio.base.filter.fluid.IFluidFilter;
 import crazypants.enderio.conduits.conduit.liquid.EnderLiquidConduit;
-import crazypants.enderio.conduits.conduit.liquid.ILiquidConduit;
+import crazypants.enderio.conduits.conduit.liquid.LiquidConduit;
 import io.netty.buffer.ByteBuf;
 
-public class PacketFluidFilter extends AbstractConduitPacket.Sided<ILiquidConduit> {
+public class PacketFluidFilter extends AbstractConduitPacket.Sided<LiquidConduit> {
 
     private boolean isInput;
     private @Nonnull IFluidFilter filter = new FluidFilter();
@@ -53,7 +53,7 @@ public class PacketFluidFilter extends AbstractConduitPacket.Sided<ILiquidCondui
 
         @Override
         public IMessage onMessage(PacketFluidFilter message, MessageContext ctx) {
-            ILiquidConduit conduit = message.getConduit(ctx);
+            LiquidConduit conduit = message.getConduit(ctx);
             if (!(conduit instanceof EnderLiquidConduit)) {
                 return null;
             }

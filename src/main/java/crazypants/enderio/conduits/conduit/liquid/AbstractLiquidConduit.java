@@ -37,7 +37,7 @@ import crazypants.enderio.conduits.conduit.AbstractConduit;
 import crazypants.enderio.conduits.gui.LiquidSettings;
 import crazypants.enderio.util.EnumReader;
 
-public abstract class AbstractLiquidConduit extends AbstractConduit implements ILiquidConduit {
+public abstract class AbstractLiquidConduit extends AbstractConduit implements LiquidConduit {
 
     protected final EnumMap<EnumFacing, RedstoneControlMode> extractionModes = new EnumMap<EnumFacing, RedstoneControlMode>(
             EnumFacing.class);
@@ -63,7 +63,7 @@ public abstract class AbstractLiquidConduit extends AbstractConduit implements I
     @Override
     @Nonnull
     public Class<? extends Conduit> getBaseConduitType() {
-        return ILiquidConduit.class;
+        return LiquidConduit.class;
     }
 
     @Override

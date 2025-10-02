@@ -58,9 +58,9 @@ import crazypants.enderio.base.tool.ToolUtil;
 import crazypants.enderio.conduits.capability.CapabilityUpgradeHolder;
 import crazypants.enderio.conduits.capability.IUpgradeHolder;
 import crazypants.enderio.conduits.conduit.IEnderConduit;
-import crazypants.enderio.conduits.conduit.item.ItemConduit;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
+import crazypants.enderio.conduits.conduit.item.ItemConduitImpl;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduitImpl;
 import crazypants.enderio.conduits.config.ConduitConfig;
 import crazypants.enderio.conduits.render.BlockStateWrapperConduitBundle;
 import crazypants.enderio.conduits.render.ConduitTextureWrapper;
@@ -242,7 +242,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
         if (component.isCore()) {
             return ICON_CORE_KEY;
         }
-        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data())) {
+        if (PowerConduitImpl.COLOR_CONTROLLER_ID.equals(component.data())) {
             return new ConduitTextureWrapper(IconUtil.instance.whiteTexture);
         }
         return ICON_KEY;
@@ -250,7 +250,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
 
     @Override
     public @Nonnull ConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
-        return ItemConduit.ICON_KEY_ENDER;
+        return ItemConduitImpl.ICON_KEY_ENDER;
     }
 
     @Override
@@ -780,8 +780,8 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
         }
 
         BoundingBox bb = ConduitGeometryUtil.getINSTANCE().createBoundsForConnectionController(keydir, key.offset);
-        CollidableComponent cc = new CollidableComponent(ILiquidConduit.class, bb, keydir,
-                IPowerConduit.COLOR_CONTROLLER_ID);
+        CollidableComponent cc = new CollidableComponent(LiquidConduit.class, bb, keydir,
+                PowerConduit.COLOR_CONTROLLER_ID);
 
         List<CollidableComponent> result = new ArrayList<CollidableComponent>();
         result.addAll(baseCollidables);

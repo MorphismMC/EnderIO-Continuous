@@ -19,7 +19,7 @@ import crazypants.enderio.base.power.IPowerInterface;
 import crazypants.enderio.base.power.PowerHandlerUtil;
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
 
-public class PowerConduitNetwork extends AbstractConduitNetwork<IPowerConduit, IPowerConduit> {
+public class PowerConduitNetwork extends AbstractConduitNetwork<PowerConduit, PowerConduit> {
 
     // ----------------------------------------------------------------------
 
@@ -28,11 +28,11 @@ public class PowerConduitNetwork extends AbstractConduitNetwork<IPowerConduit, I
     private final @Nonnull Set<ReceptorEntry> powerReceptors = new HashSet<ReceptorEntry>();
 
     public PowerConduitNetwork() {
-        super(IPowerConduit.class, IPowerConduit.class);
+        super(PowerConduit.class, PowerConduit.class);
     }
 
     @Override
-    public void init(@Nonnull ConduitBundle bundle, Collection<IPowerConduit> connections,
+    public void init(@Nonnull ConduitBundle bundle, Collection<PowerConduit> connections,
                      @Nonnull World world) throws UnloadedBlockException {
         super.init(bundle, connections, world);
         powerManager = new NetworkPowerManager(this, world);
@@ -41,7 +41,7 @@ public class PowerConduitNetwork extends AbstractConduitNetwork<IPowerConduit, I
 
     @Override
     public void destroyNetwork() {
-        for (IPowerConduit con : getConduits()) {
+        for (PowerConduit con : getConduits()) {
             con.setActive(false);
         }
         if (powerManager != null) {
@@ -55,7 +55,7 @@ public class PowerConduitNetwork extends AbstractConduitNetwork<IPowerConduit, I
     }
 
     @Override
-    public void addConduit(@Nonnull IPowerConduit con) {
+    public void addConduit(@Nonnull PowerConduit con) {
         super.addConduit(con);
         Set<EnumFacing> externalDirs = con.getExternalConnections();
         for (EnumFacing dir : externalDirs) {
@@ -70,7 +70,7 @@ public class PowerConduitNetwork extends AbstractConduitNetwork<IPowerConduit, I
         }
     }
 
-    public void powerReceptorAdded(@Nonnull IPowerConduit powerConduit, @Nonnull EnumFacing direction,
+    public void powerReceptorAdded(@Nonnull PowerConduit powerConduit, @Nonnull EnumFacing direction,
                                    @Nonnull BlockPos pos) {
         powerReceptors.add(new ReceptorEntry(pos, powerConduit, direction));
         if (powerManager != null) {
@@ -78,7 +78,7 @@ public class PowerConduitNetwork extends AbstractConduitNetwork<IPowerConduit, I
         }
     }
 
-    public void powerReceptorRemoved(@Nonnull IPowerConduit powerConduit, @Nonnull EnumFacing direction,
+    public void powerReceptorRemoved(@Nonnull PowerConduit powerConduit, @Nonnull EnumFacing direction,
                                      @Nonnull BlockPos pos) {
         powerReceptors.remove(new ReceptorEntry(pos, powerConduit, direction));
         if (powerManager != null) {
@@ -97,11 +97,11 @@ public class PowerConduitNetwork extends AbstractConduitNetwork<IPowerConduit, I
 
     public static class ReceptorEntry {
 
-        final @Nonnull IPowerConduit emmiter;
+        final @Nonnull PowerConduit emmiter;
         final @Nonnull BlockPos pos;
         final @Nonnull EnumFacing direction;
 
-        public ReceptorEntry(@Nonnull BlockPos pos, @Nonnull IPowerConduit emmiter, @Nonnull EnumFacing direction) {
+        public ReceptorEntry(@Nonnull BlockPos pos, @Nonnull PowerConduit emmiter, @Nonnull EnumFacing direction) {
             this.pos = pos;
             this.emmiter = emmiter;
             this.direction = direction;

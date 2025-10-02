@@ -29,7 +29,7 @@ import crazypants.enderio.base.init.ModObject;
 import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.network.PacketHandler;
 import crazypants.enderio.conduits.conduit.liquid.EnderLiquidConduit;
-import crazypants.enderio.conduits.conduit.liquid.ILiquidConduit;
+import crazypants.enderio.conduits.conduit.liquid.LiquidConduit;
 import crazypants.enderio.conduits.init.ConduitObject;
 import crazypants.enderio.conduits.lang.Lang;
 import crazypants.enderio.conduits.network.PacketEnderLiquidConduit;
@@ -65,13 +65,13 @@ public class LiquidSettings extends BaseSettingsPanel {
     private int priLeft = 46;
     private int priWidth = 32;
 
-    private final @Nonnull ILiquidConduit conduit;
+    private final @Nonnull LiquidConduit conduit;
 
     public LiquidSettings(@Nonnull final GuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_FLUID, ConduitObject.item_liquid_conduit.getUnlocalisedName(), gui, con,
                 "in_out_settings");
 
-        conduit = (ILiquidConduit) con;
+        conduit = (LiquidConduit) con;
         if (con instanceof EnderLiquidConduit) {
             isEnder = true;
             eCon = (EnderLiquidConduit) con;

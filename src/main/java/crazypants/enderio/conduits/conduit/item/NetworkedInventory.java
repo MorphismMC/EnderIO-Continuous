@@ -28,7 +28,7 @@ public class NetworkedInventory {
     private static final boolean SIMULATE = true;
     private static final boolean EXECUTE = false;
 
-    private final @Nonnull IItemConduit con;
+    private final @Nonnull ItemConduit con;
     private final @Nonnull EnumFacing conDir;
     private final @Nonnull BlockPos location;
     private final @Nonnull EnumFacing inventorySide;
@@ -43,7 +43,7 @@ public class NetworkedInventory {
     private final @Nonnull World world;
     private final @Nonnull ItemConduitNetwork network;
 
-    NetworkedInventory(@Nonnull ItemConduitNetwork network, @Nonnull IItemConduit con, @Nonnull EnumFacing conDir,
+    NetworkedInventory(@Nonnull ItemConduitNetwork network, @Nonnull ItemConduit con, @Nonnull EnumFacing conDir,
                        @Nonnull IItemHandler inv,
                        @Nonnull BlockPos location) {
         this.network = network;
@@ -58,7 +58,7 @@ public class NetworkedInventory {
         return location;
     }
 
-    public @Nonnull IItemConduit getCon() {
+    public @Nonnull ItemConduit getCon() {
         return con;
     }
 
@@ -70,7 +70,7 @@ public class NetworkedInventory {
         return sendPriority;
     }
 
-    public boolean hasTarget(@Nonnull IItemConduit conduit, @Nonnull EnumFacing dir) {
+    public boolean hasTarget(@Nonnull ItemConduit conduit, @Nonnull EnumFacing dir) {
         for (Target t : sendPriority) {
             if (t.inv.getCon() == conduit && t.inv.getConDir() == dir) {
                 return true;
@@ -339,7 +339,7 @@ public class NetworkedInventory {
 
         ArrayList<BlockPos> nextSteps = new ArrayList<BlockPos>();
         for (BlockPos pos : steps) {
-            IItemConduit con1 = network.getConMap().get(pos);
+            ItemConduit con1 = network.getConMap().get(pos);
             if (con1 != null) {
                 for (EnumFacing dir : con1.getExternalConnections()) {
                     if (dir != null) {
@@ -370,7 +370,7 @@ public class NetworkedInventory {
         calculateDistances(targets, visited, nextSteps, distance + 1);
     }
 
-    private Target getTarget(@Nonnull List<Target> targets, @Nonnull IItemConduit con1, @Nonnull EnumFacing dir) {
+    private Target getTarget(@Nonnull List<Target> targets, @Nonnull ItemConduit con1, @Nonnull EnumFacing dir) {
         for (Target target : targets) {
             if (target != null && target.inv != null) {
                 if (target.inv.getConDir() == dir &&

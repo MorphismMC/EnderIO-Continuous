@@ -19,11 +19,11 @@ import crazypants.enderio.base.conduit.geom.Offset;
 import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.gui.IconEIO;
-import crazypants.enderio.conduits.conduit.AbstractItemConduit;
+import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 import crazypants.enderio.conduits.render.ConduitBundleRenderManager;
 
-public class ItemItemConduit extends AbstractItemConduit {
+public class ItemItemConduit extends AbstractConduitItem {
 
     public static ItemItemConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemItemConduit(modObject);
@@ -36,7 +36,7 @@ public class ItemItemConduit extends AbstractItemConduit {
                 .setClass(getBaseConduitType())
                 .setOffsets(Offset.EAST, Offset.SOUTH, Offset.EAST, Offset.EAST).build()
                 .setUUID(new ResourceLocation(EnderIO.DOMAIN, "item_conduit"))
-                .setClass(ItemConduit.class).build().finish());
+                .setClass(ItemConduitImpl.class).build().finish());
         ConduitDisplayMode.registerDisplayMode(new ConduitDisplayMode(getBaseConduitType(), IconEIO.WRENCH_OVERLAY_ITEM,
                 IconEIO.WRENCH_OVERLAY_ITEM_OFF));
     }
@@ -50,12 +50,12 @@ public class ItemItemConduit extends AbstractItemConduit {
 
     @Override
     public @Nonnull Class<? extends Conduit> getBaseConduitType() {
-        return IItemConduit.class;
+        return ItemConduit.class;
     }
 
     @Override
     public ConduitServer createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
-        return new ItemConduit(item.getItemDamage());
+        return new ItemConduitImpl(item.getItemDamage());
     }
 
     @Override

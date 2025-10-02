@@ -10,7 +10,7 @@ import com.enderio.core.common.util.DyeColor;
 
 import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.ConduitServer;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduit;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.SidedEnvironment;
 
@@ -18,7 +18,7 @@ import li.cil.oc.api.network.SidedEnvironment;
         @Interface(iface = "li.cil.oc.api.network.SidedEnvironment", modid = "opencomputersapi|network") })
 public interface IOCConduit extends ConduitClient, ConduitServer, Environment, SidedEnvironment {
 
-    public static final String COLOR_CONTROLLER_ID = IPowerConduit.COLOR_CONTROLLER_ID;
+    public static final String COLOR_CONTROLLER_ID = PowerConduit.COLOR_CONTROLLER_ID;
 
     public abstract void setSignalColor(@Nonnull EnumFacing dir, @Nonnull DyeColor col);
 

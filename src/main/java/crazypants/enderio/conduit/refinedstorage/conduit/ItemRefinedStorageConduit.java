@@ -17,10 +17,10 @@ import crazypants.enderio.base.conduit.geom.Offset;
 import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.gui.IconEIO;
-import crazypants.enderio.conduits.conduit.AbstractItemConduit;
+import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 
-public class ItemRefinedStorageConduit extends AbstractItemConduit {
+public class ItemRefinedStorageConduit extends AbstractConduitItem {
 
     public static ItemRefinedStorageConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemRefinedStorageConduit(modObject);

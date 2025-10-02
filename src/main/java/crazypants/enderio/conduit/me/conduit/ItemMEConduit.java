@@ -19,10 +19,10 @@ import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.conduit.me.MEUtil;
-import crazypants.enderio.conduits.conduit.AbstractItemConduit;
+import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 
-public class ItemMEConduit extends AbstractItemConduit {
+public class ItemMEConduit extends AbstractConduitItem {
 
     public static ItemMEConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
         if (MEUtil.isMEEnabled()) {

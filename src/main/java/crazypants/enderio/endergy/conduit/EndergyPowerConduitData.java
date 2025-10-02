@@ -13,13 +13,13 @@ import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
-import crazypants.enderio.conduits.conduit.power.IPowerConduitData;
+import crazypants.enderio.conduits.conduit.power.PowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduitData;
 import crazypants.enderio.conduits.render.ConduitTextureWrapper;
 import crazypants.enderio.endergy.config.EndergyConfig;
 import crazypants.enderio.endergy.init.EndergyObject;
 
-public final class EndergyPowerConduitData implements IPowerConduitData {
+public final class EndergyPowerConduitData implements PowerConduitData {
 
     private static final int OFFSET = 10;
 
@@ -75,9 +75,9 @@ public final class EndergyPowerConduitData implements IPowerConduitData {
 
     static {
         for (int i = 0; i < POSTFIX.length; i++) {
-            IPowerConduitData.Registry
-                    .register(new EndergyPowerConduitData(i, POSTFIX[i].armfile(IPowerConduit.ICON_KEY),
-                            POSTFIX[i].corefile(IPowerConduit.ICON_CORE_KEY)));
+            PowerConduitData.Registry
+                    .register(new EndergyPowerConduitData(i, POSTFIX[i].armfile(PowerConduit.ICON_KEY),
+                            POSTFIX[i].corefile(PowerConduit.ICON_CORE_KEY)));
         }
     }
 
@@ -124,7 +124,7 @@ public final class EndergyPowerConduitData implements IPowerConduitData {
         if (component.isCore()) {
             return core;
         }
-        if (IPowerConduit.COLOR_CONTROLLER_ID.equals(component.data())) {
+        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data())) {
             return new ConduitTextureWrapper(IconUtil.instance.whiteTexture);
         }
         return icon;

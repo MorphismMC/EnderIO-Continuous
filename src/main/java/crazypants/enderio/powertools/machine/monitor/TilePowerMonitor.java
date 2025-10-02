@@ -30,7 +30,7 @@ import crazypants.enderio.base.paint.IPaintable.IPaintableTileEntity;
 import crazypants.enderio.base.recipe.IMachineRecipe;
 import crazypants.enderio.base.render.util.DynaTextureProvider;
 import crazypants.enderio.conduits.autosave.HandleStatCollector;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduit;
 import crazypants.enderio.conduits.conduit.power.NetworkPowerManager;
 import crazypants.enderio.conduits.conduit.power.PowerConduitNetwork;
 import crazypants.enderio.conduits.conduit.power.PowerTracker;
@@ -199,7 +199,7 @@ public class TilePowerMonitor extends AbstractPoweredTaskEntity
 
             void find(EnumFacing dir) {
                 if (dir != null && dir != found) {
-                    IPowerConduit con = ConduitUtil.getConduit(world, TilePowerMonitor.this, dir, IPowerConduit.class);
+                    PowerConduit con = ConduitUtil.getConduit(world, TilePowerMonitor.this, dir, PowerConduit.class);
                     if (con != null && con.getEffectiveConnectionMode(dir.getOpposite()).isActive()) {
                         ConduitNetwork<?, ?> n = con.getNetwork();
                         if (n instanceof PowerConduitNetwork) {

@@ -12,11 +12,11 @@ import com.enderio.core.common.util.DyeColor;
 
 import crazypants.enderio.base.filter.FilterRegistry;
 import crazypants.enderio.base.filter.item.IItemFilter;
-import crazypants.enderio.conduits.conduit.item.IItemConduit;
+import crazypants.enderio.conduits.conduit.item.ItemConduit;
 import info.loenwind.autoconfig.util.NullHelper;
 import io.netty.buffer.ByteBuf;
 
-public class PacketItemConduitFilter extends AbstractConduitPacket.Sided<IItemConduit> {
+public class PacketItemConduitFilter extends AbstractConduitPacket.Sided<ItemConduit> {
 
     private boolean loopMode;
     private boolean roundRobin;
@@ -29,7 +29,7 @@ public class PacketItemConduitFilter extends AbstractConduitPacket.Sided<IItemCo
 
     public PacketItemConduitFilter() {}
 
-    public PacketItemConduitFilter(@Nonnull IItemConduit con, @Nonnull EnumFacing dir) {
+    public PacketItemConduitFilter(@Nonnull ItemConduit con, @Nonnull EnumFacing dir) {
         super(con, dir);
         loopMode = con.isSelfFeedEnabled(dir);
         roundRobin = con.isRoundRobinEnabled(dir);
@@ -69,7 +69,7 @@ public class PacketItemConduitFilter extends AbstractConduitPacket.Sided<IItemCo
 
         @Override
         public IMessage onMessage(PacketItemConduitFilter message, MessageContext ctx) {
-            IItemConduit conduit = message.getConduit(ctx);
+            ItemConduit conduit = message.getConduit(ctx);
             if (conduit != null) {
                 conduit.setSelfFeedEnabled(message.dir, message.loopMode);
                 conduit.setRoundRobinEnabled(message.dir, message.roundRobin);
@@ -85,7 +85,7 @@ public class PacketItemConduitFilter extends AbstractConduitPacket.Sided<IItemCo
             return null;
         }
 
-        private void applyFilter(@Nonnull EnumFacing dir, @Nonnull IItemConduit conduit, IItemFilter filter,
+        private void applyFilter(@Nonnull EnumFacing dir, @Nonnull ItemConduit conduit, IItemFilter filter,
                                  boolean isInput) {
             if (filter != null) {
                 if (isInput) {
