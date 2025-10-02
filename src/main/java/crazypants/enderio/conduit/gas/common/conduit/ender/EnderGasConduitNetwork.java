@@ -17,7 +17,7 @@ import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
 import crazypants.enderio.conduit.gas.common.conduit.IGasConduit;
 import crazypants.enderio.conduit.gas.common.conduit.NetworkGasTank;
 import crazypants.enderio.conduit.gas.common.config.GasConduitConfig;
-import crazypants.enderio.conduit.gas.common.filter.IGasFilter;
+import crazypants.enderio.conduit.gas.common.filter.GasFilter;
 import crazypants.enderio.conduit.gas.common.utils.GasUtil;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
@@ -144,7 +144,7 @@ public class EnderGasConduitNetwork extends AbstractConduitNetwork<IGasConduit, 
         if (drained == null) {
             return false;
         }
-        IGasFilter filter = con.getFilter(conDir, isInput);
+        GasFilter filter = con.getFilter(conDir, isInput);
         return filter == null || filter.isEmpty() || filter.matchesFilter(drained);
     }
 

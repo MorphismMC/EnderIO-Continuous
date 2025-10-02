@@ -1,7 +1,5 @@
 package crazypants.enderio.conduits.conduit.item;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.IItemHandler;
@@ -10,46 +8,47 @@ import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.ConduitExtractor;
 import crazypants.enderio.base.conduit.ConduitServer;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.conduits.conduit.ConduitEnder;
+import org.jetbrains.annotations.NotNull;
 
 public interface ItemConduit extends ConduitExtractor, ConduitServer, ConduitClient, ConduitEnder {
 
-    // Textures
     ConduitTexture getEnderIcon();
 
-    IItemHandler getExternalInventory(@Nonnull EnumFacing direction);
+    IItemHandler getExternalInventory(@NotNull EnumFacing direction);
 
-    int getMaximumExtracted(@Nonnull EnumFacing direction);
+    int getMaximumExtracted(@NotNull EnumFacing direction);
 
-    float getTickTimePerItem(@Nonnull EnumFacing direction);
+    float getTickTimePerItem(@NotNull EnumFacing direction);
 
     void itemsExtracted(int numInserted, int slot);
 
-    void setInputFilterUpgrade(@Nonnull EnumFacing dir, @Nonnull ItemStack stack);
+    void setInputFilterUpgrade(@NotNull EnumFacing direction, @NotNull ItemStack stack);
 
-    void setOutputFilterUpgrade(@Nonnull EnumFacing dir, @Nonnull ItemStack stack);
+    void setOutputFilterUpgrade(@NotNull EnumFacing direction, @NotNull ItemStack stack);
 
-    @Nonnull
-    ItemStack getInputFilterUpgrade(@Nonnull EnumFacing dir);
+    @NotNull
+    ItemStack getInputFilterUpgrade(@NotNull EnumFacing direction);
 
-    @Nonnull
-    ItemStack getOutputFilterUpgrade(@Nonnull EnumFacing dir);
+    @NotNull
+    ItemStack getOutputFilterUpgrade(@NotNull EnumFacing direction);
 
-    void setInputFilter(@Nonnull EnumFacing dir, @Nonnull IItemFilter filter);
+    void setInputFilter(@NotNull EnumFacing direction, @NotNull ItemFilter filter);
 
-    void setOutputFilter(@Nonnull EnumFacing dir, @Nonnull IItemFilter filter);
+    void setOutputFilter(@NotNull EnumFacing dir, @NotNull ItemFilter filter);
 
-    IItemFilter getInputFilter(@Nonnull EnumFacing dir);
+    ItemFilter getInputFilter(@NotNull EnumFacing direction);
 
-    IItemFilter getOutputFilter(@Nonnull EnumFacing dir);
+    ItemFilter getOutputFilter(@NotNull EnumFacing direction);
 
-    void setFunctionUpgrade(@Nonnull EnumFacing dir, @Nonnull ItemStack upgrade);
+    void setFunctionUpgrade(@NotNull EnumFacing direction, @NotNull ItemStack upgrade);
 
-    @Nonnull
-    ItemStack getFunctionUpgrade(@Nonnull EnumFacing dir);
+    @NotNull
+    ItemStack getFunctionUpgrade(@NotNull EnumFacing direction);
 
     int getMetaData();
 
-    boolean isExtractionRedstoneConditionMet(@Nonnull EnumFacing dir);
+    boolean isExtractionRedstoneConditionMet(@NotNull EnumFacing direction);
+
 }

@@ -23,7 +23,7 @@ import crazypants.enderio.base.integration.jei.IHaveGhostTargets.IFluidGhostSlot
 import crazypants.enderio.util.Prep;
 import io.netty.buffer.ByteBuf;
 
-public class ModItemFilter implements IItemFilter.WithGhostSlots {
+public class ModItemFilter implements ItemFilter.WithGhostSlots {
 
     private static final @Nonnull String NBT_BLACKLIST = "blacklist";
     private final String[] mods = new String[3];
@@ -187,10 +187,10 @@ public class ModItemFilter implements IItemFilter.WithGhostSlots {
     }
 
     @Override
-    public void createGhostSlots(@Nonnull NNList<GhostSlot> slots, int xOffset, int yOffset, @Nullable Runnable cb) {
+    public void createGhostSlots(@Nonnull NNList<GhostSlot> slots, int x, int y, @Nullable Runnable cb) {
         int index = 0;
         for (int row = 0; row < mods.length; row++) {
-            slots.add(new ModFilterGhostSlot(index, xOffset, yOffset + 22 * row, cb));
+            slots.add(new ModFilterGhostSlot(index, x, y + 22 * row, cb));
             index++;
         }
     }

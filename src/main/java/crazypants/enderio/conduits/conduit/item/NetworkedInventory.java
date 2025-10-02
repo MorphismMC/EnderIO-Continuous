@@ -19,7 +19,7 @@ import com.enderio.core.common.util.RoundRobinIterator;
 
 import crazypants.enderio.base.Log;
 import crazypants.enderio.base.capability.ItemTools;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.conduits.config.ConduitConfig;
 import crazypants.enderio.util.Prep;
 
@@ -88,7 +88,7 @@ public class NetworkedInventory {
     }
 
     private boolean isSticky() {
-        final IItemFilter outputFilter = valid(con.getOutputFilter(conDir));
+        final ItemFilter outputFilter = valid(con.getOutputFilter(conDir));
         return outputFilter != null && outputFilter.isSticky();
     }
 
@@ -146,7 +146,7 @@ public class NetworkedInventory {
         }
 
         final int maxExtracted = con.getMaximumExtracted(conDir);
-        final IItemFilter filter = valid(con.getInputFilter(conDir));
+        final ItemFilter filter = valid(con.getInputFilter(conDir));
 
         int slotChecksPerTick = ConduitConfig.maxSlotCheckPerTick.get();
         for (int i = 0; i < numSlots && i < slotChecksPerTick; i++) {
@@ -232,7 +232,7 @@ public class NetworkedInventory {
         boolean matchedStickyOutput = false;
 
         for (Target target : getTargetIterator()) {
-            final IItemFilter filter = valid(target.inv.getCon().getOutputFilter(target.inv.getConDir()));
+            final ItemFilter filter = valid(target.inv.getCon().getOutputFilter(target.inv.getConDir()));
             if (target.stickyInput && !matchedStickyOutput && filter != null) {
                 matchedStickyOutput = filter.doesItemPassFilter(target.inv.getInventory(), toInsert);
             }
@@ -252,7 +252,7 @@ public class NetworkedInventory {
         return totalToInsert - toInsert.getCount();
     }
 
-    private static final IItemFilter valid(IItemFilter filter) {
+    private static final ItemFilter valid(ItemFilter filter) {
         return filter != null && filter.isValid() ? filter : null;
     }
 
@@ -267,7 +267,7 @@ public class NetworkedInventory {
         return sendPriority;
     }
 
-    private int insertItem(@Nonnull ItemStack item, IItemFilter filter) {
+    private int insertItem(@Nonnull ItemStack item, ItemFilter filter) {
         if (!canInsert() || Prep.isInvalid(item)) {
             return 0;
         }

@@ -14,7 +14,7 @@ import com.enderio.core.common.util.NNList;
 import crazypants.enderio.base.filter.IFilter;
 import crazypants.enderio.base.filter.ITileFilterContainer;
 import crazypants.enderio.base.filter.item.ExistingItemFilter;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import io.netty.buffer.ByteBuf;
 
 public class PacketExistingItemFilterSnapshot extends PacketFilterUpdate {
@@ -29,7 +29,7 @@ public class PacketExistingItemFilterSnapshot extends PacketFilterUpdate {
 
     public PacketExistingItemFilterSnapshot() {}
 
-    public PacketExistingItemFilterSnapshot(@Nonnull TileEntity te, @Nonnull IItemFilter filter, int filterId,
+    public PacketExistingItemFilterSnapshot(@Nonnull TileEntity te, @Nonnull ItemFilter filter, int filterId,
                                             int param1, @Nonnull Opcode opcode) {
         super(te, filter, filterId, param1);
         this.opcode = opcode;

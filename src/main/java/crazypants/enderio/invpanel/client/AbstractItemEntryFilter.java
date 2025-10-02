@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 
 public abstract class AbstractItemEntryFilter {
 
@@ -18,7 +18,7 @@ public abstract class AbstractItemEntryFilter {
 
     @Nullable
     public static AbstractItemEntryFilter parse(@Nonnull String filter, @Nonnull Locale locale,
-                                                @Nullable IItemFilter filterCard) {
+                                                @Nullable ItemFilter filterCard) {
         ArrayList<AbstractItemEntryFilter> list = new ArrayList<AbstractItemEntryFilter>();
         if (filterCard != null) {
             list.add(new CardEntryFilter(filterCard));
@@ -114,9 +114,9 @@ public abstract class AbstractItemEntryFilter {
 
     static class CardEntryFilter extends AbstractItemEntryFilter {
 
-        final @Nonnull IItemFilter filter;
+        final @Nonnull ItemFilter filter;
 
-        CardEntryFilter(@Nonnull IItemFilter filter) {
+        CardEntryFilter(@Nonnull ItemFilter filter) {
             this.filter = filter;
         }
 

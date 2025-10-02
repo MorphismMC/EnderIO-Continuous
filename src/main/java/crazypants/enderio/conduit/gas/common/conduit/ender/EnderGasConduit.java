@@ -63,15 +63,15 @@ import crazypants.enderio.conduit.gas.common.conduit.AbstractGasConduit;
 import crazypants.enderio.conduit.gas.common.conduit.GasConduitObject;
 import crazypants.enderio.conduit.gas.common.conduit.IGasConduit;
 import crazypants.enderio.conduit.gas.common.config.GasConduitConfig;
+import crazypants.enderio.conduit.gas.common.filter.GasFilterImpl;
 import crazypants.enderio.conduit.gas.common.filter.GasFilter;
-import crazypants.enderio.conduit.gas.common.filter.IGasFilter;
 import crazypants.enderio.conduit.gas.common.filter.IItemFilterGasUpgrade;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 
 public class EnderGasConduit extends AbstractGasConduit
-                             implements IFilterHolder<IGasFilter>, IUpgradeHolder, ConduitEnder {
+                             implements IFilterHolder<GasFilter>, IUpgradeHolder, ConduitEnder {
 
     public static final ConduitTexture ICON_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit", false), crazypants.enderio.conduits.render.ConduitTexture.arm(3));
@@ -82,9 +82,9 @@ public class EnderGasConduit extends AbstractGasConduit
     private int ticksSinceFailedExtract;
 
     @Nonnull
-    private final EnumMap<EnumFacing, IGasFilter> outputFilters = new EnumMap<>(EnumFacing.class);
+    private final EnumMap<EnumFacing, GasFilter> outputFilters = new EnumMap<>(EnumFacing.class);
     @Nonnull
-    private final EnumMap<EnumFacing, IGasFilter> inputFilters = new EnumMap<>(EnumFacing.class);
+    private final EnumMap<EnumFacing, GasFilter> inputFilters = new EnumMap<>(EnumFacing.class);
     @Nonnull
     private final EnumMap<EnumFacing, ItemStack> outputFilterUpgrades = new EnumMap<>(EnumFacing.class);
     @Nonnull
@@ -171,11 +171,11 @@ public class EnderGasConduit extends AbstractGasConduit
         return network;
     }
 
-    public IGasFilter getFilter(@Nonnull EnumFacing dir, boolean isInput) {
+    public GasFilter getFilter(@Nonnull EnumFacing dir, boolean isInput) {
         return isInput ? inputFilters.get(dir) : outputFilters.get(dir);
     }
 
-    public void setFilter(@Nonnull EnumFacing dir, @Nonnull IGasFilter filter, boolean isInput) {
+    public void setFilter(@Nonnull EnumFacing dir, @Nonnull GasFilter filter, boolean isInput) {
         if (isInput) {
             inputFilters.put(dir, filter);
         } else {
@@ -196,7 +196,7 @@ public class EnderGasConduit extends AbstractGasConduit
         } else {
             outputFilterUpgrades.put(dir, stack);
         }
-        IGasFilter filter = FilterRegistry.getFilterForUpgrade(stack);
+        GasFilter filter = FilterRegistry.getFilterForUpgrade(stack);
         if (filter != null) {
             setFilter(dir, filter, isInput);
         }
@@ -376,16 +376,16 @@ public class EnderGasConduit extends AbstractGasConduit
         data.setInteger("outputPriority", getOutputPriority(dir));
     }
 
-    private boolean isDefault(IGasFilter f) {
-        return f instanceof GasFilter && f.isDefault();
+    private boolean isDefault(GasFilter f) {
+        return f instanceof GasFilterImpl && f.isDefault();
     }
 
     @Override
     public void writeToNBT(@Nonnull NBTTagCompound data) {
         super.writeToNBT(data);
-        for (Entry<EnumFacing, IGasFilter> entry : inputFilters.entrySet()) {
+        for (Entry<EnumFacing, GasFilter> entry : inputFilters.entrySet()) {
             if (entry.getValue() != null) {
-                IGasFilter g = entry.getValue();
+                GasFilter g = entry.getValue();
                 if (!isDefault(g)) {
                     NBTTagCompound itemRoot = new NBTTagCompound();
                     FilterRegistry.writeFilterToNbt(g, itemRoot);
@@ -393,9 +393,9 @@ public class EnderGasConduit extends AbstractGasConduit
                 }
             }
         }
-        for (Entry<EnumFacing, IGasFilter> entry : outputFilters.entrySet()) {
+        for (Entry<EnumFacing, GasFilter> entry : outputFilters.entrySet()) {
             if (entry.getValue() != null) {
-                IGasFilter g = entry.getValue();
+                GasFilter g = entry.getValue();
                 if (!isDefault(g)) {
                     NBTTagCompound itemRoot = new NBTTagCompound();
                     FilterRegistry.writeFilterToNbt(g, itemRoot);
@@ -406,7 +406,7 @@ public class EnderGasConduit extends AbstractGasConduit
         for (Entry<EnumFacing, ItemStack> entry : inputFilterUpgrades.entrySet()) {
             ItemStack up = entry.getValue();
             if (up != null && Prep.isValid(up)) {
-                IGasFilter filter = getFilter(entry.getKey(), true);
+                GasFilter filter = getFilter(entry.getKey(), true);
                 FilterRegistry.writeFilterToStack(filter, up);
 
                 NBTTagCompound itemRoot = new NBTTagCompound();
@@ -418,7 +418,7 @@ public class EnderGasConduit extends AbstractGasConduit
         for (Entry<EnumFacing, ItemStack> entry : outputFilterUpgrades.entrySet()) {
             ItemStack up = entry.getValue();
             if (up != null && Prep.isValid(up)) {
-                IGasFilter filter = getFilter(entry.getKey(), false);
+                GasFilter filter = getFilter(entry.getKey(), false);
                 FilterRegistry.writeFilterToStack(filter, up);
 
                 NBTTagCompound itemRoot = new NBTTagCompound();
@@ -476,7 +476,7 @@ public class EnderGasConduit extends AbstractGasConduit
             String key = "inGasFilts." + dir.name();
             if (data.hasKey(key)) {
                 NBTTagCompound filterTag = (NBTTagCompound) data.getTag(key);
-                IGasFilter filter = (IGasFilter) FilterRegistry.loadFilterFromNbt(filterTag);
+                GasFilter filter = (GasFilter) FilterRegistry.loadFilterFromNbt(filterTag);
                 inputFilters.put(dir, filter);
             }
 
@@ -497,7 +497,7 @@ public class EnderGasConduit extends AbstractGasConduit
             key = "outGasFilts." + dir.name();
             if (data.hasKey(key)) {
                 NBTTagCompound filterTag = (NBTTagCompound) data.getTag(key);
-                IGasFilter filter = (IGasFilter) FilterRegistry.loadFilterFromNbt(filterTag);
+                GasFilter filter = (GasFilter) FilterRegistry.loadFilterFromNbt(filterTag);
                 outputFilters.put(dir, filter);
             }
 
@@ -574,7 +574,7 @@ public class EnderGasConduit extends AbstractGasConduit
     }
 
     @Override
-    public IGasFilter getFilter(int filterIndex, int param1) {
+    public GasFilter getFilter(int filterIndex, int param1) {
         if (filterIndex == getInputFilterIndex()) {
             return getFilter(EnumFacing.byIndex(param1), true);
         } else if (filterIndex == getOutputFilterIndex()) {
@@ -584,7 +584,7 @@ public class EnderGasConduit extends AbstractGasConduit
     }
 
     @Override
-    public void setFilter(int filterIndex, EnumFacing side, @Nonnull IGasFilter filter) {
+    public void setFilter(int filterIndex, EnumFacing side, @Nonnull GasFilter filter) {
         if (filterIndex == getInputFilterIndex()) {
             setFilter(side, filter, true);
         } else if (filterIndex == getOutputFilterIndex()) {

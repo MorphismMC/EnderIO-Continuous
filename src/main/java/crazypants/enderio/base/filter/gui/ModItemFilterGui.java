@@ -17,7 +17,7 @@ import com.enderio.core.client.gui.button.IconButton;
 import com.enderio.core.client.gui.widget.GuiToolTip;
 import com.enderio.core.client.render.ColorUtil;
 
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.filter.item.ModItemFilter;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.lang.Lang;
@@ -42,7 +42,7 @@ public class ModItemFilterGui extends AbstractFilterGui {
     private final @Nonnull GuiToolTip stackInsertTooltip3;
 
     public ModItemFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer, TileEntity te,
-                            @Nonnull IItemFilter filterIn) {
+                            @Nonnull ItemFilter filterIn) {
         super(playerInv, filterContainer, te, filterIn, "mod_item_filter");
 
         filter = (ModItemFilter) filterIn;

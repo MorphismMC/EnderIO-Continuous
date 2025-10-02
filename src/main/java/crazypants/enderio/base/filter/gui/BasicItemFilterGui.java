@@ -12,8 +12,8 @@ import com.enderio.core.client.gui.button.CycleButton;
 import com.enderio.core.client.gui.button.IconButton;
 import com.enderio.core.client.gui.button.ToggleButton;
 
-import crazypants.enderio.base.filter.item.IItemFilter;
 import crazypants.enderio.base.filter.item.ItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilterImpl;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.lang.Lang;
 
@@ -35,24 +35,24 @@ public class BasicItemFilterGui extends AbstractFilterGui {
 
     final boolean isAdvanced, isLimited, isBig;
 
-    private final @Nonnull ItemFilter filter;
+    private final @Nonnull ItemFilterImpl filter;
 
     private int xOffset;
     private int yOffset;
 
     public BasicItemFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer,
-                              TileEntity te, @Nonnull IItemFilter filter) {
+                              TileEntity te, @Nonnull ItemFilter filter) {
         this(playerInv, filterContainer, 13, 34, te, filter);
     }
 
     public BasicItemFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer, int xOffset,
                               int yOffset, TileEntity te,
-                              @Nonnull IItemFilter filterIn) {
+                              @Nonnull ItemFilter filterIn) {
         super(playerInv, filterContainer, te, filterIn, "basic_item_filter", "advanced_item_filter", "big_item_filter");
         this.xOffset = xOffset;
         this.yOffset = yOffset;
 
-        filter = (ItemFilter) filterIn;
+        filter = (ItemFilterImpl) filterIn;
 
         isAdvanced = filter.isAdvanced();
         isLimited = filter.isLimited();
@@ -123,7 +123,7 @@ public class BasicItemFilterGui extends AbstractFilterGui {
     @Override
     public void updateButtons() {
         super.updateButtons();
-        ItemFilter activeFilter = filter;
+        ItemFilterImpl activeFilter = filter;
 
         if (isAdvanced) {
             useNbtB.onGuiInit();

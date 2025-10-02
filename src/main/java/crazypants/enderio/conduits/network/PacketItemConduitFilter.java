@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import com.enderio.core.common.util.DyeColor;
 
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.conduits.conduit.item.ItemConduit;
 import info.loenwind.autoconfig.util.NullHelper;
 import io.netty.buffer.ByteBuf;
@@ -24,8 +24,8 @@ public class PacketItemConduitFilter extends AbstractConduitPacket.Sided<ItemCon
     private DyeColor colOut;
     private int priority;
 
-    private IItemFilter inputFilter;
-    private IItemFilter outputFilter;
+    private ItemFilter inputFilter;
+    private ItemFilter outputFilter;
 
     public PacketItemConduitFilter() {}
 
@@ -61,8 +61,8 @@ public class PacketItemConduitFilter extends AbstractConduitPacket.Sided<ItemCon
         priority = buf.readInt();
         colIn = DyeColor.fromIndex(buf.readShort());
         colOut = DyeColor.fromIndex(buf.readShort());
-        inputFilter = (IItemFilter) FilterRegistry.readFilter(buf);
-        outputFilter = (IItemFilter) FilterRegistry.readFilter(buf);
+        inputFilter = (ItemFilter) FilterRegistry.readFilter(buf);
+        outputFilter = (ItemFilter) FilterRegistry.readFilter(buf);
     }
 
     public static class Handler implements IMessageHandler<PacketItemConduitFilter, IMessage> {
@@ -85,7 +85,7 @@ public class PacketItemConduitFilter extends AbstractConduitPacket.Sided<ItemCon
             return null;
         }
 
-        private void applyFilter(@Nonnull EnumFacing dir, @Nonnull ItemConduit conduit, IItemFilter filter,
+        private void applyFilter(@Nonnull EnumFacing dir, @Nonnull ItemConduit conduit, ItemFilter filter,
                                  boolean isInput) {
             if (filter != null) {
                 if (isInput) {

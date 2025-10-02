@@ -31,7 +31,7 @@ import crazypants.enderio.base.EnderIOTab;
 import crazypants.enderio.base.filter.FilterRegistry;
 import crazypants.enderio.base.filter.IFilterContainer;
 import crazypants.enderio.base.filter.gui.ContainerFilter;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.filter.item.items.IItemFilterItemUpgrade;
 import crazypants.enderio.base.lang.Lang;
 import crazypants.enderio.integration.forestry.init.ForestryIntegrationObject;
@@ -53,8 +53,8 @@ public class ItemSpeciesItemFilter extends Item implements IItemFilterItemUpgrad
     }
 
     @Override
-    public IItemFilter createFilterFromStack(@Nonnull ItemStack stack) {
-        IItemFilter filter = new SpeciesItemFilter();
+    public ItemFilter createFilterFromStack(@Nonnull ItemStack stack) {
+        ItemFilter filter = new SpeciesItemFilter();
         if (NbtValue.FILTER.hasTag(stack)) {
             filter.readFromNBT(NbtValue.FILTER.getTag(stack));
         }
@@ -101,7 +101,7 @@ public class ItemSpeciesItemFilter extends Item implements IItemFilterItemUpgrad
         if (container instanceof IFilterContainer) {
             return new SpeciesItemFilterGui(player.inventory,
                     new ContainerFilter(player, (TileEntityBase) world.getTileEntity(pos), facing, param1),
-                    world.getTileEntity(pos), ((IFilterContainer<IItemFilter>) container).getFilter(param1));
+                    world.getTileEntity(pos), ((IFilterContainer<ItemFilter>) container).getFilter(param1));
         } else {
             return new SpeciesItemFilterGui(player.inventory, new ContainerFilter(player, null, facing, param1), null,
                     FilterRegistry.getFilterForUpgrade(player.getHeldItem(EnumReader.get(EnumHand.class, param1))));

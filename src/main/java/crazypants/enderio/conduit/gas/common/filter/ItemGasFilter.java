@@ -53,8 +53,8 @@ public class ItemGasFilter extends Item implements IItemFilterGasUpgrade, IResou
     }
 
     @Override
-    public IGasFilter createFilterFromStack(@Nonnull ItemStack stack) {
-        IGasFilter filter = new GasFilter();
+    public GasFilter createFilterFromStack(@Nonnull ItemStack stack) {
+        GasFilter filter = new GasFilterImpl();
         if (NbtValue.FILTER.hasTag(stack)) {
             filter.readFromNBT(NbtValue.FILTER.getTag(stack));
         }
@@ -100,13 +100,13 @@ public class ItemGasFilter extends Item implements IItemFilterGasUpgrade, IResou
             return new GasFilterGui(player.inventory,
                     new ContainerFilter(player, (TileEntityBase) world.getTileEntity(pos), facing, param1),
                     world.getTileEntity(pos),
-                    ((IFilterContainer<IGasFilter>) container).getFilter(param1));
+                    ((IFilterContainer<GasFilter>) container).getFilter(param1));
         }
         IFilter filter = FilterRegistry.getFilterForUpgrade(player.getHeldItem(EnumReader.get(EnumHand.class, param1)));
-        if (filter instanceof IGasFilter) {
+        if (filter instanceof GasFilter) {
             // Should always be true, mainly double checked to avoid null warning
             return new GasFilterGui(player.inventory, new ContainerFilter(player, null, facing, param1), null,
-                    (IGasFilter) filter);
+                    (GasFilter) filter);
         }
         return null;
     }

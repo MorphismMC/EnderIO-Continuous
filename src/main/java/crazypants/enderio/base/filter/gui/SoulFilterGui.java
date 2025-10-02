@@ -18,7 +18,7 @@ import com.enderio.core.client.gui.widget.GhostSlot;
 import com.enderio.core.client.render.ColorUtil;
 import com.enderio.core.common.util.NNList;
 
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.filter.item.SoulFilter;
 import crazypants.enderio.base.filter.item.SoulFilter.SoulFilterGhostSlot;
 import crazypants.enderio.base.gui.IconEIO;
@@ -39,13 +39,13 @@ public class SoulFilterGui extends AbstractFilterGui {
     private int yOffset;
 
     public SoulFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer, TileEntity te,
-                         @Nonnull IItemFilter filter) {
+                         @Nonnull ItemFilter filter) {
         this(playerInv, filterContainer, 13, 34, te, filter);
     }
 
     public SoulFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer, int xOffset,
                          int yOffset, TileEntity te,
-                         @Nonnull IItemFilter filterIn) {
+                         @Nonnull ItemFilter filterIn) {
         super(playerInv, filterContainer, te, filterIn, "soul_filter_normal", "soul_filter_big");
         this.xOffset = xOffset;
         this.yOffset = yOffset;

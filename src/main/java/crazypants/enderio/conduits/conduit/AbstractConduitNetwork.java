@@ -8,9 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -35,33 +32,61 @@ import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.diagnostics.ConduitNeighborUpdateTracker;
 import crazypants.enderio.base.handler.ServerTickHandler;
 import crazypants.enderio.util.Neighbours;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-// I=base type, I is the base class of the implementations accepted by the network
-public abstract class AbstractConduitNetwork<T extends ConduitServer, I extends T> implements ConduitNetwork<T, I> {
+/**
+ * @param <C> The conduit in this network.
+ * @param <T> The conduit type for this network, used implemented conduit container.
+ */
+public abstract class AbstractConduitNetwork<C extends ConduitServer, T extends C> implements ConduitNetwork<C, T> {
 
-    private final @Nonnull NNList<I> conduits = new NNList<>();
-    private long lastConduitListCheck = -1L; // server tick of the last time a full check on the conduit list was run.
-                                             // Used to limit the full check to once per
-                                             // tick.
+    @NotNull
+    private final NNList<T> conduits = new NNList<>();
 
-    protected final @Nonnull Class<I> implClass;
-    protected final @Nonnull Class<T> baseConduitClass;
+    @NotNull
+    protected final Class<T> implClass;
+    @NotNull
+    protected final Class<C> baseConduitClass;
 
-    protected AbstractConduitNetwork(@Nonnull Class<I> implClass, @Nonnull Class<T> baseConduitClass) {
+    private static final EnumFacing[] FACINGS = new EnumFacing[] { EnumFacing.WEST, EnumFacing.EAST, EnumFacing.DOWN,
+            EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH };
+
+    // Server tick of the last time a full check on the conduit list was run. Used to limit the full check to once per tick.
+    private long lastConduitListCheck = -1L;
+
+    protected AbstractConduitNetwork(@NotNull Class<T> implClass, @NotNull Class<C> baseConduitClass) {
         this.implClass = implClass;
         this.baseConduitClass = baseConduitClass;
     }
 
+    @NotNull
     @Override
-    public void init(@Nonnull ConduitBundle bundle, Collection<I> connections,
-                     @Nonnull World world) throws UnloadedBlockException {
+    public final Class<C> getBaseConduitType() {
+        return baseConduitClass;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param bundle      The conduit bundle.
+     * @param connections The connections of the conduit.
+     * @param world       The world which the conduit network in.
+     *
+     * @throws UnloadedBlockException        If the conduit network should be checked but its block not be loaded.
+     * @throws UnsupportedOperationException When check world remote of the world which conduit bundle in.
+     */
+    @Override
+    public void init(@NotNull ConduitBundle bundle,
+                     Collection<T> connections,
+                     @NotNull World world) throws UnloadedBlockException {
         if (world.isRemote) {
             throw new UnsupportedOperationException();
         }
 
-        // Destroy all existing networks around this block
-        for (I con : connections) {
-            ConduitNetwork<?, ?> network = con.getNetwork();
+        // Destroy all existing networks around this block.
+        for (T connection : connections) {
+            ConduitNetwork<?, ?> network = connection.getNetwork();
             if (network != null) {
                 network.destroyNetwork();
             }
@@ -70,20 +95,15 @@ public abstract class AbstractConduitNetwork<T extends ConduitServer, I extends 
     }
 
     @Override
-    public final @Nonnull Class<T> getBaseConduitType() {
-        return baseConduitClass;
-    }
-
-    @Override
-    public void setNetwork(@Nonnull World world, @Nonnull ConduitBundle bundle) throws UnloadedBlockException {
-        List<T> candidates = new LinkedList<>();
+    public void setNetwork(@NotNull World world, @NotNull ConduitBundle bundle) throws UnloadedBlockException {
+        List<C> candidates = new LinkedList<>();
         candidates.add(bundle.getConduit(getBaseConduitType()));
 
         while (!candidates.isEmpty()) {
-            T conduit = candidates.remove(0);
-            if (conduit == null || !implClass.isAssignableFrom(conduit.getClass())) {
+            C conduit = candidates.remove(0);
+            if (conduit == null || !implClass.isAssignableFrom(conduit.getClass()))
                 continue;
-            }
+
             ConduitNetwork<?, ?> network = conduit.getNetwork();
             if (network == this) {
                 continue;
@@ -96,27 +116,19 @@ public abstract class AbstractConduitNetwork<T extends ConduitServer, I extends 
                 candidates.addAll(ConduitUtil.getConnectedConduits(world, conduit.getBundle().getTileEntity().getPos(),
                         getBaseConduitType()));
             }
-
         }
     }
 
-    private boolean isSameTick() {
-        long temp = EnderIO.proxy.getServerTickCount();
-        if (lastConduitListCheck != temp) {
-            lastConduitListCheck = temp;
-            return false;
-        }
-        return true;
-    }
+
 
     @Override
-    public void addConduit(@Nonnull I newConduit) {
+    public void addConduit(@NotNull T newConduit) {
         if (conduits.isEmpty()) {
             ServerTickHandler.addListener(this);
             ServerTickHandler.addListener(newConduit.getBundle().getBundleworld(), this);
         }
         boolean doFullCheck = !isSameTick();
-        BlockPos newPos = null;
+        BlockPos newPos;
         boolean error = false;
         // Step 1: Is the new conduit attached to a TE that is valid?
         final ConduitBundle newBundle = newConduit.getBundle();
@@ -145,7 +157,7 @@ public abstract class AbstractConduitNetwork<T extends ConduitServer, I extends 
         }
         // Step 2: Check for duplicates and other errors (short variant)
         if (!doFullCheck) {
-            for (I oldConduit : conduits) {
+            for (T oldConduit : conduits) {
                 if (newConduit == oldConduit) {
                     // real dupe, ignore it
                     return;
@@ -162,10 +174,10 @@ public abstract class AbstractConduitNetwork<T extends ConduitServer, I extends 
             }
         }
         // Step 2: Check for duplicates and other errors (full variant)
-        List<I> old = new ArrayList<I>(conduits);
+        List<T> old = new ArrayList<>(conduits);
         conduits.clear();
         boolean newConduitIsBad = false;
-        for (I oldConduit : old) {
+        for (T oldConduit : old) {
             // Step 2.1: Fast skip if we have a real dupe
             if (newConduit == oldConduit) {
                 continue;
@@ -210,28 +222,24 @@ public abstract class AbstractConduitNetwork<T extends ConduitServer, I extends 
 
     @Override
     public void destroyNetwork() {
-        for (I con : conduits) {
+        for (T con : conduits) {
             con.clearNetwork();
         }
         conduits.clear();
         ServerTickHandler.removeListener(this);
     }
 
+    @NotNull
     @Override
-    @Nonnull
-    public NNList<I> getConduits() {
+    public NNList<T> getConduits() {
         return conduits;
     }
-
-    private static final EnumFacing[] WEDUNS = new EnumFacing[] { EnumFacing.WEST, EnumFacing.EAST, EnumFacing.DOWN,
-            EnumFacing.UP, EnumFacing.NORTH,
-            EnumFacing.SOUTH };
 
     @Override
     public void sendBlockUpdatesForEntireNetwork() {
         ConduitNeighborUpdateTracker tracker = null;
-        Set<BlockPos> notified = new HashSet<BlockPos>();
-        for (I con : conduits) {
+        Set<BlockPos> notified = new HashSet<>();
+        for (T con : conduits) {
             TileEntity te = con.getBundle().getTileEntity();
             if (con.hasExternalConnections()) {
                 final BlockPos pos = te.getPos();
@@ -252,7 +260,7 @@ public abstract class AbstractConduitNetwork<T extends ConduitServer, I extends 
                     // don't notify other conduits and don't notify the same block twice
                     EnumSet<EnumFacing> sidesToNotify = EnumSet.noneOf(EnumFacing.class);
                     Neighbours offset = new Neighbours(pos);
-                    for (EnumFacing side : WEDUNS) {
+                    for (EnumFacing side : FACINGS) {
                         offset.setOffset(side);
                         if (con.containsExternalConnection(offset.getOffset()) && !notified.contains(offset) &&
                                 world.isBlockLoaded(offset)) {
@@ -266,8 +274,8 @@ public abstract class AbstractConduitNetwork<T extends ConduitServer, I extends 
 
                     if (!sidesToNotify.isEmpty()) {
                         tracker.start("ForgeEventFactory.onNeighborNotify() at " + pos);
-                        // TODO Set the 4th parameter to only update the redstone state when the conduit network has a
-                        // redstone conduit network in it
+                        // TODO: Set the 4th parameter to only update the redstone state when the conduit network has a
+                        //       redstone conduit network in it.
                         boolean canceled = ForgeEventFactory.onNeighborNotify(world, pos, bs, sidesToNotify, false)
                                 .isCanceled();
                         tracker.stop();
@@ -294,19 +302,40 @@ public abstract class AbstractConduitNetwork<T extends ConduitServer, I extends 
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (Conduit con : conduits) {
-            sb.append(con.getBundle().getLocation());
-            sb.append(", ");
+        StringBuilder builder = new StringBuilder();
+        for (Conduit conduit : conduits) {
+            builder.append(conduit.getBundle().getLocation());
+            builder.append(", ");
         }
-        return "AbstractConduitNetwork@" + Integer.toHexString(hashCode()) + " [conduits=" + sb.toString() + "]";
+        return "AbstractConduitNetwork@" + Integer.toHexString(hashCode()) + " [conduits=" + builder + "]";
     }
 
+    /**
+     * TODO: Used Morphism Lib {@code TickCounter}.
+     *
+     * @deprecated Use WorldTickEvent: tickStart(profiler)
+     */
+    @Deprecated
     @Override
-    @Deprecated // use WorldTickEvent: tickStart(profiler)
     public void tickStart(ServerTickEvent event, @Nullable Profiler profiler) {}
 
+    /**
+     * Used Morphism Lib {@code TickCounter}.
+     *
+     * @deprecated use WorldTickEvent: tickEnd(profiler)
+     */
+    @Deprecated
     @Override
-    @Deprecated // use WorldTickEvent: tickEnd(profiler)
     public void tickEnd(ServerTickEvent event, @Nullable Profiler profiler) {}
+
+    // TODO: Used Morphism Lib {@code TickCounter}.
+    private boolean isSameTick() {
+        long temp = EnderIO.proxy.getServerTickCount();
+        if (lastConduitListCheck != temp) {
+            lastConduitListCheck = temp;
+            return false;
+        }
+        return true;
+    }
+
 }

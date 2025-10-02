@@ -17,7 +17,7 @@ import io.netty.buffer.ByteBuf;
  *
  * @author matthias
  */
-public class PowerItemFilter implements IItemFilter {
+public class PowerItemFilter implements ItemFilter {
 
     public enum CmpMode {
 

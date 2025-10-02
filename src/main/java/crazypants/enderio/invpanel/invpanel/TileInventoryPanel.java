@@ -25,7 +25,7 @@ import com.enderio.core.common.fluid.SmartTankFluidHandler;
 import com.enderio.core.common.util.NullHelper;
 
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.fluid.Fluids;
 import crazypants.enderio.base.fluid.SmartTankFluidMachineHandler;
 import crazypants.enderio.base.invpanel.capability.CapabilityDatabaseHandler;
@@ -78,7 +78,7 @@ public class TileInventoryPanel extends AbstractInventoryMachineEntity
     @Store({ NBTAction.CLIENT, NBTAction.SAVE })
     private boolean hasConnection = false;
 
-    private IItemFilter itemFilter;
+    private ItemFilter itemFilter;
 
     @Store
     private int guiSortMode;
@@ -174,10 +174,10 @@ public class TileInventoryPanel extends AbstractInventoryMachineEntity
 
     private void updateItemFilter() {
         itemFilter = FilterRegistry
-                .<IItemFilter>getFilterForUpgrade(NullHelper.first(inventory[SLOT_VIEW_FILTER], Prep.getEmpty()));
+                .<ItemFilter>getFilterForUpgrade(NullHelper.first(inventory[SLOT_VIEW_FILTER], Prep.getEmpty()));
     }
 
-    public IItemFilter getItemFilter() {
+    public ItemFilter getItemFilter() {
         return itemFilter;
     }
 

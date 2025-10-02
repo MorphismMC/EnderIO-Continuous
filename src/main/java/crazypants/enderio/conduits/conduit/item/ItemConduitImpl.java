@@ -57,8 +57,8 @@ import crazypants.enderio.base.filter.FilterRegistry;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
 import crazypants.enderio.base.filter.capability.IFilterHolder;
 import crazypants.enderio.base.filter.gui.FilterGuiUtil;
-import crazypants.enderio.base.filter.item.IItemFilter;
 import crazypants.enderio.base.filter.item.ItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilterImpl;
 import crazypants.enderio.base.filter.item.items.IItemFilterItemUpgrade;
 import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.render.registry.TextureRegistry;
@@ -75,7 +75,7 @@ import crazypants.enderio.powertools.lang.Lang;
 import crazypants.enderio.util.EnumReader;
 import crazypants.enderio.util.Prep;
 
-public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFilterHolder<IItemFilter>, IUpgradeHolder {
+public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFilterHolder<ItemFilter>, IUpgradeHolder {
 
     public static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
@@ -99,9 +99,9 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
     protected final @Nonnull EnumMap<EnumFacing, DyeColor> extractionColors = new EnumMap<EnumFacing, DyeColor>(
             EnumFacing.class);
 
-    protected final @Nonnull EnumMap<EnumFacing, IItemFilter> outputFilters = new EnumMap<EnumFacing, IItemFilter>(
+    protected final @Nonnull EnumMap<EnumFacing, ItemFilter> outputFilters = new EnumMap<EnumFacing, ItemFilter>(
             EnumFacing.class);
-    protected final @Nonnull EnumMap<EnumFacing, IItemFilter> inputFilters = new EnumMap<EnumFacing, IItemFilter>(
+    protected final @Nonnull EnumMap<EnumFacing, ItemFilter> inputFilters = new EnumMap<EnumFacing, ItemFilter>(
             EnumFacing.class);
     protected final @Nonnull EnumMap<EnumFacing, ItemStack> outputFilterUpgrades = new EnumMap<EnumFacing, ItemStack>(
             EnumFacing.class);
@@ -214,8 +214,8 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
     }
 
     @Override
-    public void setInputFilter(@Nonnull EnumFacing dir, @Nonnull IItemFilter filter) {
-        inputFilters.put(dir, filter);
+    public void setInputFilter(@Nonnull EnumFacing direction, @Nonnull ItemFilter filter) {
+        inputFilters.put(direction, filter);
         if (network != null) {
             network.routesChanged();
         }
@@ -223,7 +223,7 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
     }
 
     @Override
-    public void setOutputFilter(@Nonnull EnumFacing dir, @Nonnull IItemFilter filter) {
+    public void setOutputFilter(@Nonnull EnumFacing dir, @Nonnull ItemFilter filter) {
         outputFilters.put(dir, filter);
         if (network != null) {
             network.routesChanged();
@@ -232,51 +232,51 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
     }
 
     @Override
-    public IItemFilter getInputFilter(@Nonnull EnumFacing dir) {
-        return inputFilters.get(dir);
+    public ItemFilter getInputFilter(@Nonnull EnumFacing direction) {
+        return inputFilters.get(direction);
     }
 
     @Override
-    public IItemFilter getOutputFilter(@Nonnull EnumFacing dir) {
-        return outputFilters.get(dir);
+    public ItemFilter getOutputFilter(@Nonnull EnumFacing direction) {
+        return outputFilters.get(direction);
     }
 
     @Override
-    public void setInputFilterUpgrade(@Nonnull EnumFacing dir, @Nonnull ItemStack stack) {
-        inputFilterUpgrades.put(dir, stack);
-        setInputFilter(dir, FilterRegistry.<IItemFilter>getFilterForUpgrade(stack));
+    public void setInputFilterUpgrade(@Nonnull EnumFacing direction, @Nonnull ItemStack stack) {
+        inputFilterUpgrades.put(direction, stack);
+        setInputFilter(direction, FilterRegistry.<ItemFilter>getFilterForUpgrade(stack));
         setClientStateDirty();
     }
 
     @Override
-    public void setOutputFilterUpgrade(@Nonnull EnumFacing dir, @Nonnull ItemStack stack) {
-        outputFilterUpgrades.put(dir, stack);
-        setOutputFilter(dir, FilterRegistry.<IItemFilter>getFilterForUpgrade(stack));
-        setClientStateDirty();
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getInputFilterUpgrade(@Nonnull EnumFacing dir) {
-        return inputFilterUpgrades.get(dir);
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getOutputFilterUpgrade(@Nonnull EnumFacing dir) {
-        return outputFilterUpgrades.get(dir);
-    }
-
-    @Override
-    public void setFunctionUpgrade(@Nonnull EnumFacing dir, @Nonnull ItemStack upgrade) {
-        functionUpgrades.put(dir, upgrade);
+    public void setOutputFilterUpgrade(@Nonnull EnumFacing direction, @Nonnull ItemStack stack) {
+        outputFilterUpgrades.put(direction, stack);
+        setOutputFilter(direction, FilterRegistry.<ItemFilter>getFilterForUpgrade(stack));
         setClientStateDirty();
     }
 
     @Override
     @Nonnull
-    public ItemStack getFunctionUpgrade(@Nonnull EnumFacing dir) {
-        return functionUpgrades.get(dir);
+    public ItemStack getInputFilterUpgrade(@Nonnull EnumFacing direction) {
+        return inputFilterUpgrades.get(direction);
+    }
+
+    @Override
+    @Nonnull
+    public ItemStack getOutputFilterUpgrade(@Nonnull EnumFacing direction) {
+        return outputFilterUpgrades.get(direction);
+    }
+
+    @Override
+    public void setFunctionUpgrade(@Nonnull EnumFacing direction, @Nonnull ItemStack upgrade) {
+        functionUpgrades.put(direction, upgrade);
+        setClientStateDirty();
+    }
+
+    @Override
+    @Nonnull
+    public ItemStack getFunctionUpgrade(@Nonnull EnumFacing direction) {
+        return functionUpgrades.get(direction);
     }
 
     @Override
@@ -315,9 +315,9 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
     }
 
     @Override
-    public boolean isExtractionRedstoneConditionMet(@Nonnull EnumFacing dir) {
-        RedstoneControlMode mode = getExtractionRedstoneMode(dir);
-        return ConduitUtil.isRedstoneControlModeMet(this, mode, getExtractionSignalColor(dir), dir);
+    public boolean isExtractionRedstoneConditionMet(@Nonnull EnumFacing direction) {
+        RedstoneControlMode mode = getExtractionRedstoneMode(direction);
+        return ConduitUtil.isRedstoneControlModeMet(this, mode, getExtractionSignalColor(direction), direction);
     }
 
     @Override
@@ -524,9 +524,9 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
     public void writeToNBT(@Nonnull NBTTagCompound data) {
         super.writeToNBT(data);
 
-        for (Entry<EnumFacing, IItemFilter> entry : inputFilters.entrySet()) {
+        for (Entry<EnumFacing, ItemFilter> entry : inputFilters.entrySet()) {
             if (entry.getValue() != null) {
-                IItemFilter f = entry.getValue();
+                ItemFilter f = entry.getValue();
                 if (!isDefault(f)) {
                     NBTTagCompound itemRoot = new NBTTagCompound();
                     FilterRegistry.writeFilterToNbt(f, itemRoot);
@@ -544,8 +544,8 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
             }
         }
 
-        for (Entry<EnumFacing, IItemFilter> entry : outputFilters.entrySet()) {
-            IItemFilter f = entry.getValue();
+        for (Entry<EnumFacing, ItemFilter> entry : outputFilters.entrySet()) {
+            ItemFilter f = entry.getValue();
             if (f != null && !isDefault(f)) {
                 NBTTagCompound itemRoot = new NBTTagCompound();
                 FilterRegistry.writeFilterToNbt(f, itemRoot);
@@ -556,7 +556,7 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
         for (Entry<EnumFacing, ItemStack> entry : inputFilterUpgrades.entrySet()) {
             ItemStack up = entry.getValue();
             if (up != null && Prep.isValid(up)) {
-                IItemFilter filter = getInputFilter(entry.getKey());
+                ItemFilter filter = getInputFilter(entry.getKey());
                 FilterRegistry.writeFilterToStack(filter, up);
 
                 NBTTagCompound itemRoot = new NBTTagCompound();
@@ -568,7 +568,7 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
         for (Entry<EnumFacing, ItemStack> entry : outputFilterUpgrades.entrySet()) {
             ItemStack up = entry.getValue();
             if (up != null && Prep.isValid(up)) {
-                IItemFilter filter = getOutputFilter(entry.getKey());
+                ItemFilter filter = getOutputFilter(entry.getKey());
                 FilterRegistry.writeFilterToStack(filter, up);
 
                 NBTTagCompound itemRoot = new NBTTagCompound();
@@ -624,9 +624,9 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
         }
     }
 
-    private boolean isDefault(IItemFilter f) {
-        if (f instanceof ItemFilter) {
-            return ((ItemFilter) f).isDefault();
+    private boolean isDefault(ItemFilter f) {
+        if (f instanceof ItemFilterImpl) {
+            return ((ItemFilterImpl) f).isDefault();
         }
         return false;
     }
@@ -646,7 +646,7 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
             String key = "inFilts." + dir.name();
             if (data.hasKey(key)) {
                 NBTTagCompound filterTag = (NBTTagCompound) data.getTag(key);
-                IItemFilter filter = (IItemFilter) FilterRegistry.loadFilterFromNbt(filterTag);
+                ItemFilter filter = (ItemFilter) FilterRegistry.loadFilterFromNbt(filterTag);
                 inputFilters.put(dir, filter);
             }
 
@@ -674,7 +674,7 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
             key = "outFilts." + dir.name();
             if (data.hasKey(key)) {
                 NBTTagCompound filterTag = (NBTTagCompound) data.getTag(key);
-                IItemFilter filter = (IItemFilter) FilterRegistry.loadFilterFromNbt(filterTag);
+                ItemFilter filter = (ItemFilter) FilterRegistry.loadFilterFromNbt(filterTag);
                 outputFilters.put(dir, filter);
             }
 
@@ -806,7 +806,7 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
     }
 
     @Override
-    public IItemFilter getFilter(int filterId, int param1) {
+    public ItemFilter getFilter(int filterId, int param1) {
         if (filterId == FilterGuiUtil.INDEX_INPUT_ITEM) {
             return getInputFilter(EnumFacing.byIndex(param1));
         } else if (filterId == FilterGuiUtil.INDEX_OUTPUT_ITEM) {
@@ -816,7 +816,7 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
     }
 
     @Override
-    public void setFilter(int filterId, EnumFacing side, @Nonnull IItemFilter filter) {
+    public void setFilter(int filterId, EnumFacing side, @Nonnull ItemFilter filter) {
         if (filterId == FilterGuiUtil.INDEX_INPUT_ITEM) {
             setInputFilter(side, filter);
         } else if (filterId == FilterGuiUtil.INDEX_OUTPUT_ITEM) {

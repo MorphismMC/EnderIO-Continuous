@@ -19,13 +19,13 @@ import com.enderio.core.common.util.NullHelper;
 
 import crazypants.enderio.base.filter.IFilterContainer;
 import crazypants.enderio.base.filter.gui.FilterGuiUtil;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.filter.item.items.BasicFilterTypes;
 import info.loenwind.processor.RemoteCall;
 
 @RemoteCall
 public class ContainerVacuumChest extends ContainerEnderCap<EnderInventory, TileVacuumChest>
-                                  implements IFilterContainer<IItemFilter> {
+                                  implements IFilterContainer<ItemFilter> {
 
     private Slot filterSlot;
     private Runnable filterChangedCB;
@@ -89,7 +89,7 @@ public class ContainerVacuumChest extends ContainerEnderCap<EnderInventory, Tile
     }
 
     @Override
-    public @Nonnull IItemFilter getFilter(int index) {
+    public @Nonnull ItemFilter getFilter(int index) {
         return NullHelper.notnull(NullHelper.notnull(getTileEntity(), "te-less container").getItemFilter(),
                 "logic error in filter access");
     }

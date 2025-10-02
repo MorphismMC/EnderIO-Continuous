@@ -32,7 +32,7 @@ import crazypants.enderio.base.filter.FilterRegistry;
 import crazypants.enderio.base.filter.IFilterContainer;
 import crazypants.enderio.base.filter.gui.ContainerFilter;
 import crazypants.enderio.base.filter.gui.PowerItemFilterGui;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.filter.item.PowerItemFilter;
 import crazypants.enderio.base.init.ModObject;
 import crazypants.enderio.base.lang.Lang;
@@ -58,8 +58,8 @@ public class ItemPowerItemFilter extends Item implements IItemFilterItemUpgrade,
     }
 
     @Override
-    public IItemFilter createFilterFromStack(@Nonnull ItemStack stack) {
-        IItemFilter filter = new PowerItemFilter();
+    public ItemFilter createFilterFromStack(@Nonnull ItemStack stack) {
+        ItemFilter filter = new PowerItemFilter();
         if (NbtValue.FILTER.hasTag(stack)) {
             filter.readFromNBT(NbtValue.FILTER.getTag(stack));
         }
@@ -109,7 +109,7 @@ public class ItemPowerItemFilter extends Item implements IItemFilterItemUpgrade,
         if (container instanceof IFilterContainer) {
             return new PowerItemFilterGui(player.inventory,
                     new ContainerFilter(player, (TileEntityBase) world.getTileEntity(pos), facing, param1),
-                    world.getTileEntity(pos), ((IFilterContainer<IItemFilter>) container).getFilter(param1));
+                    world.getTileEntity(pos), ((IFilterContainer<ItemFilter>) container).getFilter(param1));
         } else {
             return new PowerItemFilterGui(player.inventory, new ContainerFilter(player, null, facing, param1), null,
                     FilterRegistry.getFilterForUpgrade(player.getHeldItem(EnumReader.get(EnumHand.class, param1))));

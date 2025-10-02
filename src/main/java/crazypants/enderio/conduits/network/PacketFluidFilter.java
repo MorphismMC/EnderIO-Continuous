@@ -10,8 +10,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import crazypants.enderio.base.filter.fluid.FluidFilterImpl;
 import crazypants.enderio.base.filter.fluid.FluidFilter;
-import crazypants.enderio.base.filter.fluid.IFluidFilter;
 import crazypants.enderio.conduits.conduit.liquid.EnderLiquidConduit;
 import crazypants.enderio.conduits.conduit.liquid.LiquidConduit;
 import io.netty.buffer.ByteBuf;
@@ -19,12 +19,12 @@ import io.netty.buffer.ByteBuf;
 public class PacketFluidFilter extends AbstractConduitPacket.Sided<LiquidConduit> {
 
     private boolean isInput;
-    private @Nonnull IFluidFilter filter = new FluidFilter();
+    private @Nonnull FluidFilter filter = new FluidFilterImpl();
 
     public PacketFluidFilter() {}
 
     public PacketFluidFilter(@Nonnull EnderLiquidConduit eConduit, @Nonnull EnumFacing dir,
-                             @Nonnull IFluidFilter filter, boolean isInput) {
+                             @Nonnull FluidFilter filter, boolean isInput) {
         super(eConduit, dir);
         this.filter = filter;
         this.isInput = isInput;

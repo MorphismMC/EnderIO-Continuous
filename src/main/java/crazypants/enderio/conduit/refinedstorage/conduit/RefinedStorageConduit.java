@@ -42,8 +42,8 @@ import crazypants.enderio.base.filter.FilterRegistry;
 import crazypants.enderio.base.filter.IFilter;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
 import crazypants.enderio.base.filter.fluid.items.IItemFilterFluidUpgrade;
-import crazypants.enderio.base.filter.item.IItemFilter;
 import crazypants.enderio.base.filter.item.ItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilterImpl;
 import crazypants.enderio.base.filter.item.items.ItemBasicItemFilter;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.tool.ToolUtil;
@@ -375,8 +375,8 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
     }
 
     private boolean isDefault(IFilter f) {
-        if (f instanceof ItemFilter) {
-            return ((ItemFilter) f).isDefault();
+        if (f instanceof ItemFilterImpl) {
+            return ((ItemFilterImpl) f).isDefault();
         }
         return false;
     }
@@ -525,14 +525,14 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
     @Override
     public void setInputFilterUpgrade(@Nonnull EnumFacing dir, @Nonnull ItemStack stack) {
         inputFilterUpgrades.put(dir, stack);
-        setInputFilter(dir, FilterRegistry.<IItemFilter>getFilterForUpgrade(stack));
+        setInputFilter(dir, FilterRegistry.<ItemFilter>getFilterForUpgrade(stack));
         setClientStateDirty();
     }
 
     @Override
     public void setOutputFilterUpgrade(@Nonnull EnumFacing dir, @Nonnull ItemStack stack) {
         outputFilterUpgrades.put(dir, stack);
-        setOutputFilter(dir, FilterRegistry.<IItemFilter>getFilterForUpgrade(stack));
+        setOutputFilter(dir, FilterRegistry.<ItemFilter>getFilterForUpgrade(stack));
         setClientStateDirty();
     }
 

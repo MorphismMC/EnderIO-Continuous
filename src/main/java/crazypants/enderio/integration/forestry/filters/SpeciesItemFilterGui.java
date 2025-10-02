@@ -15,7 +15,7 @@ import com.enderio.core.client.gui.button.ToggleButton;
 import crazypants.enderio.base.filter.gui.AbstractFilterGui;
 import crazypants.enderio.base.filter.gui.ContainerFilter;
 import crazypants.enderio.base.filter.gui.FilterGuiUtil;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.lang.Lang;
 
@@ -36,13 +36,13 @@ public class SpeciesItemFilterGui extends AbstractFilterGui {
     private int yOffset;
 
     public SpeciesItemFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer,
-                                TileEntity te, @Nonnull IItemFilter filter) {
+                                TileEntity te, @Nonnull ItemFilter filter) {
         this(playerInv, filterContainer, te, 13, 34, 0, filter);
     }
 
     public SpeciesItemFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer,
                                 TileEntity te, int xOffset, int yOffset,
-                                int buttonIdOffset, @Nonnull IItemFilter filterIn) {
+                                int buttonIdOffset, @Nonnull ItemFilter filterIn) {
         super(playerInv, filterContainer, te, filterIn, "advanced_item_filter");
         this.xOffset = xOffset;
         this.yOffset = yOffset;

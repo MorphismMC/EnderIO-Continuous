@@ -30,8 +30,8 @@ import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIOTab;
 import crazypants.enderio.base.filter.FilterRegistry;
 import crazypants.enderio.base.filter.IFilterContainer;
+import crazypants.enderio.base.filter.fluid.FluidFilterImpl;
 import crazypants.enderio.base.filter.fluid.FluidFilter;
-import crazypants.enderio.base.filter.fluid.IFluidFilter;
 import crazypants.enderio.base.filter.gui.ContainerFilter;
 import crazypants.enderio.base.filter.gui.FluidFilterGui;
 import crazypants.enderio.base.init.ModObject;
@@ -54,8 +54,8 @@ public class ItemFluidFilter extends Item implements IItemFilterFluidUpgrade, IR
     }
 
     @Override
-    public IFluidFilter createFilterFromStack(@Nonnull ItemStack stack) {
-        IFluidFilter filter = new FluidFilter();
+    public FluidFilter createFilterFromStack(@Nonnull ItemStack stack) {
+        FluidFilter filter = new FluidFilterImpl();
         if (NbtValue.FILTER.hasTag(stack)) {
             filter.readFromNBT(NbtValue.FILTER.getTag(stack));
         }
@@ -106,7 +106,7 @@ public class ItemFluidFilter extends Item implements IItemFilterFluidUpgrade, IR
         if (container instanceof IFilterContainer) {
             return new FluidFilterGui(player.inventory,
                     new ContainerFilter(player, (TileEntityBase) world.getTileEntity(pos), facing, param1),
-                    world.getTileEntity(pos), ((IFilterContainer<IFluidFilter>) container).getFilter(param1));
+                    world.getTileEntity(pos), ((IFilterContainer<FluidFilter>) container).getFilter(param1));
         } else {
             return new FluidFilterGui(player.inventory, new ContainerFilter(player, null, facing, param1), null,
                     FilterRegistry.getFilterForUpgrade(player.getHeldItem(EnumReader.get(EnumHand.class, param1))));

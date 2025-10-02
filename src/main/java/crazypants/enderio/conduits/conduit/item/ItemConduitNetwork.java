@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.IItemHandler;
 
 import crazypants.enderio.base.diagnostics.Prof;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
 import crazypants.enderio.conduits.conduit.item.NetworkedInventory.Target;
 
@@ -112,7 +112,7 @@ public class ItemConduitNetwork extends AbstractConduitNetwork<ItemConduit, Item
             if (source.getCon().getBundle().getLocation().equals(con.getBundle().getLocation())) {
                 List<Target> sendPriority = source.getSendPriority();
                 for (Target t : sendPriority) {
-                    IItemFilter f = t.inv.getCon().getOutputFilter(t.inv.getConDir());
+                    ItemFilter f = t.inv.getCon().getOutputFilter(t.inv.getConDir());
                     if (input.isEmpty() || f == null || f.doesItemPassFilter(getTargetInventory(t), input)) {
                         String s = t.inv.getLocalizedInventoryName() + " " + t.inv.getLocation().toString() +
                                 " Distance [" + t.distance + "] ";
@@ -130,7 +130,7 @@ public class ItemConduitNetwork extends AbstractConduitNetwork<ItemConduit, Item
         List<String> result = new ArrayList<String>();
         for (NetworkedInventory inv : inventories) {
             if (inv.hasTarget(con, dir)) {
-                IItemFilter f = inv.getCon().getInputFilter(inv.getConDir());
+                ItemFilter f = inv.getCon().getInputFilter(inv.getConDir());
                 if (input.isEmpty() || f == null || f.doesItemPassFilter(inv.getInventory(), input)) {
                     result.add(inv.getLocalizedInventoryName() + " " + inv.getLocation().toString());
                 }
