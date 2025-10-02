@@ -2,7 +2,7 @@ package crazypants.enderio.api.teleport;
 
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.config.config.TeleportConfig;
-import crazypants.enderio.base.sound.IModSound;
+import crazypants.enderio.base.sound.ModSound;
 import crazypants.enderio.base.sound.SoundRegistry;
 import net.minecraft.util.ResourceLocation;
 
@@ -61,7 +61,7 @@ public enum TravelSource implements ITravelSource {
     }
 
     private final ResourceLocation registryName;
-    public final IModSound sound;
+    public final ModSound sound;
 
     // region GTLite Patch
     @Deprecated
@@ -70,7 +70,7 @@ public enum TravelSource implements ITravelSource {
     private final DoubleSupplier powerCost;
 
     @Deprecated
-    TravelSource(IModSound sound, IntSupplier maxDistance, DoubleSupplier powerCost) {
+    TravelSource(ModSound sound, IntSupplier maxDistance, DoubleSupplier powerCost) {
         this.registryName = new ResourceLocation(EnderIO.DOMAIN, name().toLowerCase());
         this.sound = sound;
         this.maxDistance = maxDistance;
@@ -78,7 +78,7 @@ public enum TravelSource implements ITravelSource {
     }
     // endregion
 
-    TravelSource(IModSound sound) {
+    TravelSource(ModSound sound) {
         this(sound, () -> 0, () -> 0);
     }
 
@@ -88,7 +88,7 @@ public enum TravelSource implements ITravelSource {
     }
 
     @Override
-    public IModSound getSound() {
+    public ModSound getSound() {
         return sound;
     }
 

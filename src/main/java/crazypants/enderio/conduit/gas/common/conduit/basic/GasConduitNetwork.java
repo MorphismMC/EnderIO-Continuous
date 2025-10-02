@@ -228,8 +228,7 @@ public class GasConduitNetwork extends AbstractGasTankConduitNetwork<GasConduit>
 
         try {
             BlockPos pos = con.getBundle().getLocation();
-            Collection<IGasConduit> connections = ConduitUtil.getConnectedConduits(
-                    con.getBundle().getTileEntity().getWorld(), pos.getX(), pos.getY(), pos.getZ(), IGasConduit.class);
+            Collection<IGasConduit> connections = ConduitUtil.getConnectedConduits(con.getBundle().getTileEntity().getWorld(), pos, IGasConduit.class);
             for (IGasConduit n : connections) {
                 GasConduit neighbour = (GasConduit) n;
                 if (canFlowTo(con, neighbour)) { // can only flow within same network

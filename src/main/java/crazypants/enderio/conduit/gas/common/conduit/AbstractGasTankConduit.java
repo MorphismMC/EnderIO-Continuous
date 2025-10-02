@@ -60,8 +60,7 @@ public abstract class AbstractGasTankConduit extends AbstractGasConduit {
                         }
                         // Attempt to join networks
                         BlockPos pos = getBundle().getLocation().offset(faceHit);
-                        IGasConduit gasConduit = ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(), pos.getX(),
-                                pos.getY(), pos.getZ(), IGasConduit.class);
+                        IGasConduit gasConduit = ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(), pos, IGasConduit.class);
                         if (!(gasConduit instanceof AbstractGasTankConduit) || !canJoinNeighbour(gasConduit)) {
                             return false;
                         }

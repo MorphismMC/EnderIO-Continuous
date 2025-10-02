@@ -17,7 +17,16 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface ConduitNetwork<C extends ConduitServer, T extends C> extends ITickListener, IServerTickListener {
 
-    void init(@NotNull ConduitBundle tile,
+    /**
+     * Initialized a conduit network from existed conduit bundle.
+     *
+     * @param bundle      The conduit bundle.
+     * @param connections The connections of the conduit.
+     * @param world       The world which the conduit network in.
+     *
+     * @throws UnloadedBlockException If the conduit network should be checked but its block not be loaded.
+     */
+    void init(@NotNull ConduitBundle bundle,
               Collection<T> connections,
               @NotNull World world) throws UnloadedBlockException;
 

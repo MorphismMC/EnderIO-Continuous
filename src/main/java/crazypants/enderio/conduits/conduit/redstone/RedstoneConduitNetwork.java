@@ -43,9 +43,9 @@ public class RedstoneConduitNetwork extends AbstractConduitNetwork<IRedstoneCond
     }
 
     @Override
-    public void init(@Nonnull ConduitBundle tile, Collection<IRedstoneConduit> connections,
+    public void init(@Nonnull ConduitBundle bundle, Collection<IRedstoneConduit> connections,
                      @Nonnull World world) throws UnloadedBlockException {
-        super.init(tile, connections, world);
+        super.init(bundle, connections, world);
         updatingNetwork++;
         notifyNeigborsOfSignalUpdate();
         updatingNetwork--;

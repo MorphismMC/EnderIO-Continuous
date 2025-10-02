@@ -32,9 +32,9 @@ public class PowerConduitNetwork extends AbstractConduitNetwork<IPowerConduit, I
     }
 
     @Override
-    public void init(@Nonnull ConduitBundle tile, Collection<IPowerConduit> connections,
+    public void init(@Nonnull ConduitBundle bundle, Collection<IPowerConduit> connections,
                      @Nonnull World world) throws UnloadedBlockException {
-        super.init(tile, connections, world);
+        super.init(bundle, connections, world);
         powerManager = new NetworkPowerManager(this, world);
         powerManager.receptorsChanged();
     }

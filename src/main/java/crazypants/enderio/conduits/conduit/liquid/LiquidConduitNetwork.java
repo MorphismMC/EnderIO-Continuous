@@ -257,8 +257,7 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
 
         try {
             BlockPos pos = con.getBundle().getLocation();
-            Collection<ILiquidConduit> connections = ConduitUtil.getConnectedConduits(
-                    con.getBundle().getTileEntity().getWorld(), pos.getX(), pos.getY(), pos.getZ(),
+            Collection<ILiquidConduit> connections = ConduitUtil.getConnectedConduits(con.getBundle().getTileEntity().getWorld(), pos,
                     ILiquidConduit.class);
             for (ILiquidConduit n : connections) {
                 LiquidConduit neighbour = (LiquidConduit) n;

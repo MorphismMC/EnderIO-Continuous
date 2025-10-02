@@ -1,6 +1,6 @@
 package crazypants.enderio.api.teleport;
 
-import crazypants.enderio.base.sound.IModSound;
+import crazypants.enderio.base.sound.ModSound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface ITravelSource extends IForgeRegistryEntry<ITravelSource> {
 
-    IModSound getSound();
+    ModSound getSound();
 
     default boolean getConserveMomentum() {
         return false;

@@ -1,11 +1,10 @@
 package crazypants.enderio.base.sound;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import org.jetbrains.annotations.NotNull;
 
-public interface IModSound {
+public interface ModSound {
 
     /**
      * Checks if the sound is valid and can be played.
@@ -18,13 +17,14 @@ public interface IModSound {
      * 
      * @return the soundEvent to play. Will throw an exception if isValid() is false.
      */
-    @Nonnull
+    @NotNull
     SoundEvent getSoundEvent();
 
     /**
      * 
      * @return the SoundCategory to use for playing the sound. Will throw an exception if isValid() is false.
      */
-    @Nonnull
+    @NotNull
     SoundCategory getSoundCategory();
+
 }

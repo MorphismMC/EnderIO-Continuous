@@ -53,7 +53,7 @@ public abstract class AbstractConduitNetwork<T extends ConduitServer, I extends 
     }
 
     @Override
-    public void init(@Nonnull ConduitBundle tile, Collection<I> connections,
+    public void init(@Nonnull ConduitBundle bundle, Collection<I> connections,
                      @Nonnull World world) throws UnloadedBlockException {
         if (world.isRemote) {
             throw new UnsupportedOperationException();
@@ -66,7 +66,7 @@ public abstract class AbstractConduitNetwork<T extends ConduitServer, I extends 
                 network.destroyNetwork();
             }
         }
-        setNetwork(world, tile);
+        setNetwork(world, bundle);
     }
 
     @Override

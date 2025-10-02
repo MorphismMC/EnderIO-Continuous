@@ -206,8 +206,7 @@ public class InsulatedRedstoneConduit extends AbstractConduit
                     BlockPos pos = getBundle().getLocation().offset(faceHit);
                     Block id = world.getBlockState(pos).getBlock();
                     if (id == ConduitRegistry.getConduitModObjectNN().getBlock()) {
-                        IRedstoneConduit neighbour = ConduitUtil.getConduit(world, pos.getX(), pos.getY(), pos.getZ(),
-                                IRedstoneConduit.class);
+                        IRedstoneConduit neighbour = ConduitUtil.getConduit(world, pos, IRedstoneConduit.class);
                         if (neighbour != null &&
                                 neighbour.getConnectionMode(faceHit.getOpposite()) == ConnectionMode.DISABLED) {
                             neighbour.setConnectionMode(faceHit.getOpposite(), ConnectionMode.NOT_SET);
@@ -230,8 +229,7 @@ public class InsulatedRedstoneConduit extends AbstractConduit
 
                     } else if (containsConduitConnection(connDir)) {
                         BlockPos pos = getBundle().getLocation().offset(connDir);
-                        IRedstoneConduit neighbour = ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(),
-                                pos.getX(), pos.getY(), pos.getZ(), IRedstoneConduit.class);
+                        IRedstoneConduit neighbour = ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(), pos, IRedstoneConduit.class);
                         if (neighbour != null) {
                             if (network != null) {
                                 network.destroyNetwork();
@@ -530,8 +528,7 @@ public class InsulatedRedstoneConduit extends AbstractConduit
             return false;
         }
         BlockPos loc = getBundle().getLocation().offset(dir);
-        return ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(), loc.getX(), loc.getY(), loc.getZ(),
-                IRedstoneConduit.class) == null;
+        return ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(), loc, IRedstoneConduit.class) == null;
     }
 
     // ---------------------
