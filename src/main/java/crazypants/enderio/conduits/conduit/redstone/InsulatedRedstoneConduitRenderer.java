@@ -25,10 +25,10 @@ public class InsulatedRedstoneConduitRenderer extends DefaultConduitRenderer {
 
     @Override
     protected void addConduitQuads(@Nonnull ConduitBundle bundle, @Nonnull ConduitClient conduit,
-                                   @Nonnull ConduitTexture tex,
-                                   @Nonnull CollidableComponent component, float selfIllum, BlockRenderLayer layer,
+                                   @Nonnull ConduitTexture texture,
+                                   @Nonnull CollidableComponent component, float brightness, BlockRenderLayer layer,
                                    @Nonnull List<BakedQuad> quads) {
-        super.addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);
+        super.addConduitQuads(bundle, conduit, texture, component, brightness, layer, quads);
 
         IRedstoneConduit pc = (IRedstoneConduit) conduit;
         EnumFacing dir = component.direction();

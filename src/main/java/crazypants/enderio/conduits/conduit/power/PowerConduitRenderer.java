@@ -26,10 +26,10 @@ public class PowerConduitRenderer extends DefaultConduitRenderer {
 
     @Override
     protected void addConduitQuads(@Nonnull ConduitBundle bundle, @Nonnull ConduitClient conduit,
-                                   @Nonnull ConduitTexture tex,
-                                   @Nonnull CollidableComponent component, float selfIllum, BlockRenderLayer layer,
+                                   @Nonnull ConduitTexture texture,
+                                   @Nonnull CollidableComponent component, float brightness, BlockRenderLayer layer,
                                    @Nonnull List<BakedQuad> quads) {
-        super.addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);
+        super.addConduitQuads(bundle, conduit, texture, component, brightness, layer, quads);
         ConduitInOutRenderer.renderIO(bundle, conduit, component, layer, quads, DyeColor.RED, DyeColor.RED);
     }
 }

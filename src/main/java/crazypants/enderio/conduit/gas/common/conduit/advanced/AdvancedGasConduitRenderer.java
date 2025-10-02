@@ -47,8 +47,8 @@ public class AdvancedGasConduitRenderer extends DefaultConduitRenderer {
     @Override
     protected void addConduitQuads(@Nonnull ConduitBundle bundle, @Nonnull ConduitClient conduit,
                                    @Nonnull ConduitTexture tex, @Nonnull CollidableComponent component,
-                                   float selfIllum, BlockRenderLayer layer, @Nonnull List<BakedQuad> quads) {
-        super.addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);
+                                   float brightness, BlockRenderLayer layer, @Nonnull List<BakedQuad> quads) {
+        super.addConduitQuads(bundle, conduit, tex, component, brightness, layer, quads);
         ConduitInOutRenderer.renderIO(bundle, conduit, component, layer, quads, DyeColor.RED, DyeColor.RED);
 
         if (component.isCore() || component.data() != null) {

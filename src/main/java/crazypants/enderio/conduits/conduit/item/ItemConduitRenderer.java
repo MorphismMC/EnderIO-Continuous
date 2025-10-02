@@ -23,18 +23,15 @@ public class ItemConduitRenderer extends DefaultConduitRenderer {
     }
 
     @Override
-    protected void addConduitQuads(@NotNull ConduitBundle bundle,
-                                   @NotNull ConduitClient conduit,
-                                   @NotNull ConduitTexture texture,
-                                   @NotNull CollidableComponent component,
-                                   float selfIllum,
-                                   BlockRenderLayer layer,
+    protected void addConduitQuads(@NotNull ConduitBundle bundle, @NotNull ConduitClient conduit,
+                                   @NotNull ConduitTexture texture, @NotNull CollidableComponent component,
+                                   float brightness, BlockRenderLayer layer,
                                    @NotNull List<BakedQuad> quads) {
-        super.addConduitQuads(bundle, conduit, texture, component, selfIllum, layer, quads);
-        ItemConduit pc = (ItemConduit) conduit;
-        EnumFacing dir = component.direction();
-        ConduitInOutRenderer.renderIO(bundle, conduit, component, layer, quads, pc.getInputColor(dir),
-                pc.getOutputColor(dir));
+        super.addConduitQuads(bundle, conduit, texture, component, brightness, layer, quads);
+        ItemConduit conduitEntry = (ItemConduit) conduit;
+        EnumFacing direction = component.direction();
+        ConduitInOutRenderer.renderIO(bundle, conduit, component, layer, quads, conduitEntry.getInputColor(direction),
+                conduitEntry.getOutputColor(direction));
     }
 
 }

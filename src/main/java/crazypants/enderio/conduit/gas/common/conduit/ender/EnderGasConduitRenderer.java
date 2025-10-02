@@ -25,9 +25,9 @@ public class EnderGasConduitRenderer extends DefaultConduitRenderer {
 
     @Override
     protected void addConduitQuads(@Nonnull ConduitBundle bundle, @Nonnull ConduitClient conduit,
-                                   @Nonnull ConduitTexture tex, @Nonnull CollidableComponent component,
-                                   float selfIllum, BlockRenderLayer layer, @Nonnull List<BakedQuad> quads) {
-        super.addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);
+                                   @Nonnull ConduitTexture texture, @Nonnull CollidableComponent component,
+                                   float brightness, BlockRenderLayer layer, @Nonnull List<BakedQuad> quads) {
+        super.addConduitQuads(bundle, conduit, texture, component, brightness, layer, quads);
 
         EnderGasConduit pc = (EnderGasConduit) conduit;
         EnumFacing dir = component.direction();
