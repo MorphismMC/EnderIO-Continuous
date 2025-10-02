@@ -21,7 +21,6 @@ import com.enderio.core.common.ContainerEnderCap;
 import com.enderio.core.common.util.NNList;
 
 import crazypants.enderio.base.conduit.Conduit;
-import crazypants.enderio.base.conduit.IExternalConnectionContainer;
 import crazypants.enderio.base.filter.IFilter;
 import crazypants.enderio.base.filter.IFilterContainer;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
@@ -35,7 +34,7 @@ import crazypants.enderio.conduits.init.ConduitObject;
 import crazypants.enderio.conduits.network.PacketSlotVisibility;
 
 public class ExternalConnectionContainer extends ContainerEnderCap<InventoryUpgrades, TileConduitBundle>
-                                         implements IExternalConnectionContainer, IOpenFilterRemoteExec.Container,
+                                         implements crazypants.enderio.base.conduit.ExternalConnectionContainer, IOpenFilterRemoteExec.Container,
                                          IFilterContainer {
 
     private final @Nonnull Slot slotFunctionUpgrade;

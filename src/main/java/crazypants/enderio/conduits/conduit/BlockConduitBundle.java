@@ -607,7 +607,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
         if (rt == null) {
             return false;
         }
-        CollidableComponent component = rt.component;
+        CollidableComponent component = rt.component();
         Class<? extends Conduit> type = component.conduitType;
         if (!YetaUtil.renderConduit(player, type)) {
             return false;
@@ -707,21 +707,21 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
         // Check conduit defined actions
         List<RaytraceResult> all = doRayTraceAll(world, pos, player);
         for (RaytraceResult raytraceResult : RaytraceResult.sort(Util.getEyePosition(player), all)) {
-            if (raytraceResult.component.data instanceof ConduitConnectorType) {
-                if (raytraceResult.component.data == ConduitConnectorType.INTERNAL &&
+            if (raytraceResult.component().data instanceof ConduitConnectorType) {
+                if (raytraceResult.component().data == ConduitConnectorType.INTERNAL &&
                         YetaUtil.renderInternalComponent(player)) {
                     // this is the gray box that's enclosing cores
                     return false;
-                } else if (raytraceResult.component.isDirectional()) {
+                } else if (raytraceResult.component().isDirectional()) {
                     // this is a connector plate
                     if (!world.isRemote) {
-                        openGui(world, pos, player, raytraceResult.component.getDirection(),
-                                raytraceResult.component.getDirection().ordinal());
+                        openGui(world, pos, player, raytraceResult.component().getDirection(),
+                                raytraceResult.component().getDirection().ordinal());
                     }
                     return true;
                 }
-            } else if (raytraceResult.component.conduitType != null) {
-                final Conduit componentConduit = bundle.getConduit(raytraceResult.component.conduitType);
+            } else if (raytraceResult.component().conduitType != null) {
+                final Conduit componentConduit = bundle.getConduit(raytraceResult.component().conduitType);
                 if (componentConduit != null && YetaUtil.renderConduit(player, componentConduit) &&
                         componentConduit.onBlockActivated(player, hand, raytraceResult, all)) {
                     bundle.getTileEntity().markDirty();
@@ -769,7 +769,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
         if (rr == null) {
             return false;
         }
-        CollidableComponent component = rr.component;
+        CollidableComponent component = rr.component();
         if (component.isCore()) {
             return false;
         }
@@ -899,14 +899,14 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
             List<RaytraceResult> results = doRayTraceAll(world, pos, player);
             Iterator<RaytraceResult> iter = results.iterator();
             while (iter.hasNext()) {
-                CollidableComponent component = iter.next().component;
+                CollidableComponent component = iter.next().component();
                 if (component.conduitType == null && component.data != ConduitConnectorType.EXTERNAL) {
                     iter.remove();
                 }
             }
 
             RaytraceResult hit = RaytraceResult.getClosestHit(Util.getEyePosition(player), results);
-            CollidableComponent component = hit == null ? null : hit.component;
+            CollidableComponent component = hit == null ? null : hit.component();
             if (component != null) {
                 minBB = component.bound;
                 if (component.isDirectional() && component.conduitType == null) {
@@ -943,9 +943,9 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
         RaytraceResult raytraceResult = doRayTrace(world, pos, origin, direction, null);
         RayTraceResult ret = null;
         if (raytraceResult != null) {
-            ret = raytraceResult.movingObjectPosition;
+            ret = raytraceResult.movingObjectPosition();
             // FIXME No it's not!!
-            ret.hitInfo = raytraceResult.component;
+            ret.hitInfo = raytraceResult.component();
         }
 
         return ret;

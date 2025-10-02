@@ -22,7 +22,7 @@ import com.enderio.core.common.vecmath.Vector3d;
 import crazypants.enderio.base.conduit.ConnectionMode;
 import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.ConduitBundle;
-import crazypants.enderio.base.conduit.IExtractor;
+import crazypants.enderio.base.conduit.ConduitExtractor;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.conduit.geom.ConduitGeometryUtil;
 import crazypants.enderio.base.conduit.geom.Offset;
@@ -107,8 +107,8 @@ public class ConduitInOutRenderer {
     private static void addColorBand(@Nonnull ConduitClient conduit, @Nonnull CollidableComponent component,
                                      @Nonnull List<BakedQuad> quads,
                                      @Nonnull EnumFacing dir, @Nonnull ConnectionMode mode) {
-        if (IPowerConduit.COLOR_CONTROLLER_ID.equals(component.data) && (conduit instanceof IExtractor)) {
-            IExtractor pc = (IExtractor) conduit;
+        if (IPowerConduit.COLOR_CONTROLLER_ID.equals(component.data) && (conduit instanceof ConduitExtractor)) {
+            ConduitExtractor pc = (ConduitExtractor) conduit;
             final RedstoneControlMode extractionRedstoneMode = pc.getExtractionRedstoneMode(dir);
             if (extractionRedstoneMode != RedstoneControlMode.IGNORE &&
                     extractionRedstoneMode != RedstoneControlMode.NEVER && mode.acceptsInput()) {

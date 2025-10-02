@@ -8,12 +8,12 @@ import net.minecraftforge.items.IItemHandler;
 
 import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.ConduitTexture;
-import crazypants.enderio.base.conduit.IExtractor;
+import crazypants.enderio.base.conduit.ConduitExtractor;
 import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.filter.item.IItemFilter;
 import crazypants.enderio.conduits.conduit.IEnderConduit;
 
-public interface IItemConduit extends IExtractor, ConduitServer, ConduitClient, IEnderConduit {
+public interface IItemConduit extends ConduitExtractor, ConduitServer, ConduitClient, IEnderConduit {
 
     // Textures
     ConduitTexture getEnderIcon();

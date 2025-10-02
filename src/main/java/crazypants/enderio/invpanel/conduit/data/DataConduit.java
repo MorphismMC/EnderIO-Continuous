@@ -30,7 +30,7 @@ import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.conduit.ConduitNetwork;
 import crazypants.enderio.base.conduit.ConduitTexture;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
+import crazypants.enderio.base.conduit.GuiExternalConnection;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.invpanel.capability.CapabilityDatabaseHandler;
@@ -71,7 +71,7 @@ public class DataConduit extends AbstractConduit implements IDataConduit {
 
     @Override
     @Nonnull
-    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull ConduitClient conduit) {
+    public ITabPanel createGuiPanel(@Nonnull GuiExternalConnection gui, @Nonnull ConduitClient conduit) {
         return new DataSettings(gui, conduit);
     }
 
@@ -146,8 +146,8 @@ public class DataConduit extends AbstractConduit implements IDataConduit {
                                     @Nonnull List<RaytraceResult> all) {
         if (ToolUtil.isToolEquipped(player, hand)) {
             if (!getBundle().getTileEntity().getWorld().isRemote) {
-                final CollidableComponent component = res.component;
-                EnumFacing faceHit = res.movingObjectPosition.sideHit;
+                final CollidableComponent component = res.component();
+                EnumFacing faceHit = res.movingObjectPosition().sideHit;
                 if (component.isCore()) {
                     if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
                         setConnectionMode(faceHit, ConnectionMode.IN_OUT);

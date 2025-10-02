@@ -22,7 +22,7 @@ import com.enderio.core.client.render.ColorUtil;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConnectionMode;
 import crazypants.enderio.base.conduit.ConduitClient;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
+import crazypants.enderio.base.conduit.GuiExternalConnection;
 import crazypants.enderio.base.filter.network.IOpenFilterRemoteExec;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.network.PacketHandler;
@@ -38,7 +38,7 @@ public class BaseSettingsPanel extends Gui implements ITabPanel, IOpenFilterRemo
     protected final int ID_ENABLED = 331;
 
     protected final @Nonnull IWidgetIcon icon;
-    protected final @Nonnull IGuiExternalConnection gui;
+    protected final @Nonnull GuiExternalConnection gui;
     protected @Nonnull ConduitClient con;
     protected final @Nonnull String typeName;
     protected final @Nonnull ResourceLocation texture;
@@ -78,7 +78,7 @@ public class BaseSettingsPanel extends Gui implements ITabPanel, IOpenFilterRemo
     protected @Nonnull GuiToolTip filterInsertUpgradeTooltip;
 
     protected BaseSettingsPanel(@Nonnull IWidgetIcon icon, @Nonnull String typeName,
-                                @Nonnull IGuiExternalConnection gui, @Nonnull ConduitClient con,
+                                @Nonnull GuiExternalConnection gui, @Nonnull ConduitClient con,
                                 @Nonnull String texture) {
         this.icon = icon;
         this.typeName = typeName;

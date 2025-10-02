@@ -7,7 +7,7 @@ import net.minecraft.util.EnumFacing;
 
 import com.enderio.core.api.client.gui.IGuiScreen;
 
-public interface IGuiExternalConnection extends IGuiScreen {
+public interface GuiExternalConnection extends IGuiScreen {
 
     /**
      * Gets the direction of the conduit's connection
@@ -18,7 +18,7 @@ public interface IGuiExternalConnection extends IGuiScreen {
     /**
      * Gets the conduit container
      */
-    IExternalConnectionContainer getContainer();
+    ExternalConnectionContainer getContainer();
 
     // The following are handled by the Gui class already but are needed here for abstraction to base
     int getGuiTop();

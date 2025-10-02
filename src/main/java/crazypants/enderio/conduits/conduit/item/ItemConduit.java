@@ -46,7 +46,7 @@ import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.conduit.ConduitNetwork;
 import crazypants.enderio.base.conduit.ConduitTexture;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
+import crazypants.enderio.base.conduit.GuiExternalConnection;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableCache.CacheKey;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
@@ -185,11 +185,11 @@ public class ItemConduit extends AbstractConduit implements IItemConduit, IFilte
         if (ConduitUtil.isProbeEquipped(player, hand)) {
             return false;
         } else {
-            final CollidableComponent component = res.component;
+            final CollidableComponent component = res.component();
             if (ToolUtil.isToolEquipped(player, hand)) {
                 if (!getBundle().getTileEntity().getWorld().isRemote) {
                     if (component != null) {
-                        EnumFacing faceHit = res.movingObjectPosition.sideHit;
+                        EnumFacing faceHit = res.movingObjectPosition().sideHit;
                         if (component.isCore()) {
                             if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
                                 setConnectionMode(faceHit, getNextConnectionMode(faceHit));
@@ -285,14 +285,14 @@ public class ItemConduit extends AbstractConduit implements IItemConduit, IFilte
     }
 
     @Override
-    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing dir) {
-        extractionModes.put(dir, mode);
+    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing direction) {
+        extractionModes.put(direction, mode);
     }
 
     @Override
     @Nonnull
-    public RedstoneControlMode getExtractionRedstoneMode(@Nonnull EnumFacing dir) {
-        RedstoneControlMode res = extractionModes.get(dir);
+    public RedstoneControlMode getExtractionRedstoneMode(@Nonnull EnumFacing direction) {
+        RedstoneControlMode res = extractionModes.get(direction);
         if (res == null) {
             res = RedstoneControlMode.NEVER;
         }
@@ -300,14 +300,14 @@ public class ItemConduit extends AbstractConduit implements IItemConduit, IFilte
     }
 
     @Override
-    public void setExtractionSignalColor(@Nonnull EnumFacing dir, @Nonnull DyeColor col) {
-        extractionColors.put(dir, col);
+    public void setExtractionSignalColor(@Nonnull EnumFacing direction, @Nonnull DyeColor color) {
+        extractionColors.put(direction, color);
     }
 
     @Override
     @Nonnull
-    public DyeColor getExtractionSignalColor(@Nonnull EnumFacing dir) {
-        DyeColor result = extractionColors.get(dir);
+    public DyeColor getExtractionSignalColor(@Nonnull EnumFacing direction) {
+        DyeColor result = extractionColors.get(direction);
         if (result == null) {
             return DyeColor.RED;
         }
@@ -764,7 +764,7 @@ public class ItemConduit extends AbstractConduit implements IItemConduit, IFilte
     @SideOnly(Side.CLIENT)
     @Nonnull
     @Override
-    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull ConduitClient conduit) {
+    public ITabPanel createGuiPanel(@Nonnull GuiExternalConnection gui, @Nonnull ConduitClient conduit) {
         return new ItemSettings(gui, conduit);
     }
 

@@ -50,9 +50,9 @@ public abstract class AbstractGasTankConduit extends AbstractGasConduit {
         AbstractGasTankConduitNetwork<? extends AbstractGasTankConduit> network = getTankNetwork();
         if (ToolUtil.isToolEquipped(player, hand)) {
             if (!getBundle().getTileEntity().getWorld().isRemote) {
-                CollidableComponent component = res.component;
+                CollidableComponent component = res.component();
                 if (component != null) {
-                    EnumFacing faceHit = res.movingObjectPosition.sideHit;
+                    EnumFacing faceHit = res.movingObjectPosition().sideHit;
                     if (component.isCore()) {
                         if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
                             setConnectionMode(faceHit, getNextConnectionMode(faceHit));

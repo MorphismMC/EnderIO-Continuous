@@ -6,11 +6,11 @@ import javax.annotation.Nullable;
 import net.minecraft.util.EnumFacing;
 
 import crazypants.enderio.base.conduit.ConduitClient;
-import crazypants.enderio.base.conduit.IExtractor;
+import crazypants.enderio.base.conduit.ConduitExtractor;
 import crazypants.enderio.base.conduit.ConduitServer;
 import mekanism.api.gas.IGasHandler;
 
-public interface IGasConduit extends IGasHandler, IExtractor, ConduitServer, ConduitClient {
+public interface IGasConduit extends IGasHandler, ConduitExtractor, ConduitServer, ConduitClient {
 
     boolean canOutputToDir(@Nonnull EnumFacing dir);
 

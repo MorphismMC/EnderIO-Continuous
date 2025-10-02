@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import com.enderio.core.client.gui.widget.GhostSlot;
 import com.enderio.core.common.util.NNList;
 
-public interface IExternalConnectionContainer {
+public interface ExternalConnectionContainer {
 
     /**
      * Allows all input/output slots to be made visible

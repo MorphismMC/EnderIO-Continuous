@@ -144,9 +144,9 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
 
         if (ToolUtil.isToolEquipped(player, hand)) {
             if (!getBundle().getTileEntity().getWorld().isRemote) {
-                final CollidableComponent component = res.component;
+                final CollidableComponent component = res.component();
                 if (component != null) {
-                    EnumFacing faceHit = res.movingObjectPosition.sideHit;
+                    EnumFacing faceHit = res.movingObjectPosition().sideHit;
                     if (component.isCore()) {
                         if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
                             setConnectionMode(faceHit, getNextConnectionMode(faceHit));
@@ -287,9 +287,9 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     }
 
     @Override
-    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing dir) {
-        super.setExtractionRedstoneMode(mode, dir);
-        refreshConnection(dir);
+    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing direction) {
+        super.setExtractionRedstoneMode(mode, direction);
+        refreshConnection(direction);
     }
 
     @Override

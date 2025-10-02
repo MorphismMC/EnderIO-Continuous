@@ -49,8 +49,8 @@ public class AdvancedLiquidConduitRenderer extends DefaultConduitRenderer {
     }
 
     @Override
-    public boolean canRenderInLayer(@Nonnull WithDefaultRendering con, @Nonnull BlockRenderLayer layer) {
-        return super.canRenderInLayer(con, layer) || layer == BlockRenderLayer.CUTOUT;
+    public boolean canRenderInLayer(@Nonnull WithDefaultRendering conduit, @Nonnull BlockRenderLayer layer) {
+        return super.canRenderInLayer(conduit, layer) || layer == BlockRenderLayer.CUTOUT;
     }
 
     @Override

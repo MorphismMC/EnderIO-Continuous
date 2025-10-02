@@ -8,10 +8,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import crazypants.enderio.base.conduit.ConduitClient;
-import crazypants.enderio.base.conduit.IExtractor;
+import crazypants.enderio.base.conduit.ConduitExtractor;
 import crazypants.enderio.base.conduit.ConduitServer;
 
-public interface ILiquidConduit extends IFluidHandler, IExtractor, ConduitServer, ConduitClient {
+public interface ILiquidConduit extends IFluidHandler, ConduitExtractor, ConduitServer, ConduitClient {
 
     boolean canOutputToDir(@Nonnull EnumFacing dir);
 

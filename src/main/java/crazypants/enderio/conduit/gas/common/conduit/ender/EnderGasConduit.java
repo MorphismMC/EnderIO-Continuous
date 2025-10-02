@@ -142,9 +142,9 @@ public class EnderGasConduit extends AbstractGasConduit
         }
 
         if (!getBundle().getTileEntity().getWorld().isRemote) {
-            CollidableComponent component = res.component;
+            CollidableComponent component = res.component();
             if (component != null) {
-                EnumFacing faceHit = res.movingObjectPosition.sideHit;
+                EnumFacing faceHit = res.movingObjectPosition().sideHit;
                 if (component.isCore()) {
                     if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
                         setConnectionMode(faceHit, getNextConnectionMode(faceHit));
@@ -270,9 +270,9 @@ public class EnderGasConduit extends AbstractGasConduit
     }
 
     @Override
-    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing dir) {
-        super.setExtractionRedstoneMode(mode, dir);
-        refreshConnection(dir);
+    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing direction) {
+        super.setExtractionRedstoneMode(mode, direction);
+        refreshConnection(direction);
     }
 
     @Override

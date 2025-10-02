@@ -21,12 +21,11 @@ import com.enderio.core.api.client.gui.ITabPanel;
 
 import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.ConduitBundle;
-import crazypants.enderio.base.conduit.IExternalConnectionContainer;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
+import crazypants.enderio.base.conduit.ExternalConnectionContainer;
 import crazypants.enderio.base.gui.GuiContainerBaseEIO;
 import crazypants.enderio.conduits.conduit.TileConduitBundle;
 
-public class GuiExternalConnection extends GuiContainerBaseEIO<ConduitBundle> implements IGuiExternalConnection {
+public class GuiExternalConnection extends GuiContainerBaseEIO<ConduitBundle> implements crazypants.enderio.base.conduit.GuiExternalConnection {
 
     private static int nextButtonId = 1;
 
@@ -40,13 +39,13 @@ public class GuiExternalConnection extends GuiContainerBaseEIO<ConduitBundle> im
     private final @Nonnull List<ITabPanel> tabs = new ArrayList<ITabPanel>();
     private int activeTab = 0;
 
-    private final IExternalConnectionContainer container;
+    private final ExternalConnectionContainer container;
 
     public GuiExternalConnection(@Nonnull InventoryPlayer playerInv, @Nonnull ConduitBundle bundle,
                                  @Nonnull EnumFacing dir) {
-        super(bundle, new ExternalConnectionContainer(playerInv, dir, (TileConduitBundle) bundle.getTileEntity()).init(),
+        super(bundle, new crazypants.enderio.conduits.gui.ExternalConnectionContainer(playerInv, dir, (TileConduitBundle) bundle.getTileEntity()).init(),
                 "item_filter");
-        container = (ExternalConnectionContainer) inventorySlots;
+        container = (crazypants.enderio.conduits.gui.ExternalConnectionContainer) inventorySlots;
         this.playerInv = playerInv;
         this.dir = dir;
 
@@ -185,7 +184,7 @@ public class GuiExternalConnection extends GuiContainerBaseEIO<ConduitBundle> im
     }
 
     @Override
-    public IExternalConnectionContainer getContainer() {
+    public ExternalConnectionContainer getContainer() {
         return container;
     }
 

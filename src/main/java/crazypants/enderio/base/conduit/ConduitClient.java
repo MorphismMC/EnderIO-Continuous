@@ -27,7 +27,7 @@ public interface ConduitClient extends Conduit {
      */
     @SideOnly(Side.CLIENT)
     @NotNull
-    ITabPanel createGuiPanel(@NotNull IGuiExternalConnection gui, @NotNull ConduitClient conduit);
+    ITabPanel createGuiPanel(@NotNull GuiExternalConnection gui, @NotNull ConduitClient conduit);
 
     /**
      * Update the gui for updated client conduits.

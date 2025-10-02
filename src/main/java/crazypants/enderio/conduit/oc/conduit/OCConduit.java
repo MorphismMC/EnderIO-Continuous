@@ -40,7 +40,7 @@ import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.conduit.ConduitNetwork;
 import crazypants.enderio.base.conduit.ConduitTexture;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
+import crazypants.enderio.base.conduit.GuiExternalConnection;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableCache.CacheKey;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
@@ -245,7 +245,7 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
     public boolean onBlockActivated(@Nonnull EntityPlayer player, @Nonnull EnumHand hand, @Nonnull RaytraceResult res,
                                     @Nonnull List<RaytraceResult> all) {
         DyeColor col = DyeColor.getColorFromDye(player.getHeldItem(hand));
-        final CollidableComponent component = res.component;
+        final CollidableComponent component = res.component();
         if (col != null && component.isDirectional()) {
             setSignalColor(component.getDirection(), col);
             return true;
@@ -281,7 +281,7 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
             return true;
         } else if (ToolUtil.isToolEquipped(player, hand)) {
             if (!getBundle().getTileEntity().getWorld().isRemote) {
-                EnumFacing faceHit = res.movingObjectPosition.sideHit;
+                EnumFacing faceHit = res.movingObjectPosition().sideHit;
                 if (component.isCore()) {
                     if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
                         setConnectionMode(faceHit, ConnectionMode.IN_OUT);
@@ -292,7 +292,7 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
                     EnumFacing connDir = component.getDirection();
                     if (containsExternalConnection(connDir)) {
                         for (RaytraceResult rtr : all) {
-                            if (rtr != null && COLOR_CONTROLLER_ID.equals(rtr.component.data)) {
+                            if (rtr != null && COLOR_CONTROLLER_ID.equals(rtr.component().data)) {
                                 setSignalColor(connDir, DyeColor.getNext(getSignalColor(connDir)));
                                 return true;
                             }
@@ -569,7 +569,7 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
     @SideOnly(Side.CLIENT)
     @Override
     @Nonnull
-    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull ConduitClient conduit) {
+    public ITabPanel createGuiPanel(@Nonnull GuiExternalConnection gui, @Nonnull ConduitClient conduit) {
         return new OCSettings(gui, conduit);
     }
 

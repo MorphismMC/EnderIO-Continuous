@@ -47,7 +47,7 @@ import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.conduit.ConduitNetwork;
 import crazypants.enderio.base.conduit.ConduitTexture;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
+import crazypants.enderio.base.conduit.GuiExternalConnection;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableCache.CacheKey;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
@@ -180,7 +180,7 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
         if (ConduitUtil.isProbeEquipped(player, hand)) {
             return false;
         } else {
-            final CollidableComponent component = res.component;
+            final CollidableComponent component = res.component();
             DyeColor col = DyeColor.getColorFromDye(player.getHeldItemMainhand());
             if (col != null && component != null && component.isDirectional() &&
                     isColorBandRendered(component.getDirection())) {
@@ -189,7 +189,7 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
             } else if (ToolUtil.isToolEquipped(player, hand)) {
                 if (!getBundle().getTileEntity().getWorld().isRemote) {
                     if (component != null) {
-                        EnumFacing faceHit = res.movingObjectPosition.sideHit;
+                        EnumFacing faceHit = res.movingObjectPosition().sideHit;
                         if (component.isCore()) {
                             if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
                                 setConnectionMode(faceHit, getNextConnectionMode(faceHit));
@@ -219,15 +219,15 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
     }
 
     @Override
-    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing dir) {
-        rsModes.put(dir, mode);
+    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing direction) {
+        rsModes.put(direction, mode);
         setClientStateDirty();
     }
 
     @Override
     @Nonnull
-    public RedstoneControlMode getExtractionRedstoneMode(@Nonnull EnumFacing dir) {
-        RedstoneControlMode res = rsModes.get(dir);
+    public RedstoneControlMode getExtractionRedstoneMode(@Nonnull EnumFacing direction) {
+        RedstoneControlMode res = rsModes.get(direction);
         if (res == null) {
             res = RedstoneControlMode.IGNORE;
         }
@@ -235,15 +235,15 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
     }
 
     @Override
-    public void setExtractionSignalColor(@Nonnull EnumFacing dir, @Nonnull DyeColor col) {
-        rsColors.put(dir, col);
+    public void setExtractionSignalColor(@Nonnull EnumFacing direction, @Nonnull DyeColor color) {
+        rsColors.put(direction, color);
         setClientStateDirty();
     }
 
     @Override
     @Nonnull
-    public DyeColor getExtractionSignalColor(@Nonnull EnumFacing dir) {
-        DyeColor res = rsColors.get(dir);
+    public DyeColor getExtractionSignalColor(@Nonnull EnumFacing direction) {
+        DyeColor res = rsColors.get(direction);
         if (res == null) {
             res = DyeColor.RED;
         }
@@ -565,7 +565,7 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
     @SideOnly(Side.CLIENT)
     @Nonnull
     @Override
-    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull ConduitClient conduit) {
+    public ITabPanel createGuiPanel(@Nonnull GuiExternalConnection gui, @Nonnull ConduitClient conduit) {
         return new PowerSettings(gui, conduit);
     }
 

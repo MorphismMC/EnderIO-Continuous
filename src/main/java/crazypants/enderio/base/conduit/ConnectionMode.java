@@ -1,12 +1,15 @@
 package crazypants.enderio.base.conduit;
 
-import javax.annotation.Nonnull;
-
 import com.enderio.core.common.util.NullHelper;
 
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.Log;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
+@Getter
+@AllArgsConstructor
 public enum ConnectionMode {
 
     IN_OUT("gui.conduit.io_mode.in_out"),
@@ -15,17 +18,11 @@ public enum ConnectionMode {
     DISABLED("gui.conduit.io_mode.disabled"),
     NOT_SET("gui.conduit.io_mode.not_set");
 
-    private final @Nonnull String unlocalisedName;
+    @NotNull
+    private final String unlocalisedName;
 
-    ConnectionMode(@Nonnull String unlocalisedName) {
-        this.unlocalisedName = unlocalisedName;
-    }
-
-    public @Nonnull String getUnlocalisedName() {
-        return unlocalisedName;
-    }
-
-    public static @Nonnull ConnectionMode getNext(@Nonnull ConnectionMode mode) {
+    @NotNull
+    public static ConnectionMode getNext(@NotNull ConnectionMode mode) {
         int ord = mode.ordinal() + 1;
         if (ord >= ConnectionMode.values().length) {
             ord = 0;
@@ -33,7 +30,8 @@ public enum ConnectionMode {
         return NullHelper.first(ConnectionMode.values()[ord], NOT_SET);
     }
 
-    public static @Nonnull ConnectionMode getPrevious(@Nonnull ConnectionMode mode) {
+    @NotNull
+    public static ConnectionMode getPrevious(@NotNull ConnectionMode mode) {
         int ord = mode.ordinal() - 1;
         if (ord < 0) {
             ord = ConnectionMode.values().length - 1;
@@ -53,7 +51,8 @@ public enum ConnectionMode {
         return this != DISABLED;
     }
 
-    public @Nonnull String getLocalisedName() {
+    @NotNull
+    public String getLocalisedName() {
         return EnderIO.lang.localize(unlocalisedName);
     }
 
@@ -64,4 +63,5 @@ public enum ConnectionMode {
             }
         }
     }
+
 }

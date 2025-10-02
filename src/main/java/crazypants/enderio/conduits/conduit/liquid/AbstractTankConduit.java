@@ -49,9 +49,9 @@ public abstract class AbstractTankConduit extends AbstractLiquidConduit {
         if (ToolUtil.isToolEquipped(player, hand)) {
 
             if (!getBundle().getTileEntity().getWorld().isRemote) {
-                final CollidableComponent component = res.component;
+                final CollidableComponent component = res.component();
                 if (component != null) {
-                    EnumFacing faceHit = res.movingObjectPosition.sideHit;
+                    EnumFacing faceHit = res.movingObjectPosition().sideHit;
                     if (component.isCore()) {
                         if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
                             setConnectionMode(faceHit, getNextConnectionMode(faceHit));

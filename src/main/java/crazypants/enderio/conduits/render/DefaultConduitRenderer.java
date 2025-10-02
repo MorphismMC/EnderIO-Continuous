@@ -36,11 +36,11 @@ import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.ConduitClient.WithDefaultRendering;
 import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.conduit.ConduitBundle;
-import crazypants.enderio.base.conduit.IConduitRenderer;
+import crazypants.enderio.base.conduit.ConduitRenderer;
 import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 
-public class DefaultConduitRenderer implements IConduitRenderer {
+public class DefaultConduitRenderer implements ConduitRenderer {
 
     static final Vector3d[] verts = new Vector3d[8];
 
@@ -100,7 +100,7 @@ public class DefaultConduitRenderer implements IConduitRenderer {
     }
 
     @Override
-    public boolean canRenderInLayer(@Nonnull WithDefaultRendering con, @Nonnull BlockRenderLayer layer) {
+    public boolean canRenderInLayer(@Nonnull WithDefaultRendering conduit, @Nonnull BlockRenderLayer layer) {
         return layer == getConduitQuadsLayer() || layer == getTransmissionQuadsLayer();
     }
 
@@ -184,7 +184,7 @@ public class DefaultConduitRenderer implements IConduitRenderer {
 
     @Override
     public void renderDynamicEntity(@Nonnull TileEntitySpecialRenderer<?> conduitBundleRenderer,
-                                    @Nonnull ConduitBundle te,
+                                    @Nonnull ConduitBundle bundle,
                                     @Nonnull ConduitClient.WithDefaultRendering conduit, double x, double y, double z,
                                     float partialTick, float worldLight) {
         Collection<CollidableComponent> components = conduit.getCollidableComponents();

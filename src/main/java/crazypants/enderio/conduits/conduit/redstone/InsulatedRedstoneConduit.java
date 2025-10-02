@@ -182,7 +182,7 @@ public class InsulatedRedstoneConduit extends AbstractConduit
         World world = getBundle().getTileEntity().getWorld();
 
         DyeColor col = DyeColor.getColorFromDye(player.getHeldItem(hand));
-        final CollidableComponent component = res.component;
+        final CollidableComponent component = res.component();
         if (col != null && component != null && component.isDirectional()) {
             if (!world.isRemote) {
                 if (getConnectionMode(component.getDirection()).acceptsInput()) {
@@ -199,7 +199,7 @@ public class InsulatedRedstoneConduit extends AbstractConduit
             }
 
             if (component != null) {
-                EnumFacing faceHit = res.movingObjectPosition.sideHit;
+                EnumFacing faceHit = res.movingObjectPosition().sideHit;
 
                 if (component.isCore()) {
 
@@ -768,7 +768,7 @@ public class InsulatedRedstoneConduit extends AbstractConduit
     @SideOnly(Side.CLIENT)
     @Nonnull
     @Override
-    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull ConduitClient conduit) {
+    public ITabPanel createGuiPanel(@Nonnull GuiExternalConnection gui, @Nonnull ConduitClient conduit) {
         return new RedstoneSettings(gui, conduit);
     }
 

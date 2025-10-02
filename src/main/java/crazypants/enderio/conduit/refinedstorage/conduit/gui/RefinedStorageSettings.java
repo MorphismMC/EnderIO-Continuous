@@ -11,7 +11,7 @@ import com.enderio.core.client.gui.widget.GuiToolTip;
 import com.enderio.core.common.util.NNList;
 
 import crazypants.enderio.base.conduit.ConduitClient;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
+import crazypants.enderio.base.conduit.GuiExternalConnection;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.init.ModObject;
 import crazypants.enderio.conduit.refinedstorage.conduit.IRefinedStorageConduit;
@@ -25,7 +25,7 @@ public class RefinedStorageSettings extends BaseSettingsPanel {
 
     private IRefinedStorageConduit rsCon;
 
-    public RefinedStorageSettings(@Nonnull IGuiExternalConnection gui, @Nonnull ConduitClient con) {
+    public RefinedStorageSettings(@Nonnull GuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_RS, ConduitRefinedStorageObject.item_refined_storage_conduit.getUnlocalisedName(),
                 gui, con, "filter_upgrade_settings");
 

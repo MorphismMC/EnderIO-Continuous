@@ -90,11 +90,11 @@ public class LiquidConduitRenderer extends DefaultConduitRenderer implements IRe
 
     @Override
     public void renderDynamicEntity(@Nonnull TileEntitySpecialRenderer<?> conduitBundleRenderer,
-                                    @Nonnull ConduitBundle te,
+                                    @Nonnull ConduitBundle bundle,
                                     @Nonnull ConduitClient.WithDefaultRendering conduit, double x, double y, double z,
                                     float partialTick, float worldLight) {
         calculateRatios((LiquidConduit) conduit);
-        super.renderDynamicEntity(conduitBundleRenderer, te, conduit, x, y, z, partialTick, worldLight);
+        super.renderDynamicEntity(conduitBundleRenderer, bundle, conduit, x, y, z, partialTick, worldLight);
     }
 
     @Override

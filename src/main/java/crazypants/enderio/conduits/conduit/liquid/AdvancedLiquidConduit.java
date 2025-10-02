@@ -140,9 +140,9 @@ public class AdvancedLiquidConduit extends AbstractTankConduit {
     }
 
     @Override
-    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing dir) {
-        super.setExtractionRedstoneMode(mode, dir);
-        refreshInputs(dir);
+    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing direction) {
+        super.setExtractionRedstoneMode(mode, direction);
+        refreshInputs(direction);
     }
 
     private void refreshInputs(@Nonnull EnumFacing dir) {
