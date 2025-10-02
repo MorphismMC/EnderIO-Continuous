@@ -15,7 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import com.enderio.core.client.gui.button.IconButton;
 import com.enderio.core.client.render.ColorUtil;
 
-import crazypants.enderio.base.filter.IFilter;
+import crazypants.enderio.base.filter.Filter;
 import crazypants.enderio.base.filter.network.ICloseFilterRemoteExec;
 import crazypants.enderio.base.filter.network.PacketFilterUpdate;
 import crazypants.enderio.base.filter.network.PacketHeldFilterUpdate;
@@ -34,15 +34,15 @@ public abstract class AbstractFilterGui extends GuiContainerBaseEIO<TileEntity>
     protected final boolean isStickyModeAvailable;
 
     private final IconButton closeWindowButton;
-    private final @Nonnull IFilter filter;
+    private final @Nonnull Filter filter;
 
     public AbstractFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer,
-                             TileEntity te, @Nonnull IFilter filter) {
+                             TileEntity te, @Nonnull Filter filter) {
         this(playerInv, filterContainer, te, filter, "item_filter");
     }
 
     protected AbstractFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer,
-                                TileEntity te, @Nonnull IFilter filter,
+                                TileEntity te, @Nonnull Filter filter,
                                 @Nonnull String... texture) {
         super(te, filterContainer, texture);
         this.filterContainer = filterContainer;
@@ -110,7 +110,7 @@ public abstract class AbstractFilterGui extends GuiContainerBaseEIO<TileEntity>
     }
 
     @Nonnull
-    private IFilter getFilter() {
+    private Filter getFilter() {
         return filter;
     }
 }

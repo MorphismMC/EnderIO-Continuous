@@ -30,7 +30,7 @@ import com.enderio.core.common.TileEntityBase;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIOTab;
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.IFilterContainer;
+import crazypants.enderio.base.filter.FilterContainer;
 import crazypants.enderio.base.filter.gui.BasicItemFilterGui;
 import crazypants.enderio.base.filter.gui.ContainerFilter;
 import crazypants.enderio.base.filter.item.ItemFilter;
@@ -40,7 +40,7 @@ import crazypants.enderio.base.lang.Lang;
 import crazypants.enderio.util.EnumReader;
 import crazypants.enderio.util.NbtValue;
 
-public class ItemBasicItemFilter extends Item implements IItemFilterItemUpgrade, IResourceTooltipProvider {
+public class ItemBasicItemFilter extends Item implements ItemFilterItemUpgrade, IResourceTooltipProvider {
 
     protected BasicFilterTypes filterType;
 
@@ -120,10 +120,10 @@ public class ItemBasicItemFilter extends Item implements IItemFilterItemUpgrade,
     public GuiScreen getClientGuiElement(@Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos,
                                          @Nullable EnumFacing facing, int param1) {
         Container container = player.openContainer;
-        if (container instanceof IFilterContainer) {
+        if (container instanceof FilterContainer) {
             return new BasicItemFilterGui(player.inventory,
                     new ContainerFilter(player, (TileEntityBase) world.getTileEntity(pos), facing, param1),
-                    world.getTileEntity(pos), ((IFilterContainer<ItemFilter>) container).getFilter(param1));
+                    world.getTileEntity(pos), ((FilterContainer<ItemFilter>) container).getFilter(param1));
         } else {
             return new BasicItemFilterGui(player.inventory, new ContainerFilter(player, null, facing, param1), null,
                     FilterRegistry.getFilterForUpgrade(player.getHeldItem(EnumReader.get(EnumHand.class, param1))));

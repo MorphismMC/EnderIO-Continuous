@@ -12,7 +12,7 @@ import net.minecraft.util.EnumFacing;
  * 
  * 
  */
-public interface IUpgradeHolder {
+public interface UpgradeHolder {
 
     @Nonnull
     ItemStack getUpgradeStack(int param1);

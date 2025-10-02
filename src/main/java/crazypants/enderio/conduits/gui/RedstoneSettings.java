@@ -16,8 +16,8 @@ import com.enderio.core.common.util.NNList;
 import crazypants.enderio.base.conduit.ConnectionMode;
 import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.GuiExternalConnection;
-import crazypants.enderio.base.filter.IFilter;
-import crazypants.enderio.base.filter.IFilterContainer;
+import crazypants.enderio.base.filter.Filter;
+import crazypants.enderio.base.filter.FilterContainer;
 import crazypants.enderio.base.filter.gui.FilterGuiUtil;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.init.ModObject;
@@ -163,7 +163,7 @@ public class RedstoneSettings extends BaseSettingsPanel {
 
     @Override
     protected boolean hasFilterGui(boolean output) {
-        return ((IFilter) ((IFilterContainer<?>) gui.getContainer())
+        return ((Filter) ((FilterContainer<?>) gui.getContainer())
                 .getFilter(!output ? FilterGuiUtil.INDEX_INPUT_REDSTONE : FilterGuiUtil.INDEX_OUTPUT_REDSTONE))
                         .hasGui();
     }

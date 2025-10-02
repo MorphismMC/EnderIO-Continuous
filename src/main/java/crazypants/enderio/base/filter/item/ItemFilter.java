@@ -6,11 +6,11 @@ import net.minecraftforge.items.IItemHandler;
 import com.enderio.core.client.gui.widget.GhostSlot;
 import com.enderio.core.common.util.NNList;
 
-import crazypants.enderio.base.filter.IFilter;
+import crazypants.enderio.base.filter.Filter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface ItemFilter extends IFilter {
+public interface ItemFilter extends Filter {
 
     /**
      * Checks if the given item passes the filter or not.

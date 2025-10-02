@@ -29,8 +29,8 @@ import com.enderio.core.common.TileEntityBase;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIOTab;
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.IFilter;
-import crazypants.enderio.base.filter.IFilterContainer;
+import crazypants.enderio.base.filter.Filter;
+import crazypants.enderio.base.filter.FilterContainer;
 import crazypants.enderio.base.filter.gui.ContainerFilter;
 import crazypants.enderio.base.lang.Lang;
 import crazypants.enderio.util.EnumReader;
@@ -38,7 +38,7 @@ import crazypants.enderio.util.NbtValue;
 import crazypants.enderio.conduit.gas.client.GasFilterGui;
 import crazypants.enderio.conduit.gas.common.conduit.GasConduitObject;
 
-public class ItemGasFilter extends Item implements IItemFilterGasUpgrade, IResourceTooltipProvider {
+public class ItemGasFilter extends Item implements ItemFilterGasUpgrade, IResourceTooltipProvider {
 
     public static ItemGasFilter create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemGasFilter(modObject);
@@ -96,13 +96,13 @@ public class ItemGasFilter extends Item implements IItemFilterGasUpgrade, IResou
     public GuiScreen getClientGuiElement(@Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos,
                                          @Nullable EnumFacing facing, int param1) {
         Container container = player.openContainer;
-        if (container instanceof IFilterContainer) {
+        if (container instanceof FilterContainer) {
             return new GasFilterGui(player.inventory,
                     new ContainerFilter(player, (TileEntityBase) world.getTileEntity(pos), facing, param1),
                     world.getTileEntity(pos),
-                    ((IFilterContainer<GasFilter>) container).getFilter(param1));
+                    ((FilterContainer<GasFilter>) container).getFilter(param1));
         }
-        IFilter filter = FilterRegistry.getFilterForUpgrade(player.getHeldItem(EnumReader.get(EnumHand.class, param1)));
+        Filter filter = FilterRegistry.getFilterForUpgrade(player.getHeldItem(EnumReader.get(EnumHand.class, param1)));
         if (filter instanceof GasFilter) {
             // Should always be true, mainly double checked to avoid null warning
             return new GasFilterGui(player.inventory, new ContainerFilter(player, null, facing, param1), null,

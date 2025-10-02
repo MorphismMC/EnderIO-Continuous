@@ -21,14 +21,14 @@ import com.enderio.core.common.TileEntityBase;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIOTab;
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.IFilterContainer;
+import crazypants.enderio.base.filter.FilterContainer;
 import crazypants.enderio.base.filter.gui.ContainerFilter;
 import crazypants.enderio.base.filter.gui.IncrementingValueFilterGui;
 import crazypants.enderio.base.filter.redstone.IInputSignalFilter;
 import crazypants.enderio.base.filter.redstone.TimerInputSignalFilter;
 import crazypants.enderio.util.NbtValue;
 
-public class ItemTimerInputSignalFilter extends Item implements IItemInputSignalFilterUpgrade {
+public class ItemTimerInputSignalFilter extends Item implements ItemInputSignalFilterUpgrade {
 
     public static ItemTimerInputSignalFilter create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemTimerInputSignalFilter(modObject);
@@ -57,10 +57,10 @@ public class ItemTimerInputSignalFilter extends Item implements IItemInputSignal
     public GuiScreen getClientGuiElement(@Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos,
                                          @Nullable EnumFacing facing, int param1) {
         Container container = player.openContainer;
-        if (container instanceof IFilterContainer) {
+        if (container instanceof FilterContainer) {
             return new IncrementingValueFilterGui(player.inventory,
                     new ContainerFilter(player, (TileEntityBase) world.getTileEntity(pos), facing, param1),
-                    world.getTileEntity(pos), ((IFilterContainer<TimerInputSignalFilter>) container).getFilter(param1));
+                    world.getTileEntity(pos), ((FilterContainer<TimerInputSignalFilter>) container).getFilter(param1));
         } else {
             return new IncrementingValueFilterGui(player.inventory, new ContainerFilter(player, null, facing, param1),
                     null,

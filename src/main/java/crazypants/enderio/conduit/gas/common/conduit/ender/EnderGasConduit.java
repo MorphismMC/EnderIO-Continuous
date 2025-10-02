@@ -41,13 +41,13 @@ import crazypants.enderio.base.conduit.item.FunctionUpgrade;
 import crazypants.enderio.base.conduit.item.ItemFunctionUpgrade;
 import crazypants.enderio.base.filter.FilterRegistry;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
-import crazypants.enderio.base.filter.capability.IFilterHolder;
+import crazypants.enderio.base.filter.capability.FilterHolder;
 import crazypants.enderio.base.lang.LangFluid;
 import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.tool.ToolUtil;
 import crazypants.enderio.conduits.capability.CapabilityUpgradeHolder;
-import crazypants.enderio.conduits.capability.IUpgradeHolder;
+import crazypants.enderio.conduits.capability.UpgradeHolder;
 import crazypants.enderio.conduits.conduit.ConduitEnder;
 import crazypants.enderio.conduits.conduit.item.ItemConduitImpl;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
@@ -65,13 +65,13 @@ import crazypants.enderio.conduit.gas.common.conduit.IGasConduit;
 import crazypants.enderio.conduit.gas.common.config.GasConduitConfig;
 import crazypants.enderio.conduit.gas.common.filter.GasFilterImpl;
 import crazypants.enderio.conduit.gas.common.filter.GasFilter;
-import crazypants.enderio.conduit.gas.common.filter.IItemFilterGasUpgrade;
+import crazypants.enderio.conduit.gas.common.filter.ItemFilterGasUpgrade;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 
 public class EnderGasConduit extends AbstractGasConduit
-                             implements IFilterHolder<GasFilter>, IUpgradeHolder, ConduitEnder {
+                             implements FilterHolder<GasFilter>, UpgradeHolder, ConduitEnder {
 
     public static final ConduitTexture ICON_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit", false), crazypants.enderio.conduits.render.ConduitTexture.arm(3));
@@ -613,7 +613,7 @@ public class EnderGasConduit extends AbstractGasConduit
 
     @Override
     public boolean isFilterUpgradeAccepted(@Nonnull ItemStack stack, boolean isInput) {
-        return stack.getItem() instanceof IItemFilterGasUpgrade;
+        return stack.getItem() instanceof ItemFilterGasUpgrade;
     }
 
     // ------------------------------------------------
@@ -693,7 +693,7 @@ public class EnderGasConduit extends AbstractGasConduit
     public int getUpgradeSlotLimit(@Nonnull ItemStack stack) {
         return stack.getItem() instanceof ItemFunctionUpgrade ?
                 ((ItemFunctionUpgrade) stack.getItem()).getUpgradeSlotLimit() :
-                IUpgradeHolder.super.getUpgradeSlotLimit(stack);
+                UpgradeHolder.super.getUpgradeSlotLimit(stack);
     }
 
     @Override

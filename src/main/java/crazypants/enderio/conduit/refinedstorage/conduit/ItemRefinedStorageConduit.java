@@ -33,7 +33,7 @@ public class ItemRefinedStorageConduit extends AbstractConduitItem {
                 .setClass(getBaseConduitType())
                 .setOffsets(Offset.WEST_UP, Offset.NORTH_UP, Offset.NORTH_WEST, Offset.WEST_UP).build()
                 .setUUID(new ResourceLocation(EnderIO.DOMAIN, "refinedstorage_conduit"))
-                .setClass(RefinedStorageConduit.class).build().finish());
+                .setClass(RefinedStorageConduitImpl.class).build().finish());
         ConduitDisplayMode.registerDisplayMode(
                 new ConduitDisplayMode(getBaseConduitType(), IconEIO.WRENCH_OVERLAY_RS, IconEIO.WRENCH_OVERLAY_RS_OFF));
     }
@@ -41,12 +41,12 @@ public class ItemRefinedStorageConduit extends AbstractConduitItem {
     @Override
     @Nonnull
     public Class<? extends Conduit> getBaseConduitType() {
-        return IRefinedStorageConduit.class;
+        return RefinedStorageConduit.class;
     }
 
     @Override
     public ConduitServer createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
-        return new RefinedStorageConduit();
+        return new RefinedStorageConduitImpl();
     }
 
     @Override

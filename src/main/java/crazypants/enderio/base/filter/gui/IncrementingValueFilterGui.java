@@ -14,7 +14,7 @@ import com.enderio.core.client.gui.button.MultiIconButton;
 import com.enderio.core.client.render.ColorUtil;
 
 import crazypants.enderio.base.EnderIO;
-import crazypants.enderio.base.filter.IFilter;
+import crazypants.enderio.base.filter.Filter;
 import crazypants.enderio.base.filter.redstone.IFilterIncrementingValue;
 
 public class IncrementingValueFilterGui extends AbstractFilterGui {
@@ -31,7 +31,7 @@ public class IncrementingValueFilterGui extends AbstractFilterGui {
     private final @Nonnull IFilterIncrementingValue incrementingFilter;
 
     public IncrementingValueFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer,
-                                      TileEntity te, @Nonnull IFilter filterIn) {
+                                      TileEntity te, @Nonnull Filter filterIn) {
         super(playerInv, filterContainer, te, filterIn);
 
         incrementingFilter = (IFilterIncrementingValue) filterIn;

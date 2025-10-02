@@ -34,7 +34,7 @@ import com.raoulvdberge.refinedstorage.api.util.IComparer;
 import crazypants.enderio.base.capability.ItemTools;
 import crazypants.enderio.base.conduit.item.FunctionUpgrade;
 import crazypants.enderio.base.conduit.item.ItemFunctionUpgrade;
-import crazypants.enderio.base.filter.IFilter;
+import crazypants.enderio.base.filter.Filter;
 import crazypants.enderio.base.filter.fluid.FluidFilter;
 import crazypants.enderio.base.filter.gui.DamageMode;
 import crazypants.enderio.base.filter.item.ItemFilter;
@@ -55,7 +55,7 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
     protected INetwork rsNetwork;
     protected final @Nonnull World world;
     protected final @Nonnull BlockPos pos;
-    protected final @Nonnull IRefinedStorageConduit con;
+    protected final @Nonnull RefinedStorageConduit con;
 
     private final @Nonnull NNIterator<EnumFacing> dirsToCheck = new EndlessNNIterator<>(NNList.FACING);
 
@@ -72,7 +72,7 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
 
     private final @Nonnull SidedNNObject<UUID> craftingTask = new SidedNNObject<>(UUID.randomUUID());
 
-    public ConduitRefinedStorageNode(@Nonnull IRefinedStorageConduit con) {
+    public ConduitRefinedStorageNode(@Nonnull RefinedStorageConduit con) {
         this.con = con;
         this.world = con.getBundle().getBundleworld();
         this.pos = con.getBundle().getLocation();
@@ -115,8 +115,8 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
         if (canUpdate()) {
             EnumFacing dir = dirsToCheck.next();
             if (con.isActiveExternalConnection(dir)) {
-                IFilter outputFilter = con.getOutputFilter(dir);
-                IFilter inputFilter = con.getInputFilter(dir);
+                Filter outputFilter = con.getOutputFilter(dir);
+                Filter inputFilter = con.getInputFilter(dir);
                 if (outputFilter != null || inputFilter != null) {
                     TileEntity te = BlockEnder.getAnyTileEntitySafe(world, pos.offset(dir));
                     if (te != null && !(te instanceof IStorageProvider)) {
@@ -132,7 +132,7 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
         }
     }
 
-    private void updateDirFluids(@Nonnull EnumFacing dir, IFilter outputFilter, IFilter inputFilter,
+    private void updateDirFluids(@Nonnull EnumFacing dir, Filter outputFilter, Filter inputFilter,
                                  @Nonnull TileEntity te) {
         final INetwork network = rsNetwork;
         IFluidHandler handler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
@@ -268,7 +268,7 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
         return Math.min(limit, existing.getCount());
     }
 
-    private void updateDirItems(@Nonnull EnumFacing dir, IFilter outputFilter, IFilter inputFilter,
+    private void updateDirItems(@Nonnull EnumFacing dir, Filter outputFilter, Filter inputFilter,
                                 @Nonnull TileEntity te) {
         INetwork network = rsNetwork;
         IItemHandler handler = ItemTools.getExternalInventory(te, dir.getOpposite());

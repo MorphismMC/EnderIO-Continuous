@@ -2,12 +2,12 @@ package crazypants.enderio.conduit.gas.common.filter;
 
 import net.minecraft.item.ItemStack;
 
-import crazypants.enderio.base.filter.IFilter;
+import crazypants.enderio.base.filter.Filter;
 import mekanism.api.gas.GasStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface GasFilter extends IFilter {
+public interface GasFilter extends Filter {
 
     /**
      * Check if the filter has no {@link GasStack}s.

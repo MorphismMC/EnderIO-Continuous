@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.IItemFilterUpgrade;
+import crazypants.enderio.base.filter.ItemFilterUpgrade;
 import crazypants.enderio.util.Prep;
 
 public class CopyFilterRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
@@ -25,7 +25,7 @@ public class CopyFilterRecipe extends IForgeRegistryEntry.Impl<IRecipe> implemen
         for (int i = 0; i < inv.getSizeInventory(); i++) {
             ItemStack checkStack = inv.getStackInSlot(i);
             if (Prep.isValid(checkStack)) {
-                if (checkStack.getItem() instanceof IItemFilterUpgrade) {
+                if (checkStack.getItem() instanceof ItemFilterUpgrade) {
                     if (FilterRegistry.isFilterSet(checkStack)) {
                         if (sourceSlot >= 0) {
                             // 2 configured filter found

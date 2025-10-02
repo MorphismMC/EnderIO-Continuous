@@ -4,11 +4,11 @@ package crazypants.enderio.base.filter.fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-import crazypants.enderio.base.filter.IFilter;
+import crazypants.enderio.base.filter.Filter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface FluidFilter extends IFilter {
+public interface FluidFilter extends Filter {
 
     /**
      * Checks if the filter has no {@link FluidStack}s.

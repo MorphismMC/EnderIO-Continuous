@@ -53,17 +53,17 @@ import crazypants.enderio.base.conduit.geom.Offset;
 import crazypants.enderio.base.conduit.geom.Offsets;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.diagnostics.Prof;
-import crazypants.enderio.base.filter.IFilter;
-import crazypants.enderio.base.filter.ITileFilterContainer;
+import crazypants.enderio.base.filter.Filter;
+import crazypants.enderio.base.filter.TileFilterContainer;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
-import crazypants.enderio.base.filter.capability.IFilterHolder;
+import crazypants.enderio.base.filter.capability.FilterHolder;
 import crazypants.enderio.base.init.ModObject;
 import crazypants.enderio.base.machine.base.te.ICap;
 import crazypants.enderio.base.machine.interfaces.Notifiable;
 import crazypants.enderio.base.paint.PaintUtil;
 import crazypants.enderio.base.paint.YetaUtil;
 import crazypants.enderio.base.render.IBlockStateWrapper;
-import crazypants.enderio.conduits.autosave.HandleIConduit;
+import crazypants.enderio.conduits.autosave.ConduitHandler;
 import crazypants.enderio.conduits.capability.CapabilityUpgradeHolder;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
 import crazypants.enderio.conduits.conduit.redstone.IRedstoneConduit;
@@ -77,11 +77,11 @@ import info.loenwind.autosave.annotations.Store;
 
 @Storable
 public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
-        ConduitComponent.ConduitComponentProvider, ITileFilterContainer, Notifiable {
+        ConduitComponent.ConduitComponentProvider, TileFilterContainer, Notifiable {
 
     // TODO Fix duct-tape
     // TODO Check store
-    @Store(handler = HandleIConduit.List.class)
+    @Store(handler = ConduitHandler.List.class)
     private @Nonnull CopyOnWriteArrayList<Conduit> conduits = new CopyOnWriteArrayList<Conduit>(); // <- duct-tape fix
 
     /*
@@ -826,11 +826,11 @@ public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
     ////////////////////////////////////////////
 
     @Override
-    public void setFilter(int filterIndex, int param, @Nonnull IFilter filter) {
+    public void setFilter(int filterIndex, int param, @Nonnull Filter filter) {
         for (Conduit conduit : getConduits()) {
             if (conduit.hasInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY,
                     EnumFacing.byIndex(param))) {
-                IFilterHolder<IFilter> filterHolder = conduit.getInternalCapability(
+                FilterHolder<Filter> filterHolder = conduit.getInternalCapability(
                         CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, EnumFacing.byIndex(param));
                 if (filterHolder != null && (filterHolder.getInputFilterIndex() == filterIndex ||
                         filterHolder.getOutputFilterIndex() == filterIndex)) {
@@ -841,11 +841,11 @@ public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
     }
 
     @Override
-    public IFilter getFilter(int filterIndex, int param) {
+    public Filter getFilter(int filterIndex, int param) {
         for (Conduit conduit : getConduits()) {
             if (conduit.hasInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY,
                     EnumFacing.byIndex(param))) {
-                IFilterHolder<IFilter> filterHolder = conduit.getInternalCapability(
+                FilterHolder<Filter> filterHolder = conduit.getInternalCapability(
                         CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, EnumFacing.byIndex(param));
                 if (filterHolder != null && (filterHolder.getInputFilterIndex() == filterIndex ||
                         filterHolder.getOutputFilterIndex() == filterIndex)) {
@@ -862,7 +862,7 @@ public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
         for (Conduit conduit : getConduits()) {
             if (conduit.hasInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY,
                     EnumFacing.byIndex(param))) {
-                IFilterHolder<IFilter> filterHolder = conduit.getInternalCapability(
+                FilterHolder<Filter> filterHolder = conduit.getInternalCapability(
                         CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, EnumFacing.byIndex(param));
                 if (filterHolder != null && (filterHolder.getInputFilterIndex() == filterIndex ||
                         filterHolder.getOutputFilterIndex() == filterIndex)) {

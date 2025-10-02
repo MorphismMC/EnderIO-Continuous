@@ -46,17 +46,17 @@ import crazypants.enderio.base.conduit.item.FunctionUpgrade;
 import crazypants.enderio.base.conduit.item.ItemFunctionUpgrade;
 import crazypants.enderio.base.filter.FilterRegistry;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
-import crazypants.enderio.base.filter.capability.IFilterHolder;
+import crazypants.enderio.base.filter.capability.FilterHolder;
 import crazypants.enderio.base.filter.fluid.FluidFilterImpl;
 import crazypants.enderio.base.filter.fluid.FluidFilter;
-import crazypants.enderio.base.filter.fluid.items.IItemFilterFluidUpgrade;
+import crazypants.enderio.base.filter.fluid.items.ItemFilterFluidUpgrade;
 import crazypants.enderio.base.filter.gui.FilterGuiUtil;
 import crazypants.enderio.base.lang.LangFluid;
 import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.tool.ToolUtil;
 import crazypants.enderio.conduits.capability.CapabilityUpgradeHolder;
-import crazypants.enderio.conduits.capability.IUpgradeHolder;
+import crazypants.enderio.conduits.capability.UpgradeHolder;
 import crazypants.enderio.conduits.conduit.ConduitEnder;
 import crazypants.enderio.conduits.conduit.item.ItemConduitImpl;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
@@ -68,7 +68,7 @@ import crazypants.enderio.util.EnumReader;
 import crazypants.enderio.util.Prep;
 
 public class EnderLiquidConduit extends AbstractLiquidConduit
-                                implements IFilterHolder<FluidFilter>, IUpgradeHolder, ConduitEnder {
+                                implements FilterHolder<FluidFilter>, UpgradeHolder, ConduitEnder {
 
     public static final ConduitTexture ICON_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("blocks/liquid_conduit"), crazypants.enderio.conduits.render.ConduitTexture.arm(3));
@@ -623,7 +623,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
 
     @Override
     public boolean isFilterUpgradeAccepted(@Nonnull ItemStack stack, boolean isInput) {
-        return stack.getItem() instanceof IItemFilterFluidUpgrade;
+        return stack.getItem() instanceof ItemFilterFluidUpgrade;
     }
 
     // ------------------------------------------------
@@ -703,7 +703,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     public int getUpgradeSlotLimit(@Nonnull ItemStack stack) {
         return stack.getItem() instanceof ItemFunctionUpgrade ?
                 ((ItemFunctionUpgrade) stack.getItem()).getUpgradeSlotLimit() :
-                IUpgradeHolder.super.getUpgradeSlotLimit(stack);
+                UpgradeHolder.super.getUpgradeSlotLimit(stack);
     }
 
     @Override

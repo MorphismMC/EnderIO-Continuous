@@ -3,9 +3,9 @@ package crazypants.enderio.conduit.refinedstorage.conduit;
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
 
 public class RefinedStorageConduitNetwork extends
-                                          AbstractConduitNetwork<IRefinedStorageConduit, IRefinedStorageConduit> {
+                                          AbstractConduitNetwork<RefinedStorageConduit, RefinedStorageConduit> {
 
     protected RefinedStorageConduitNetwork() {
-        super(IRefinedStorageConduit.class, IRefinedStorageConduit.class);
+        super(RefinedStorageConduit.class, RefinedStorageConduit.class);
     }
 }

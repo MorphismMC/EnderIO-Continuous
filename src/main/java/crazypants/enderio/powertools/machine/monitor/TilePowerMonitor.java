@@ -29,7 +29,7 @@ import crazypants.enderio.base.machine.task.ContinuousTask;
 import crazypants.enderio.base.paint.IPaintable.IPaintableTileEntity;
 import crazypants.enderio.base.recipe.IMachineRecipe;
 import crazypants.enderio.base.render.util.DynaTextureProvider;
-import crazypants.enderio.conduits.autosave.HandleStatCollector;
+import crazypants.enderio.conduits.autosave.StatCollectorHandler;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
 import crazypants.enderio.conduits.conduit.power.NetworkPowerManager;
 import crazypants.enderio.conduits.conduit.power.PowerConduitNetwork;
@@ -46,21 +46,21 @@ public class TilePowerMonitor extends AbstractPoweredTaskEntity
     private static final int iconUpdateRate = 30 * 60 * 20 / 24; // ticks per pixel
 
     protected @Store(value = { SAVE, ITEM },
-                     handler = HandleStatCollector.class) StatCollector stats10s = new StatCollector(2);
+                     handler = StatCollectorHandler.class) StatCollector stats10s = new StatCollector(2);
     protected @Store(value = { SAVE, ITEM },
-                     handler = HandleStatCollector.class) StatCollector stats01m = new StatCollector(12);
+                     handler = StatCollectorHandler.class) StatCollector stats01m = new StatCollector(12);
     protected @Store(value = { SAVE, ITEM },
-                     handler = HandleStatCollector.class) StatCollector stats10m = new StatCollector(120);
+                     handler = StatCollectorHandler.class) StatCollector stats10m = new StatCollector(120);
     protected @Store(value = { SAVE, ITEM },
-                     handler = HandleStatCollector.class) StatCollector stats01h = new StatCollector(720);
+                     handler = StatCollectorHandler.class) StatCollector stats01h = new StatCollector(720);
     protected @Store(value = { SAVE, ITEM },
-                     handler = HandleStatCollector.class) StatCollector stats06h = new StatCollector(7200);
+                     handler = StatCollectorHandler.class) StatCollector stats06h = new StatCollector(7200);
     protected @Store(value = { SAVE, ITEM },
-                     handler = HandleStatCollector.class) StatCollector stats24h = new StatCollector(17280);
+                     handler = StatCollectorHandler.class) StatCollector stats24h = new StatCollector(17280);
     protected @Store(value = { SAVE, ITEM },
-                     handler = HandleStatCollector.class) StatCollector stats07d = new StatCollector(120960);
+                     handler = StatCollectorHandler.class) StatCollector stats07d = new StatCollector(120960);
     protected @Store(value = { SAVE, ITEM },
-                     handler = HandleStatCollector.class) StatCollector statsIcn = new StatCollector(iconUpdateRate,
+                     handler = StatCollectorHandler.class) StatCollector statsIcn = new StatCollector(iconUpdateRate,
                              28);
 
     protected StatCollector[] stats = { stats10s, stats01m, stats10m, stats01h, stats06h, stats24h, stats07d,

@@ -19,7 +19,7 @@ import crazypants.enderio.base.EnderIOTab;
 import crazypants.enderio.base.filter.redstone.ComparatorInputSignalFilter;
 import crazypants.enderio.base.filter.redstone.IInputSignalFilter;
 
-public class ItemComparatorInputSignalFilter extends Item implements IItemInputSignalFilterUpgrade {
+public class ItemComparatorInputSignalFilter extends Item implements ItemInputSignalFilterUpgrade {
 
     public static ItemComparatorInputSignalFilter create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemComparatorInputSignalFilter(modObject);

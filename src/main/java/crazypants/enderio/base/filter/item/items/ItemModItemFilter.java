@@ -29,7 +29,7 @@ import com.enderio.core.common.TileEntityBase;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIOTab;
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.IFilterContainer;
+import crazypants.enderio.base.filter.FilterContainer;
 import crazypants.enderio.base.filter.gui.ContainerFilter;
 import crazypants.enderio.base.filter.gui.ModItemFilterGui;
 import crazypants.enderio.base.filter.item.ItemFilter;
@@ -39,7 +39,7 @@ import crazypants.enderio.base.lang.Lang;
 import crazypants.enderio.util.EnumReader;
 import crazypants.enderio.util.NbtValue;
 
-public class ItemModItemFilter extends Item implements IItemFilterItemUpgrade, IResourceTooltipProvider {
+public class ItemModItemFilter extends Item implements ItemFilterItemUpgrade, IResourceTooltipProvider {
 
     public static ItemModItemFilter create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemModItemFilter(modObject);
@@ -97,10 +97,10 @@ public class ItemModItemFilter extends Item implements IItemFilterItemUpgrade, I
     public GuiScreen getClientGuiElement(@Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos,
                                          @Nullable EnumFacing facing, int param1) {
         Container container = player.openContainer;
-        if (container instanceof IFilterContainer) {
+        if (container instanceof FilterContainer) {
             return new ModItemFilterGui(player.inventory,
                     new ContainerFilter(player, (TileEntityBase) world.getTileEntity(pos), facing, param1),
-                    world.getTileEntity(pos), ((IFilterContainer<ItemFilter>) container).getFilter(param1));
+                    world.getTileEntity(pos), ((FilterContainer<ItemFilter>) container).getFilter(param1));
         } else {
             return new ModItemFilterGui(player.inventory, new ContainerFilter(player, null, facing, param1), null,
                     FilterRegistry.getFilterForUpgrade(player.getHeldItem(EnumReader.get(EnumHand.class, param1))));

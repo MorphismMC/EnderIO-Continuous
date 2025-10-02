@@ -17,7 +17,7 @@ import com.enderio.core.common.inventory.EnderInventory.Type;
 import com.enderio.core.common.inventory.EnderSlot;
 import com.enderio.core.common.util.NullHelper;
 
-import crazypants.enderio.base.filter.IFilterContainer;
+import crazypants.enderio.base.filter.FilterContainer;
 import crazypants.enderio.base.filter.gui.FilterGuiUtil;
 import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.filter.item.items.BasicFilterTypes;
@@ -25,7 +25,7 @@ import info.loenwind.processor.RemoteCall;
 
 @RemoteCall
 public class ContainerVacuumChest extends ContainerEnderCap<EnderInventory, TileVacuumChest>
-                                  implements IFilterContainer<ItemFilter> {
+                                  implements FilterContainer<ItemFilter> {
 
     private Slot filterSlot;
     private Runnable filterChangedCB;

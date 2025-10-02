@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.IItemHandler;
 
-import crazypants.enderio.base.filter.IFilter;
+import crazypants.enderio.base.filter.Filter;
 
 /**
  * Simple capability handler for Filters
@@ -15,7 +15,7 @@ import crazypants.enderio.base.filter.IFilter;
  * @param <T>
  *            Type of Filter
  */
-public interface IFilterHolder<T extends IFilter> {
+public interface FilterHolder<T extends Filter> {
 
     /**
      * Gets a filter from the capability

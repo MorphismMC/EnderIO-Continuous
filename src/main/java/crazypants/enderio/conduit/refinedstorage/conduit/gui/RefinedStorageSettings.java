@@ -14,8 +14,8 @@ import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.GuiExternalConnection;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.init.ModObject;
-import crazypants.enderio.conduit.refinedstorage.conduit.IRefinedStorageConduit;
 import crazypants.enderio.conduit.refinedstorage.conduit.RefinedStorageConduit;
+import crazypants.enderio.conduit.refinedstorage.conduit.RefinedStorageConduitImpl;
 import crazypants.enderio.conduit.refinedstorage.init.ConduitRefinedStorageObject;
 import crazypants.enderio.conduit.refinedstorage.lang.Lang;
 import crazypants.enderio.conduits.gui.BaseSettingsPanel;
@@ -23,13 +23,13 @@ import crazypants.enderio.conduits.init.ConduitObject;
 
 public class RefinedStorageSettings extends BaseSettingsPanel {
 
-    private IRefinedStorageConduit rsCon;
+    private RefinedStorageConduit rsCon;
 
     public RefinedStorageSettings(@Nonnull GuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_RS, ConduitRefinedStorageObject.item_refined_storage_conduit.getUnlocalisedName(),
                 gui, con, "filter_upgrade_settings");
 
-        rsCon = (IRefinedStorageConduit) con;
+        rsCon = (RefinedStorageConduit) con;
 
         filterExtractUpgradeTooltip = new GuiToolTip(new Rectangle(rightColumn, 70, 18, 18),
                 Lang.GUI_RS_FILTER_UPGRADE_IN.get(),
@@ -71,10 +71,10 @@ public class RefinedStorageSettings extends BaseSettingsPanel {
     public void actionPerformed(@Nonnull GuiButton guiButton) {
         super.actionPerformed(guiButton);
         if (guiButton.id == ID_INSERT_FILTER_OPTIONS) {
-            doOpenFilterGui(RefinedStorageConduit.INDEX_OUTPUT_REFINED_STROAGE);
+            doOpenFilterGui(RefinedStorageConduitImpl.INDEX_OUTPUT_REFINED_STROAGE);
             return;
         } else if (guiButton.id == ID_EXTRACT_FILTER_OPTIONS) {
-            doOpenFilterGui(RefinedStorageConduit.INDEX_INPUT_REFINED_STORAGE);
+            doOpenFilterGui(RefinedStorageConduitImpl.INDEX_INPUT_REFINED_STORAGE);
             return;
         }
     }

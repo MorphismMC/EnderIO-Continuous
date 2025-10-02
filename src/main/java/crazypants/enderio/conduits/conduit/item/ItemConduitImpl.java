@@ -55,16 +55,16 @@ import crazypants.enderio.base.conduit.item.FunctionUpgrade;
 import crazypants.enderio.base.conduit.item.ItemFunctionUpgrade;
 import crazypants.enderio.base.filter.FilterRegistry;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
-import crazypants.enderio.base.filter.capability.IFilterHolder;
+import crazypants.enderio.base.filter.capability.FilterHolder;
 import crazypants.enderio.base.filter.gui.FilterGuiUtil;
 import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.filter.item.ItemFilterImpl;
-import crazypants.enderio.base.filter.item.items.IItemFilterItemUpgrade;
+import crazypants.enderio.base.filter.item.items.ItemFilterItemUpgrade;
 import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.tool.ToolUtil;
 import crazypants.enderio.conduits.capability.CapabilityUpgradeHolder;
-import crazypants.enderio.conduits.capability.IUpgradeHolder;
+import crazypants.enderio.conduits.capability.UpgradeHolder;
 import crazypants.enderio.conduits.conduit.AbstractConduit;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
 import crazypants.enderio.conduits.conduit.power.PowerConduitImpl;
@@ -75,7 +75,7 @@ import crazypants.enderio.powertools.lang.Lang;
 import crazypants.enderio.util.EnumReader;
 import crazypants.enderio.util.Prep;
 
-public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFilterHolder<ItemFilter>, IUpgradeHolder {
+public class ItemConduitImpl extends AbstractConduit implements ItemConduit, FilterHolder<ItemFilter>, UpgradeHolder {
 
     public static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
@@ -869,7 +869,7 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
     public int getUpgradeSlotLimit(@Nonnull ItemStack stack) {
         return stack.getItem() instanceof ItemFunctionUpgrade ?
                 ((ItemFunctionUpgrade) stack.getItem()).getUpgradeSlotLimit() :
-                IUpgradeHolder.super.getUpgradeSlotLimit(stack);
+                UpgradeHolder.super.getUpgradeSlotLimit(stack);
     }
 
     @Override
@@ -891,7 +891,7 @@ public class ItemConduitImpl extends AbstractConduit implements ItemConduit, IFi
 
     @Override
     public boolean isFilterUpgradeAccepted(@Nonnull ItemStack stack, boolean isInput) {
-        return stack.getItem() instanceof IItemFilterItemUpgrade;
+        return stack.getItem() instanceof ItemFilterItemUpgrade;
     }
 
     @Override

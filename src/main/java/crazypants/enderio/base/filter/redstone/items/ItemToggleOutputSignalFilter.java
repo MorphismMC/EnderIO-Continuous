@@ -20,7 +20,7 @@ import crazypants.enderio.base.filter.redstone.IOutputSignalFilter;
 import crazypants.enderio.base.filter.redstone.ToggleOutputSignalFilter;
 import crazypants.enderio.util.NbtValue;
 
-public class ItemToggleOutputSignalFilter extends Item implements IItemOutputSignalFilterUpgrade {
+public class ItemToggleOutputSignalFilter extends Item implements ItemOutputSignalFilterUpgrade {
 
     public static ItemToggleOutputSignalFilter create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemToggleOutputSignalFilter(modObject);

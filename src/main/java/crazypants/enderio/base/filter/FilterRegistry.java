@@ -14,15 +14,15 @@ import io.netty.buffer.ByteBuf;
 public class FilterRegistry {
 
     public static boolean isItemFilter(@Nonnull ItemStack stack) {
-        return stack.getItem() instanceof IItemFilterUpgrade;
+        return stack.getItem() instanceof ItemFilterUpgrade;
     }
 
-    public static @Nullable <T extends IFilter> T getFilterForUpgrade(@Nonnull ItemStack stack) {
+    public static @Nullable <T extends Filter> T getFilterForUpgrade(@Nonnull ItemStack stack) {
         if (!isItemFilter(stack)) {
             return null;
         }
         @SuppressWarnings("unchecked")
-        IItemFilterUpgrade<T> upgrade = (IItemFilterUpgrade<T>) stack.getItem();
+        ItemFilterUpgrade<T> upgrade = (ItemFilterUpgrade<T>) stack.getItem();
         T res = upgrade.createFilterFromStack(stack);
         return res;
     }
@@ -31,7 +31,7 @@ public class FilterRegistry {
         return NbtValue.FILTER.hasTag(stack);
     }
 
-    public static void writeFilterToStack(@Nullable IFilter filter, @Nonnull ItemStack stack) {
+    public static void writeFilterToStack(@Nullable Filter filter, @Nonnull ItemStack stack) {
         if (filter == null) {
             return;
         }
@@ -40,7 +40,7 @@ public class FilterRegistry {
         NbtValue.FILTER.setTag(stack, filterRoot);
     }
 
-    public static void writeFilterToNbt(@Nullable IFilter filter, @Nonnull NBTTagCompound filterTag) {
+    public static void writeFilterToNbt(@Nullable Filter filter, @Nonnull NBTTagCompound filterTag) {
         if (filter == null) {
             return;
         }
@@ -48,7 +48,7 @@ public class FilterRegistry {
         filter.writeToNBT(filterTag);
     }
 
-    public static IFilter loadFilterFromNbt(@Nullable NBTTagCompound filterTag) {
+    public static Filter loadFilterFromNbt(@Nullable NBTTagCompound filterTag) {
         if (filterTag == null) {
             return null;
         }
@@ -56,10 +56,10 @@ public class FilterRegistry {
         return loadFilterFromNbt(className, filterTag);
     }
 
-    private static IFilter loadFilterFromNbt(@Nullable String className, @Nonnull NBTTagCompound tag) {
+    private static Filter loadFilterFromNbt(@Nullable String className, @Nonnull NBTTagCompound tag) {
         try {
             Class<?> clz = Class.forName(className);
-            IFilter filter = (IFilter) clz.newInstance();
+            Filter filter = (Filter) clz.newInstance();
             filter.readFromNBT(tag);
             return filter;
         } catch (Exception e) {
@@ -69,10 +69,10 @@ public class FilterRegistry {
         }
     }
 
-    private static IFilter loadFilterFromByteBuf(@Nonnull String className, @Nonnull ByteBuf buf) {
+    private static Filter loadFilterFromByteBuf(@Nonnull String className, @Nonnull ByteBuf buf) {
         try {
             Class<?> clz = Class.forName(className);
-            IFilter filter = (IFilter) clz.newInstance();
+            Filter filter = (Filter) clz.newInstance();
             filter.readFromByteBuf(buf);
             return filter;
         } catch (Exception e) {
@@ -81,7 +81,7 @@ public class FilterRegistry {
         }
     }
 
-    public static void writeFilter(@Nonnull ByteBuf buf, @Nullable IFilter filter) {
+    public static void writeFilter(@Nonnull ByteBuf buf, @Nullable Filter filter) {
         if (filter == null) {
             ByteBufUtils.writeUTF8String(buf, "nullFilter");
             return;
@@ -91,7 +91,7 @@ public class FilterRegistry {
         filter.writeToByteBuf(buf);
     }
 
-    public static IFilter readFilter(@Nonnull ByteBuf buf) {
+    public static Filter readFilter(@Nonnull ByteBuf buf) {
         String className = ByteBufUtils.readUTF8String(buf);
         if (className.equals("nullFilter")) {
             return null;
@@ -99,7 +99,7 @@ public class FilterRegistry {
         return loadFilterFromByteBuf(className, buf);
     }
 
-    public static IFilter readFilterFromStack(@Nonnull ItemStack stack) {
+    public static Filter readFilterFromStack(@Nonnull ItemStack stack) {
         if (isFilterSet(stack)) {
             return loadFilterFromNbt(NbtValue.FILTER.getTag(stack));
         }

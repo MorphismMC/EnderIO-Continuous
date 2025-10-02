@@ -21,10 +21,10 @@ import com.enderio.core.common.ContainerEnderCap;
 import com.enderio.core.common.util.NNList;
 
 import crazypants.enderio.base.conduit.Conduit;
-import crazypants.enderio.base.filter.IFilter;
-import crazypants.enderio.base.filter.IFilterContainer;
+import crazypants.enderio.base.filter.Filter;
+import crazypants.enderio.base.filter.FilterContainer;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
-import crazypants.enderio.base.filter.capability.IFilterHolder;
+import crazypants.enderio.base.filter.capability.FilterHolder;
 import crazypants.enderio.base.filter.network.IOpenFilterRemoteExec;
 import crazypants.enderio.base.init.ModObject;
 import crazypants.enderio.base.network.PacketHandler;
@@ -35,7 +35,7 @@ import crazypants.enderio.conduits.network.PacketSlotVisibility;
 
 public class ExternalConnectionContainer extends ContainerEnderCap<InventoryUpgrades, TileConduitBundle>
                                          implements crazypants.enderio.base.conduit.ExternalConnectionContainer, IOpenFilterRemoteExec.Container,
-                                         IFilterContainer {
+        FilterContainer {
 
     private final @Nonnull Slot slotFunctionUpgrade;
     private final @Nonnull Slot slotInputFilter;
@@ -201,7 +201,7 @@ public class ExternalConnectionContainer extends ContainerEnderCap<InventoryUpgr
     @Override
     public IMessage doOpenFilterGui(int filterIndex) {
         if (currentCon.hasInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, dir)) {
-            IFilterHolder<?> filterHolder = currentCon
+            FilterHolder<?> filterHolder = currentCon
                     .getInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, dir);
             int param1 = dir.ordinal();
             if (filterHolder != null) {
@@ -215,9 +215,9 @@ public class ExternalConnectionContainer extends ContainerEnderCap<InventoryUpgr
     }
 
     @Override // FIXME nonnull? it's certainly used that way, so why can it return null in so many cases
-    public @Nonnull IFilter getFilter(int filterIndex) {
+    public @Nonnull Filter getFilter(int filterIndex) {
         if (currentCon.hasInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, dir)) {
-            IFilterHolder<?> filterHolder = currentCon
+            FilterHolder<?> filterHolder = currentCon
                     .getInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, dir);
             int param1 = dir.ordinal();
             if (filterHolder != null) {

@@ -16,7 +16,7 @@ import io.netty.buffer.ByteBuf;
  * Interface for all filters
  *
  */
-public interface IFilter {
+public interface Filter {
 
     default void openGui(@Nonnull EntityPlayer player, @Nonnull ItemStack filter, @Nonnull World worldIn,
                          @Nonnull BlockPos pos, @Nonnull EnumFacing dir,

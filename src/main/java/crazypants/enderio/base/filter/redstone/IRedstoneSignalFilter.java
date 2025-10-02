@@ -6,10 +6,10 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.enderio.core.common.network.NetworkUtil;
 
-import crazypants.enderio.base.filter.IFilter;
+import crazypants.enderio.base.filter.Filter;
 import io.netty.buffer.ByteBuf;
 
-public interface IRedstoneSignalFilter extends IFilter {
+public interface IRedstoneSignalFilter extends Filter {
 
     @Override
     default void readFromNBT(@Nonnull NBTTagCompound nbtRoot) {}

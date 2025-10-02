@@ -46,11 +46,11 @@ import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.diagnostics.Prof;
 import crazypants.enderio.base.filter.FilterRegistry;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
-import crazypants.enderio.base.filter.capability.IFilterHolder;
+import crazypants.enderio.base.filter.capability.FilterHolder;
 import crazypants.enderio.base.filter.gui.FilterGuiUtil;
 import crazypants.enderio.base.filter.redstone.*;
-import crazypants.enderio.base.filter.redstone.items.IItemInputSignalFilterUpgrade;
-import crazypants.enderio.base.filter.redstone.items.IItemOutputSignalFilterUpgrade;
+import crazypants.enderio.base.filter.redstone.items.ItemInputSignalFilterUpgrade;
+import crazypants.enderio.base.filter.redstone.items.ItemOutputSignalFilterUpgrade;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.tool.ToolUtil;
 import crazypants.enderio.conduits.conduit.AbstractConduit;
@@ -61,7 +61,7 @@ import crazypants.enderio.powertools.lang.Lang;
 import crazypants.enderio.util.*;
 
 public class InsulatedRedstoneConduit extends AbstractConduit
-                                      implements IRedstoneConduit, IFilterHolder<IRedstoneSignalFilter> {
+                                      implements IRedstoneConduit, FilterHolder<IRedstoneSignalFilter> {
 
     static final Map<String, ConduitTexture> ICONS = new HashMap<>();
 
@@ -886,9 +886,9 @@ public class InsulatedRedstoneConduit extends AbstractConduit
     @Override
     public boolean isFilterUpgradeAccepted(@Nonnull ItemStack stack, boolean isInput) {
         if (!isInput) {
-            return stack.getItem() instanceof IItemInputSignalFilterUpgrade;
+            return stack.getItem() instanceof ItemInputSignalFilterUpgrade;
         } else {
-            return stack.getItem() instanceof IItemOutputSignalFilterUpgrade;
+            return stack.getItem() instanceof ItemOutputSignalFilterUpgrade;
         }
     }
 
