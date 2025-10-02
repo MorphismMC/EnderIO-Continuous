@@ -185,11 +185,11 @@ public class InsulatedRedstoneConduit extends AbstractConduit
         final CollidableComponent component = res.component();
         if (col != null && component != null && component.isDirectional()) {
             if (!world.isRemote) {
-                if (getConnectionMode(component.getDirection()).acceptsInput()) {
+                if (getConnectionMode(component.direction()).acceptsInput()) {
                     // Note: There's no way to set the input color in IN_OUT mode...
-                    setOutputSignalColor(component.getDirection(), col);
+                    setOutputSignalColor(component.direction(), col);
                 } else {
-                    setInputSignalColor(component.getDirection(), col);
+                    setInputSignalColor(component.direction(), col);
                 }
             }
             return true;
@@ -218,7 +218,7 @@ public class InsulatedRedstoneConduit extends AbstractConduit
                     return true;
 
                 } else {
-                    EnumFacing connDir = component.getDirection();
+                    EnumFacing connDir = component.direction();
                     if (externalConnections.contains(connDir)) {
                         if (network != null) {
                             network.destroyNetwork();
@@ -561,19 +561,19 @@ public class InsulatedRedstoneConduit extends AbstractConduit
     }
 
     @Override
-    protected void readTypeSettings(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        forceConnectionMode(dir, EnumReader.get(ConnectionMode.class, dataRoot.getShort("connectionMode")));
-        setInputSignalColor(dir, EnumReader.get(DyeColor.class, dataRoot.getShort("inputSignalColor")));
-        setOutputSignalColor(dir, EnumReader.get(DyeColor.class, dataRoot.getShort("outputSignalColor")));
-        setOutputStrength(dir, dataRoot.getBoolean("signalStrong"));
+    protected void readTypeSettings(@Nonnull EnumFacing direction, @Nonnull NBTTagCompound data) {
+        forceConnectionMode(direction, EnumReader.get(ConnectionMode.class, data.getShort("connectionMode")));
+        setInputSignalColor(direction, EnumReader.get(DyeColor.class, data.getShort("inputSignalColor")));
+        setOutputSignalColor(direction, EnumReader.get(DyeColor.class, data.getShort("outputSignalColor")));
+        setOutputStrength(direction, data.getBoolean("signalStrong"));
     }
 
     @Override
-    protected void writeTypeSettingsToNbt(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        dataRoot.setShort("connectionMode", (short) forcedConnections.get(dir).ordinal());
-        dataRoot.setShort("inputSignalColor", (short) getInputSignalColor(dir).ordinal());
-        dataRoot.setShort("outputSignalColor", (short) getOutputSignalColor(dir).ordinal());
-        dataRoot.setBoolean("signalStrong", isOutputStrong(dir));
+    protected void writeTypeSettingsToNBT(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound data) {
+        data.setShort("connectionMode", (short) forcedConnections.get(dir).ordinal());
+        data.setShort("inputSignalColor", (short) getInputSignalColor(dir).ordinal());
+        data.setShort("outputSignalColor", (short) getOutputSignalColor(dir).ordinal());
+        data.setBoolean("signalStrong", isOutputStrong(dir));
     }
 
     @Override

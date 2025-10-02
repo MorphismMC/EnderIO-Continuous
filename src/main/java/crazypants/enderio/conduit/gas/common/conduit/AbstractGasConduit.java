@@ -113,15 +113,15 @@ public abstract class AbstractGasConduit extends AbstractConduit implements IGas
     }
 
     @Override
-    protected void readTypeSettings(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        setExtractionSignalColor(dir, EnumReader.get(DyeColor.class, dataRoot.getShort("extractionSignalColor")));
-        setExtractionRedstoneMode(RedstoneControlMode.fromOrdinal(dataRoot.getShort("extractionRedstoneMode")), dir);
+    protected void readTypeSettings(@Nonnull EnumFacing direction, @Nonnull NBTTagCompound data) {
+        setExtractionSignalColor(direction, EnumReader.get(DyeColor.class, data.getShort("extractionSignalColor")));
+        setExtractionRedstoneMode(RedstoneControlMode.fromOrdinal(data.getShort("extractionRedstoneMode")), direction);
     }
 
     @Override
-    protected void writeTypeSettingsToNbt(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        dataRoot.setShort("extractionSignalColor", (short) getExtractionSignalColor(dir).ordinal());
-        dataRoot.setShort("extractionRedstoneMode", (short) getExtractionRedstoneMode(dir).ordinal());
+    protected void writeTypeSettingsToNBT(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound data) {
+        data.setShort("extractionSignalColor", (short) getExtractionSignalColor(dir).ordinal());
+        data.setShort("extractionRedstoneMode", (short) getExtractionRedstoneMode(dir).ordinal());
     }
 
     @Override

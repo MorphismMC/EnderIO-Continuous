@@ -70,7 +70,7 @@ import crazypants.enderio.base.fluid.SmartTankFluidMachineHandler;
 import crazypants.enderio.base.integration.tic.TicProxy;
 import crazypants.enderio.base.machine.baselegacy.AbstractPoweredTaskEntity;
 import crazypants.enderio.base.machine.baselegacy.SlotDefinition;
-import crazypants.enderio.base.machine.interfaces.INotifier;
+import crazypants.enderio.base.machine.interfaces.Notifiable;
 import crazypants.enderio.base.machine.interfaces.IPoweredTask;
 import crazypants.enderio.base.machine.task.ContinuousTask;
 import crazypants.enderio.base.network.PacketSpawnParticles;
@@ -89,7 +89,7 @@ import info.loenwind.autosave.util.NBTAction;
 
 @Storable
 public class TileFarmStation extends AbstractPoweredTaskEntity implements IPaintable.IPaintableTileEntity, IRanged,
-                             INotifier, ITankAccess.IExtendedTankAccess {
+        Notifiable, ITankAccess.IExtendedTankAccess {
 
     public static final int NUM_TOOL_SLOTS = 3;
 

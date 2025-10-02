@@ -51,7 +51,7 @@ public final class BasePowerConduitData implements IPowerConduitData {
         if (component.isCore()) {
             return PowerConduit.ICONS.get(PowerConduit.ICON_CORE_KEY + PowerConduit.POSTFIX[getID()]);
         }
-        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data)) {
+        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data())) {
             return new ConduitTextureWrapper(IconUtil.instance.whiteTexture);
         }
         return PowerConduit.ICONS.get(PowerConduit.ICON_KEY + PowerConduit.POSTFIX[getID()]);

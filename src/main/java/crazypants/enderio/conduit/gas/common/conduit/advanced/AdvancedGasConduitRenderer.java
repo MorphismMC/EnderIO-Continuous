@@ -51,7 +51,7 @@ public class AdvancedGasConduitRenderer extends DefaultConduitRenderer {
         super.addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);
         ConduitInOutRenderer.renderIO(bundle, conduit, component, layer, quads, DyeColor.RED, DyeColor.RED);
 
-        if (component.isCore() || component.data != null) {
+        if (component.isCore() || component.data() != null) {
             return;
         }
         AdvancedGasConduit lc = (AdvancedGasConduit) conduit;
@@ -62,12 +62,12 @@ public class AdvancedGasConduitRenderer extends DefaultConduitRenderer {
 
         // FIXME this logic is duplicated from DefaultConduitRenderer
         float shrink = 1 / 32f;
-        EnumFacing componentDirection = component.getDirection();
+        EnumFacing componentDirection = component.direction();
         float xLen = Math.abs(componentDirection.getXOffset()) == 1 ? 0 : shrink;
         float yLen = Math.abs(componentDirection.getYOffset()) == 1 ? 0 : shrink;
         float zLen = Math.abs(componentDirection.getZOffset()) == 1 ? 0 : shrink;
 
-        BoundingBox cube = component.bound;
+        BoundingBox cube = component.bound();
         BoundingBox bb = cube.expand(-xLen, -yLen, -zLen);
 
         List<Vertex> vertices = new ArrayList<>();
@@ -106,9 +106,9 @@ public class AdvancedGasConduitRenderer extends DefaultConduitRenderer {
         }
         BakedQuadBuilder.addBakedQuads(quads, vertices, texture, null);
 
-        if (conduit.getConnectionMode(component.getDirection()) == ConnectionMode.DISABLED) {
-            TextureAtlasSprite tex2 = ConduitBundleRenderManager.instance.getConnectorIcon(component.data);
-            List<Vertex> corners = component.bound.getCornersWithUvForFace(component.getDirection(), tex2.getMinU(),
+        if (conduit.getConnectionMode(component.direction()) == ConnectionMode.DISABLED) {
+            TextureAtlasSprite tex2 = ConduitBundleRenderManager.instance.getConnectorIcon(component.data());
+            List<Vertex> corners = component.bound().getCornersWithUvForFace(component.direction(), tex2.getMinU(),
                     tex2.getMaxU(), tex2.getMinV(), tex2.getMaxV());
             List<Vertex> vertices2 = new ArrayList<>(corners);
             // back face

@@ -21,7 +21,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.collect.Multimap;
 
-import crazypants.enderio.api.ILocalizable;
+import crazypants.enderio.api.Localizable;
 import crazypants.enderio.base.handler.darksteel.PacketDarkSteelSFX;
 
 /**
@@ -40,7 +40,7 @@ import crazypants.enderio.base.handler.darksteel.PacketDarkSteelSFX;
  * @author Henry Loenwind
  *
  */
-public interface IDarkSteelUpgrade extends IForgeRegistryEntry<IDarkSteelUpgrade>, ILocalizable {
+public interface IDarkSteelUpgrade extends IForgeRegistryEntry<IDarkSteelUpgrade>, Localizable {
 
     /**
      * @return The unlocalized name to display in the tooltip.

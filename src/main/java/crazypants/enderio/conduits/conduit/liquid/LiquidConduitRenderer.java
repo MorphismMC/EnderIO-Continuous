@@ -108,12 +108,12 @@ public class LiquidConduitRenderer extends DefaultConduitRenderer implements IRe
 
         if (component.isDirectional()) {
             TextureAtlasSprite sprite = tex.getSprite();
-            BoundingBox[] cubes = toCubes(component.bound);
+            BoundingBox[] cubes = toCubes(component.bound());
             for (BoundingBox cube : cubes) {
                 if (cube != null) {
 
                     float shrink = 1 / 128f;
-                    final EnumFacing componentDirection = component.getDirection();
+                    final EnumFacing componentDirection = component.direction();
                     float xLen = Math.abs(componentDirection.getXOffset()) == 1 ? 0 : shrink;
                     float yLen = Math.abs(componentDirection.getYOffset()) == 1 ? 0 : shrink;
                     float zLen = Math.abs(componentDirection.getZOffset()) == 1 ? 0 : shrink;
@@ -141,7 +141,7 @@ public class LiquidConduitRenderer extends DefaultConduitRenderer implements IRe
     }
 
     public static void renderFluidOutline(@Nonnull CollidableComponent component, @Nonnull FluidStack fluid) {
-        renderFluidOutline(component, fluid, 1 - ConduitGeometryUtil.getInstance().getHeight(), 1f / 16f);
+        renderFluidOutline(component, fluid, 1 - ConduitGeometryUtil.getINSTANCE().getHeight(), 1f / 16f);
     }
 
     public static void renderFluidOutline(@Nonnull CollidableComponent component, @Nonnull FluidStack fluidStack,
@@ -185,7 +185,7 @@ public class LiquidConduitRenderer extends DefaultConduitRenderer implements IRe
 
         double width = outlineWidth;
         scaleFactor = scaleFactor - 0.05;
-        final EnumFacing componentDirection = component.getDirection();
+        final EnumFacing componentDirection = component.direction();
         double xScale = Math.abs(componentDirection.getXOffset()) == 1 ? width : scaleFactor;
         double yScale = Math.abs(componentDirection.getYOffset()) == 1 ? width : scaleFactor;
         double zScale = Math.abs(componentDirection.getZOffset()) == 1 ? width : scaleFactor;
@@ -195,7 +195,7 @@ public class LiquidConduitRenderer extends DefaultConduitRenderer implements IRe
         double yOff = componentDirection.getYOffset() * offSize;
         double zOff = componentDirection.getZOffset() * offSize;
 
-        bbb = component.bound.scale(xScale, yScale, zScale);
+        bbb = component.bound().scale(xScale, yScale, zScale);
         bbb = bbb.translate(new Vector3d(xOff, yOff, zOff));
 
         for (NNIterator<EnumFacing> itr = NNList.FACING.fastIterator(); itr.hasNext();) {

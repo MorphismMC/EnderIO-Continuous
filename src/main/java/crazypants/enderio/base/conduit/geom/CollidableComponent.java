@@ -1,41 +1,47 @@
 package crazypants.enderio.base.conduit.geom;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.github.bsideup.jabel.Desugar;
 import net.minecraft.util.EnumFacing;
 
 import com.enderio.core.client.render.BoundingBox;
 import com.enderio.core.common.util.NullHelper;
 
 import crazypants.enderio.base.conduit.Conduit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class CollidableComponent {
+@Desugar
+public record CollidableComponent(@Nullable Class<? extends Conduit> conduitType,
+                                  @NotNull BoundingBox bound,
+                                  @Nullable EnumFacing direction,
+                                  @Nullable Object data) {
 
-    public final @Nullable Class<? extends Conduit> conduitType;
-    public final @Nonnull BoundingBox bound;
-    private final @Nullable EnumFacing dir;
-    public final @Nullable Object data;
+    @NotNull
+    @Override
+    public EnumFacing direction() {
+        return NullHelper.notnull(direction, "core element is not directional");
+    }
 
-    public CollidableComponent(@Nullable Class<? extends Conduit> conduitType, @Nonnull BoundingBox bound,
-                               @Nullable EnumFacing id, @Nullable Object data) {
-        this.conduitType = conduitType;
-        this.bound = bound;
-        this.dir = id;
-        this.data = data;
+    public boolean isDirectional() {
+        return direction != null;
+    }
+
+    public boolean isCore() {
+        return direction == null;
+    }
+
+    @NotNull
+    @Override
+    public String toString() {
+        return "CollidableComponent [conduitType=" + conduitType + ", bound=" + bound + ", id=" + direction + "]";
     }
 
     @Override
-    public @Nonnull String toString() {
-        return "CollidableComponent [conduitType=" + conduitType + ", bound=" + bound + ", id=" + dir + "]";
-    }
-
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (obj instanceof CollidableComponent) {
-            CollidableComponent other = (CollidableComponent) obj;
-            return conduitType == other.conduitType && bound.equals(((CollidableComponent) obj).bound) &&
-                    dir == other.dir;
+    public boolean equals(@Nullable Object o) {
+        if (o instanceof CollidableComponent other) {
+            return conduitType == other.conduitType
+                    && bound.equals(other.bound)
+                    && direction == other.direction;
         }
         return false;
     }
@@ -47,20 +53,9 @@ public class CollidableComponent {
         result = prime * result + bound.hashCode();
         final Class<?> cls = conduitType;
         result = prime * result + (cls == null ? 0 : cls.getName().hashCode());
-        final EnumFacing f = dir;
+        final EnumFacing f = direction;
         result = prime * result + (f == null ? 0 : f.hashCode());
         return result;
     }
 
-    public @Nonnull EnumFacing getDirection() {
-        return NullHelper.notnull(dir, "core element is not directional");
-    }
-
-    public boolean isDirectional() {
-        return dir != null;
-    }
-
-    public boolean isCore() {
-        return dir == null;
-    }
 }

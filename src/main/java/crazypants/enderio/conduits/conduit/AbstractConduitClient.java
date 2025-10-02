@@ -31,7 +31,7 @@ import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.conduit.geom.ConduitGeometryUtil;
 import crazypants.enderio.conduits.render.BlockStateWrapperConduitBundle;
 
-public abstract class AbstractClientConduit implements ConduitClient.WithDefaultRendering {
+public abstract class AbstractConduitClient implements ConduitClient.WithDefaultRendering {
 
     public static final float TRANSMISSION_SCALE = 0.3f;
 
@@ -46,7 +46,7 @@ public abstract class AbstractClientConduit implements ConduitClient.WithDefault
 
     protected @Nullable ConduitBundle bundle;
 
-    protected AbstractClientConduit() {}
+    protected AbstractConduitClient() {}
 
     @Override
     @Nonnull
@@ -146,7 +146,7 @@ public abstract class AbstractClientConduit implements ConduitClient.WithDefault
             }
         }
 
-        CollidableCache cc = CollidableCache.instance;
+        CollidableCache cc = CollidableCache.INSTANCE;
         for (EnumFacing dir : EnumFacing.VALUES) {
             if (dir != null && isConnectedTo(dir) && getConnectionMode(dir) != ConnectionMode.DISABLED) {
                 collidables.addAll(cc.getCollidables(
@@ -182,8 +182,8 @@ public abstract class AbstractClientConduit implements ConduitClient.WithDefault
     public Collection<CollidableComponent> createCollidables(@Nonnull CacheKey key) {
         return NullHelper.notnullJ(Collections.singletonList(
                 new CollidableComponent(getCollidableType(),
-                        ConduitGeometryUtil.getInstance().getBoundingBox(getBaseConduitType(), key.dir, key.offset),
-                        key.dir, null)),
+                        ConduitGeometryUtil.getINSTANCE().getBoundingBox(getBaseConduitType(), key.direction, key.offset),
+                        key.direction, null)),
                 "Collections#singletonList");
     }
 

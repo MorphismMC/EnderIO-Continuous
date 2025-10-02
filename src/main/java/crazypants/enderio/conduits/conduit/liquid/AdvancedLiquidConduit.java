@@ -179,7 +179,7 @@ public class AdvancedLiquidConduit extends AbstractTankConduit {
         if (component.isCore()) {
             return ICON_CORE_KEY;
         }
-        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data)) {
+        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data())) {
             return new ConduitTextureWrapper(IconUtil.instance.whiteTexture);
         }
         return fluidTypeLocked ? ICON_KEY_LOCKED : ICON_KEY;
@@ -270,12 +270,12 @@ public class AdvancedLiquidConduit extends AbstractTankConduit {
     @Nonnull
     public Collection<CollidableComponent> createCollidables(@Nonnull CacheKey key) {
         Collection<CollidableComponent> baseCollidables = super.createCollidables(key);
-        final EnumFacing keydir = key.dir;
+        final EnumFacing keydir = key.direction;
         if (keydir == null) {
             return baseCollidables;
         }
 
-        BoundingBox bb = ConduitGeometryUtil.getInstance().createBoundsForConnectionController(keydir, key.offset);
+        BoundingBox bb = ConduitGeometryUtil.getINSTANCE().createBoundsForConnectionController(keydir, key.offset);
         CollidableComponent cc = new CollidableComponent(ILiquidConduit.class, bb, keydir,
                 IPowerConduit.COLOR_CONTROLLER_ID);
 

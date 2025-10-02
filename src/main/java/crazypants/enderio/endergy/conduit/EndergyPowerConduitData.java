@@ -124,7 +124,7 @@ public final class EndergyPowerConduitData implements IPowerConduitData {
         if (component.isCore()) {
             return core;
         }
-        if (IPowerConduit.COLOR_CONTROLLER_ID.equals(component.data)) {
+        if (IPowerConduit.COLOR_CONTROLLER_ID.equals(component.data())) {
             return new ConduitTextureWrapper(IconUtil.instance.whiteTexture);
         }
         return icon;

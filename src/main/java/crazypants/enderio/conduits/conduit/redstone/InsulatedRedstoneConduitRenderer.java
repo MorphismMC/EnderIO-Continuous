@@ -31,7 +31,7 @@ public class InsulatedRedstoneConduitRenderer extends DefaultConduitRenderer {
         super.addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);
 
         IRedstoneConduit pc = (IRedstoneConduit) conduit;
-        EnumFacing dir = component.getDirection();
+        EnumFacing dir = component.direction();
         ConduitInOutRenderer.renderIO(bundle, conduit, component, layer, quads, pc.getInputSignalColor(dir),
                 pc.getOutputSignalColor(dir));
     }

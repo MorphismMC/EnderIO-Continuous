@@ -275,7 +275,7 @@ public class RefinedStorageConduit extends AbstractConduit implements IRefinedSt
                         }
                         return ConduitUtil.connectConduits(this, faceHit);
                     } else {
-                        EnumFacing connDir = component.getDirection();
+                        EnumFacing connDir = component.direction();
                         if (externalConnections.contains(connDir)) {
                             setConnectionMode(connDir, getNextConnectionMode(connDir));
                         } else if (containsConduitConnection(connDir)) {

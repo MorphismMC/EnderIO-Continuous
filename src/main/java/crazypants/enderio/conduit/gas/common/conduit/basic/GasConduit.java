@@ -297,7 +297,7 @@ public class GasConduit extends AbstractGasTankConduit {
         if (component.isCore()) {
             return ICON_CORE_KEY;
         }
-        EnumFacing componentDirection = component.getDirection();
+        EnumFacing componentDirection = component.direction();
         if (getConnectionMode(componentDirection) == ConnectionMode.INPUT) {
             return getGasType() == null ? ICON_EMPTY_EXTRACT_KEY : ICON_EXTRACT_KEY;
         }

@@ -34,7 +34,7 @@ public class ItemConduitRenderer extends DefaultConduitRenderer {
         super.addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);
 
         IItemConduit pc = (IItemConduit) conduit;
-        EnumFacing dir = component.getDirection();
+        EnumFacing dir = component.direction();
         ConduitInOutRenderer.renderIO(bundle, conduit, component, layer, quads, pc.getInputColor(dir),
                 pc.getOutputColor(dir));
     }

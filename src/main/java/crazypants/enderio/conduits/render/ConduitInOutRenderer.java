@@ -64,7 +64,7 @@ public class ConduitInOutRenderer {
         if (layer != BlockRenderLayer.CUTOUT || !component.isDirectional()) {
             return;
         }
-        EnumFacing dir = component.getDirection();
+        EnumFacing dir = component.direction();
         if (!conduit.getExternalConnections().contains(dir)) {
             return;
         }
@@ -84,7 +84,7 @@ public class ConduitInOutRenderer {
         }
 
         Offset offset = bundle.getOffset(conduit.getBaseConduitType(), dir);
-        final ConduitGeometryUtil geometry = ConduitGeometryUtil.getInstance();
+        final ConduitGeometryUtil geometry = ConduitGeometryUtil.getINSTANCE();
         geometry.addModeConnectorQuads(dir, offset, ICON_BG.get(TextureAtlasSprite.class), null, quads);
         if (mode.acceptsInput()) {
             if (mode.acceptsOutput()) {
@@ -107,13 +107,13 @@ public class ConduitInOutRenderer {
     private static void addColorBand(@Nonnull ConduitClient conduit, @Nonnull CollidableComponent component,
                                      @Nonnull List<BakedQuad> quads,
                                      @Nonnull EnumFacing dir, @Nonnull ConnectionMode mode) {
-        if (IPowerConduit.COLOR_CONTROLLER_ID.equals(component.data) && (conduit instanceof ConduitExtractor)) {
+        if (IPowerConduit.COLOR_CONTROLLER_ID.equals(component.data()) && (conduit instanceof ConduitExtractor)) {
             ConduitExtractor pc = (ConduitExtractor) conduit;
             final RedstoneControlMode extractionRedstoneMode = pc.getExtractionRedstoneMode(dir);
             if (extractionRedstoneMode != RedstoneControlMode.IGNORE &&
                     extractionRedstoneMode != RedstoneControlMode.NEVER && mode.acceptsInput()) {
                 int cInt = pc.getExtractionSignalColor(dir).getColor();
-                BoundingBox bound = component.bound;
+                BoundingBox bound = component.bound();
                 if (mode != ConnectionMode.NOT_SET) {
                     Vector3d trans = ForgeDirectionOffsets.offsetScaled(dir, -0.12);
                     bound = trans != null ? bound.translate(trans) : bound;

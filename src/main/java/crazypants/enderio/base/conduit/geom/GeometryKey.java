@@ -1,21 +1,23 @@
 package crazypants.enderio.base.conduit.geom;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.util.EnumFacing;
 
 import crazypants.enderio.base.conduit.Conduit;
+import org.jetbrains.annotations.NotNull;
 
 public final class GeometryKey {
 
-    public final EnumFacing dir;
-    public final @Nonnull Offset offset;
+    @NotNull
+    public final Offset offset;
     public final String className;
+    public final EnumFacing direction;
 
-    public GeometryKey(EnumFacing dir, @Nonnull Offset offset, Class<? extends Conduit> type) {
-        this.dir = dir;
+    public GeometryKey(EnumFacing direction,
+                       @NotNull Offset offset,
+                       Class<? extends Conduit> type) {
+        this.direction = direction;
         this.offset = offset;
-        className = type != null ? type.getName() : null;
+        this.className = type != null ? type.getName() : null;
     }
 
     @Override
@@ -23,23 +25,23 @@ public final class GeometryKey {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((className == null) ? 0 : className.hashCode());
-        result = prime * result + ((dir == null) ? 0 : dir.hashCode());
+        result = prime * result + ((direction == null) ? 0 : direction.hashCode());
         result = prime * result + offset.hashCode();
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if (obj == null) {
+        if (o == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != o.getClass()) {
             return false;
         }
-        GeometryKey other = (GeometryKey) obj;
+        GeometryKey other = (GeometryKey) o;
         if (className == null) {
             if (other.className != null) {
                 return false;
@@ -47,12 +49,10 @@ public final class GeometryKey {
         } else if (!className.equals(other.className)) {
             return false;
         }
-        if (dir != other.dir) {
+        if (direction != other.direction) {
             return false;
         }
-        if (offset != other.offset) {
-            return false;
-        }
-        return true;
+        return offset == other.offset;
     }
+
 }

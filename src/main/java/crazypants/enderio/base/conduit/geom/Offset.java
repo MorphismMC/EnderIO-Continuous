@@ -34,19 +34,19 @@ public enum Offset {
     public final int yOffset;
     public final int zOffset;
 
-    private Offset(EnumFacing dir) {
-        xOffset = dir.getXOffset();
-        yOffset = dir.getYOffset();
-        zOffset = dir.getZOffset();
+    Offset(EnumFacing direction) {
+        xOffset = direction.getXOffset();
+        yOffset = direction.getYOffset();
+        zOffset = direction.getZOffset();
     }
 
-    private Offset(EnumFacing dir, EnumFacing yDir) {
-        xOffset = dir.getXOffset() + yDir.getXOffset();
-        yOffset = dir.getYOffset() + yDir.getYOffset();
-        zOffset = dir.getZOffset() + yDir.getZOffset();
+    Offset(EnumFacing direction, EnumFacing yDirection) {
+        xOffset = direction.getXOffset() + yDirection.getXOffset();
+        yOffset = direction.getYOffset() + yDirection.getYOffset();
+        zOffset = direction.getZOffset() + yDirection.getZOffset();
     }
 
-    private Offset(int xOffset, int yOffset, int zOffset) {
+    Offset(int xOffset, int yOffset, int zOffset) {
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.zOffset = zOffset;
@@ -55,15 +55,11 @@ public enum Offset {
     /**
      * Adds a new offset. (API method)
      * 
-     * @param name
-     *                The name of the new enum constant to create
-     * @param xOffset
-     *                The X offset
-     * @param yOffset
-     *                The Y offset
-     * @param zOffset
-     *                The Z offset
-     * @return The new enum constant or null if it would collide with an existing offset
+     * @param name    The name of the new enum constant to create.
+     * @param xOffset The X offset.
+     * @param yOffset The Y offset.
+     * @param zOffset The Z offset.
+     * @return        The new enum constant or null if it would collide with an existing offset.
      */
     public static Offset addOffset(String name, int xOffset, int yOffset, int zOffset) {
         for (Offset offset : values()) {
@@ -82,4 +78,5 @@ public enum Offset {
     public static Offset first() {
         return values()[0];
     }
+
 }

@@ -185,23 +185,23 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
         CollidableComponent conBB = null;
         if (state.getYetaDisplayMode().getDisplayMode().isAll()) {
             for (CollidableComponent component : connectors) {
-                if (component.conduitType == null && component.data == ConduitConnectorType.INTERNAL) {
+                if (component.conduitType() == null && component.data() == ConduitConnectorType.INTERNAL) {
                     conBB = component;
                 }
             }
         }
 
         for (CollidableComponent component : connectors) {
-            if (component != null && (component == conBB || conBB == null || !conBB.bound.contains(component.bound))) {
-                if (component.conduitType != null) {
+            if (component != null && (component == conBB || conBB == null || !conBB.bound().contains(component.bound()))) {
+                if (component.conduitType() != null) {
                     ConduitClient.WithDefaultRendering conduit = (ConduitClient.WithDefaultRendering) bundle
-                            .getConduit(component.conduitType);
+                            .getConduit(component.conduitType());
                     if (conduit != null) {
                         ConduitRenderer renderer = getRendererForConduit(conduit);
-                        if (state.getYetaDisplayMode().renderConduit(component.conduitType)) {
+                        if (state.getYetaDisplayMode().renderConduit(component.conduitType())) {
                             if (renderer.getCoreLayer() == layer) {
                                 ConduitTexture tex = conduit.getTextureForState(component);
-                                BakedQuadBuilder.addBakedQuads(quads, component.bound, tex.getUv(), tex.getSprite());
+                                BakedQuadBuilder.addBakedQuads(quads, component.bound(), tex.getUv(), tex.getSprite());
                             }
                         } else if (layer == BlockRenderLayer.CUTOUT) {
                             addWireBounds(wireBounds, component);
@@ -209,8 +209,8 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
                     }
 
                 } else if (layer == BlockRenderLayer.SOLID && state.getYetaDisplayMode().getDisplayMode().isAll()) {
-                    TextureAtlasSprite tex = ConduitBundleRenderManager.instance.getConnectorIcon(component.data);
-                    BakedQuadBuilder.addBakedQuads(quads, component.bound, tex);
+                    TextureAtlasSprite tex = ConduitBundleRenderManager.instance.getConnectorIcon(component.data());
+                    BakedQuadBuilder.addBakedQuads(quads, component.bound(), tex);
                 }
             }
         }
@@ -251,7 +251,7 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
         Class<? extends Conduit> conduitType = null;
         RayTraceResult hit = Minecraft.getMinecraft().objectMouseOver;
         if (NullHelper.untrust(hit) != null && (hit.hitInfo instanceof CollidableComponent)) {
-            conduitType = ((CollidableComponent) hit.hitInfo).conduitType;
+            conduitType = ((CollidableComponent) hit.hitInfo).conduitType();
         }
 
         if (breakingAnimOnWholeConduit) {
@@ -267,12 +267,12 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
         List<CollidableComponent> connectors = bundle.getConnectors();
         for (CollidableComponent component : connectors) {
             if (component != null) {
-                if (component.conduitType == conduitType || conduitType == null) {
+                if (component.conduitType() == conduitType || conduitType == null) {
                     ConduitClient.WithDefaultRendering conduit = (ConduitClient.WithDefaultRendering) bundle
-                            .getConduit(component.conduitType);
+                            .getConduit(component.conduitType());
                     if (conduit != null) {
                         ConduitTexture tex = conduit.getTextureForState(component);
-                        BakedQuadBuilder.addBakedQuads(quads, component.bound, tex.getSprite());
+                        BakedQuadBuilder.addBakedQuads(quads, component.bound(), tex.getSprite());
                     }
                 }
             }
@@ -281,19 +281,19 @@ public class ConduitBundleRenderer extends TileEntitySpecialRenderer<TileConduit
 
     private void addWireBounds(@Nonnull List<BoundingBox> wireBounds, @Nonnull CollidableComponent component) {
         if (component.isDirectional()) {
-            final EnumFacing componentDirection = component.getDirection();
+            final EnumFacing componentDirection = component.direction();
             double sx = componentDirection.getXOffset() != 0 ? 1 : 0.7;
             double sy = componentDirection.getYOffset() != 0 ? 1 : 0.7;
             double sz = componentDirection.getZOffset() != 0 ? 1 : 0.7;
-            wireBounds.add(component.bound.scale(sx, sy, sz));
+            wireBounds.add(component.bound().scale(sx, sy, sz));
         } else {
-            wireBounds.add(component.bound);
+            wireBounds.add(component.bound());
         }
     }
 
     private void addQuadsForExternalConnection(@Nonnull EnumFacing dir, @Nonnull List<BakedQuad> quads) {
         TextureAtlasSprite tex = ConduitBundleRenderManager.instance.getConnectorIcon(ConduitConnectorType.EXTERNAL);
-        BoundingBox[] bbs = ConduitGeometryUtil.getInstance().getExternalConnectorBoundingBoxes(dir);
+        BoundingBox[] bbs = ConduitGeometryUtil.getINSTANCE().getExternalConnectorBoundingBoxes(dir);
         for (BoundingBox bb : bbs) {
             if (bb != null) {
                 BakedQuadBuilder.addBakedQuads(quads, bb, tex);

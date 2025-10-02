@@ -79,13 +79,13 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
     }
 
     @Override
-    protected void readTypeSettings(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        setSignalColor(dir, NullHelper.first(DyeColor.values()[dataRoot.getShort("signalColor")], DyeColor.SILVER));
+    protected void readTypeSettings(@Nonnull EnumFacing direction, @Nonnull NBTTagCompound data) {
+        setSignalColor(direction, NullHelper.first(DyeColor.values()[data.getShort("signalColor")], DyeColor.SILVER));
     }
 
     @Override
-    protected void writeTypeSettingsToNbt(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        dataRoot.setShort("signalColor", (short) getSignalColor(dir).ordinal());
+    protected void writeTypeSettingsToNBT(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound data) {
+        data.setShort("signalColor", (short) getSignalColor(dir).ordinal());
     }
 
     @Override
@@ -101,12 +101,12 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
     @Nonnull
     public Collection<CollidableComponent> createCollidables(@Nonnull CacheKey key) {
         Collection<CollidableComponent> baseCollidables = super.createCollidables(key);
-        final EnumFacing keydir = key.dir;
+        final EnumFacing keydir = key.direction;
         if (keydir == null) {
             return baseCollidables;
         }
 
-        BoundingBox bb = ConduitGeometryUtil.getInstance().createBoundsForConnectionController(keydir, key.offset);
+        BoundingBox bb = ConduitGeometryUtil.getINSTANCE().createBoundsForConnectionController(keydir, key.offset);
         CollidableComponent cc = new CollidableComponent(IOCConduit.class, bb, keydir, COLOR_CONTROLLER_ID);
 
         List<CollidableComponent> result = new ArrayList<CollidableComponent>();
@@ -247,7 +247,7 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
         DyeColor col = DyeColor.getColorFromDye(player.getHeldItem(hand));
         final CollidableComponent component = res.component();
         if (col != null && component.isDirectional()) {
-            setSignalColor(component.getDirection(), col);
+            setSignalColor(component.direction(), col);
             return true;
         } else if (ConduitUtil.isProbeEquipped(player, hand)) {
             // FIXME: This belongs in the probe callback, not here
@@ -289,10 +289,10 @@ public class OCConduit extends AbstractConduit implements IOCConduit {
                     }
                     return ConduitUtil.connectConduits(this, faceHit);
                 } else {
-                    EnumFacing connDir = component.getDirection();
+                    EnumFacing connDir = component.direction();
                     if (containsExternalConnection(connDir)) {
                         for (RaytraceResult rtr : all) {
-                            if (rtr != null && COLOR_CONTROLLER_ID.equals(rtr.component().data)) {
+                            if (rtr != null && COLOR_CONTROLLER_ID.equals(rtr.component().data())) {
                                 setSignalColor(connDir, DyeColor.getNext(getSignalColor(connDir)));
                                 return true;
                             }

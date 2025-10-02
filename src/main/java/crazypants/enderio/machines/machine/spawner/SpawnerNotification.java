@@ -2,10 +2,10 @@ package crazypants.enderio.machines.machine.spawner;
 
 import javax.annotation.Nonnull;
 
-import crazypants.enderio.api.ILocalizable;
+import crazypants.enderio.api.Localizable;
 import crazypants.enderio.machines.EnderIOMachines;
 
-public enum SpawnerNotification implements ILocalizable {
+public enum SpawnerNotification implements Localizable {
 
     AREA_FULL("areaFull"),
     NO_LOCATION_FOUND("noLocationFound"),

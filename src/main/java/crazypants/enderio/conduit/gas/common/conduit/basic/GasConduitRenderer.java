@@ -84,11 +84,11 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
         }
 
         TextureAtlasSprite sprite = tex.getSprite();
-        BoundingBox[] cubes = toCubes(component.bound);
+        BoundingBox[] cubes = toCubes(component.bound());
         for (BoundingBox cube : cubes) {
             if (cube != null) {
                 float shrink = 1 / 128f;
-                EnumFacing componentDirection = component.getDirection();
+                EnumFacing componentDirection = component.direction();
                 float xLen = Math.abs(componentDirection.getXOffset()) == 1 ? 0 : shrink;
                 float yLen = Math.abs(componentDirection.getYOffset()) == 1 ? 0 : shrink;
                 float zLen = Math.abs(componentDirection.getZOffset()) == 1 ? 0 : shrink;
@@ -103,7 +103,7 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
     }
 
     public static void renderGasOutline(@Nonnull CollidableComponent component, @Nonnull GasStack gas) {
-        renderGasOutline(component, gas, 1 - ConduitGeometryUtil.getInstance().getHeight(), 1f / 16f);
+        renderGasOutline(component, gas, 1 - ConduitGeometryUtil.getINSTANCE().getHeight(), 1f / 16f);
     }
 
     public static void renderGasOutline(@Nonnull CollidableComponent component, @Nonnull GasStack gasStack,
@@ -140,7 +140,7 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
         BoundingBox bbb;
 
         scaleFactor = scaleFactor - 0.05;
-        EnumFacing componentDirection = component.getDirection();
+        EnumFacing componentDirection = component.direction();
         double xScale = Math.abs(componentDirection.getXOffset()) == 1 ? width : scaleFactor;
         double yScale = Math.abs(componentDirection.getYOffset()) == 1 ? width : scaleFactor;
         double zScale = Math.abs(componentDirection.getZOffset()) == 1 ? width : scaleFactor;
@@ -150,7 +150,7 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
         double yOff = componentDirection.getYOffset() * offSize;
         double zOff = componentDirection.getZOffset() * offSize;
 
-        bbb = component.bound.scale(xScale, yScale, zScale);
+        bbb = component.bound().scale(xScale, yScale, zScale);
         bbb = bbb.translate(new Vector3d(xOff, yOff, zOff));
 
         for (NNIterator<EnumFacing> itr = NNList.FACING.fastIterator(); itr.hasNext();) {

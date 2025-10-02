@@ -30,7 +30,7 @@ public class EnderGasConduitRenderer extends DefaultConduitRenderer {
         super.addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);
 
         EnderGasConduit pc = (EnderGasConduit) conduit;
-        EnumFacing dir = component.getDirection();
+        EnumFacing dir = component.direction();
         ConduitInOutRenderer.renderIO(bundle, conduit, component, layer, quads, pc.getInputColor(dir),
                 pc.getOutputColor(dir));
     }

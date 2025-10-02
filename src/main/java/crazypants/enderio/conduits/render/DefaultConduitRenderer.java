@@ -75,7 +75,7 @@ public class DefaultConduitRenderer implements ConduitRenderer {
                 float selfIllum = Math.max(brightness, conduit.getSelfIlluminationForState(component));
                 final ConduitTexture transmitionTextureForState = conduit.getTransmitionTextureForState(component);
                 if (layer != null && component.isDirectional() && transmitionTextureForState != null &&
-                        component.data == null) {
+                        component.data() == null) {
                     Vector4f color = conduit.getTransmitionTextureColorForState(component);
                     addTransmissionQuads(transmitionTextureForState, color, layer, conduit, component, selfIllum,
                             quads);
@@ -114,25 +114,25 @@ public class DefaultConduitRenderer implements ConduitRenderer {
             if (layer != getConduitQuadsLayer()) {
                 return; // TODO? null is the blockbreaking animation
             }
-            if (component.data != null) {
+            if (component.data() != null) {
                 return; // this is handled by ConduitInOutRenderer.addColorBand() or the conduits themselves
             }
 
             float shrink = 1 / 32f;
-            final EnumFacing componentDirection = component.getDirection();
+            final EnumFacing componentDirection = component.direction();
             float xLen = Math.abs(componentDirection.getXOffset()) == 1 ? 0 : shrink;
             float yLen = Math.abs(componentDirection.getYOffset()) == 1 ? 0 : shrink;
             float zLen = Math.abs(componentDirection.getZOffset()) == 1 ? 0 : shrink;
 
-            BoundingBox cube = component.bound;
+            BoundingBox cube = component.bound();
             BoundingBox bb = cube.expand(-xLen, -yLen, -zLen);
             addQuadsForSection(bb, tex, componentDirection, quads, conduit.renderError() ? COLOR_ERROR : null);
             if (conduit.getConnectionMode(componentDirection) == ConnectionMode.DISABLED) {
-                TextureAtlasSprite tex2 = ConduitBundleRenderManager.instance.getConnectorIcon(component.data);
+                TextureAtlasSprite tex2 = ConduitBundleRenderManager.instance.getConnectorIcon(component.data());
                 BakedQuadBuilder.addBakedQuadForFace(quads, bb, tex2, componentDirection);
             }
         } else {
-            BakedQuadBuilder.addBakedQuads(quads, component.bound, tex.getSprite());
+            BakedQuadBuilder.addBakedQuads(quads, component.bound(), tex.getSprite());
         }
     }
 
@@ -170,12 +170,12 @@ public class DefaultConduitRenderer implements ConduitRenderer {
         }
 
         float shrink = 1 / 32f;
-        final EnumFacing componentDirection = component.getDirection();
+        final EnumFacing componentDirection = component.direction();
         float xLen = Math.abs(componentDirection.getXOffset()) == 1 ? 0 : shrink;
         float yLen = Math.abs(componentDirection.getYOffset()) == 1 ? 0 : shrink;
         float zLen = Math.abs(componentDirection.getZOffset()) == 1 ? 0 : shrink;
 
-        BoundingBox cube = component.bound;
+        BoundingBox cube = component.bound();
         BoundingBox bb = cube.expand(-xLen, -yLen, -zLen);
         addQuadsForSection(bb, tex, componentDirection, quads, color);
     }
@@ -208,14 +208,14 @@ public class DefaultConduitRenderer implements ConduitRenderer {
                                         @Nonnull ConduitClient.WithDefaultRendering conduit,
                                         @Nonnull CollidableComponent component, float brightness) {
         GlStateManager.color(1, 1, 1);
-        if (component.isDirectional() && component.data == null) {
-            final EnumFacing componentDirection = component.getDirection();
+        if (component.isDirectional() && component.data() == null) {
+            final EnumFacing componentDirection = component.direction();
             float scaleFactor = 0.75f;
             float xLen = Math.abs(componentDirection.getXOffset()) == 1 ? 1 : scaleFactor;
             float yLen = Math.abs(componentDirection.getYOffset()) == 1 ? 1 : scaleFactor;
             float zLen = Math.abs(componentDirection.getZOffset()) == 1 ? 1 : scaleFactor;
 
-            BoundingBox cube = component.bound;
+            BoundingBox cube = component.bound();
             BoundingBox bb = cube.scale(xLen, yLen, zLen);
             TextureAtlasSprite sprite = tex.getSprite();
             drawDynamicSection(bb, sprite.getInterpolatedU(tex.getUv().x * 16),
@@ -223,8 +223,8 @@ public class DefaultConduitRenderer implements ConduitRenderer {
                     sprite.getInterpolatedV(tex.getUv().y * 16), sprite.getInterpolatedV(tex.getUv().w * 16),
                     componentDirection, false, conduit.shouldMirrorTexture());
             if (conduit.getConnectionMode(componentDirection) == ConnectionMode.DISABLED) {
-                TextureAtlasSprite tex2 = ConduitBundleRenderManager.instance.getConnectorIcon(component.data);
-                List<Vertex> corners = component.bound.getCornersWithUvForFace(componentDirection, tex2.getMinU(),
+                TextureAtlasSprite tex2 = ConduitBundleRenderManager.instance.getConnectorIcon(component.data());
+                List<Vertex> corners = component.bound().getCornersWithUvForFace(componentDirection, tex2.getMinU(),
                         tex2.getMaxU(), tex2.getMinV(), tex2.getMaxV());
                 RenderUtil.addVerticesToTessellator(corners, DefaultVertexFormats.POSITION_TEX, false);
             }
@@ -243,13 +243,13 @@ public class DefaultConduitRenderer implements ConduitRenderer {
                                              @Nullable Vector4f color,
                                              @Nonnull CollidableComponent component, float selfIllum) {
         float scaleFactor = 0.6f;
-        final EnumFacing componentDirection = component.getDirection();
+        final EnumFacing componentDirection = component.direction();
         float xLen = Math.abs(componentDirection.getXOffset()) == 1 ? 1 : scaleFactor;
         float yLen = Math.abs(componentDirection.getYOffset()) == 1 ? 1 : scaleFactor;
         float zLen = Math.abs(componentDirection.getZOffset()) == 1 ? 1 : scaleFactor;
 
         GlStateManager.color(1, 1, 1);
-        BoundingBox cube = component.bound;
+        BoundingBox cube = component.bound();
         BoundingBox bb = cube.scale(xLen, yLen, zLen);
         TextureAtlasSprite sprite = tex.getSprite();
         drawDynamicSection(bb, sprite.getInterpolatedU(tex.getUv().x * 16), sprite.getInterpolatedU(tex.getUv().z * 16),

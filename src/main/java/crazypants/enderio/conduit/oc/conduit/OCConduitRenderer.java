@@ -36,10 +36,10 @@ public class OCConduitRenderer extends DefaultConduitRenderer {
                                    @Nonnull ConduitTexture tex,
                                    @Nonnull CollidableComponent component, float selfIllum, BlockRenderLayer layer,
                                    @Nonnull List<BakedQuad> quads) {
-        if (IOCConduit.COLOR_CONTROLLER_ID.equals(component.data)) {
-            if (conduit.containsExternalConnection(component.getDirection())) {
-                int c = ((IOCConduit) conduit).getSignalColor(component.getDirection()).getColor();
-                BakedQuadBuilder.addBakedQuads(quads, component.bound, White.INSTANCE, ColorUtil.toFloat4(c));
+        if (IOCConduit.COLOR_CONTROLLER_ID.equals(component.data())) {
+            if (conduit.containsExternalConnection(component.direction())) {
+                int c = ((IOCConduit) conduit).getSignalColor(component.direction()).getColor();
+                BakedQuadBuilder.addBakedQuads(quads, component.bound(), White.INSTANCE, ColorUtil.toFloat4(c));
             }
         } else {
             super.addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);

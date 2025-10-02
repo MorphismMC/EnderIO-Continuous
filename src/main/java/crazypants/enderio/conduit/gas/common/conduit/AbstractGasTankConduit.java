@@ -72,7 +72,7 @@ public abstract class AbstractGasTankConduit extends AbstractGasConduit {
                         }
                         return ConduitUtil.connectConduits(this, faceHit);
                     } else {
-                        EnumFacing connDir = component.getDirection();
+                        EnumFacing connDir = component.direction();
                         if (containsExternalConnection(connDir)) {
                             setConnectionMode(connDir, getNextConnectionMode(connDir));
                         } else if (containsConduitConnection(connDir)) {

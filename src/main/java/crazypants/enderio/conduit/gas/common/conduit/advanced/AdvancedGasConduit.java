@@ -196,7 +196,7 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
         if (component.isCore()) {
             return ICON_CORE_KEY;
         }
-        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data)) {
+        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data())) {
             return new ConduitTextureWrapper(IconUtil.instance.whiteTexture);
         }
         return gasTypeLocked ? ICON_KEY_LOCKED : ICON_KEY;
@@ -261,12 +261,12 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
     @Nonnull
     public Collection<CollidableComponent> createCollidables(@Nonnull CacheKey key) {
         Collection<CollidableComponent> baseCollidables = super.createCollidables(key);
-        EnumFacing keyDir = key.dir;
+        EnumFacing keyDir = key.direction;
         if (keyDir == null) {
             return baseCollidables;
         }
 
-        BoundingBox bb = ConduitGeometryUtil.getInstance().createBoundsForConnectionController(keyDir, key.offset);
+        BoundingBox bb = ConduitGeometryUtil.getINSTANCE().createBoundsForConnectionController(keyDir, key.offset);
         CollidableComponent cc = new CollidableComponent(IGasConduit.class, bb, keyDir,
                 IPowerConduit.COLOR_CONTROLLER_ID);
 

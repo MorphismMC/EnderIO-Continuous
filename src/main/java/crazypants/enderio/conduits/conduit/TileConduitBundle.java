@@ -34,7 +34,7 @@ import com.enderio.core.common.util.ItemUtil;
 import com.enderio.core.common.util.NNList;
 import com.enderio.core.common.util.NullHelper;
 
-import crazypants.enderio.api.ILocalizable;
+import crazypants.enderio.api.Localizable;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.TileEntityEio;
 import crazypants.enderio.base.conduit.ConduitDisplayMode;
@@ -59,7 +59,7 @@ import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
 import crazypants.enderio.base.filter.capability.IFilterHolder;
 import crazypants.enderio.base.init.ModObject;
 import crazypants.enderio.base.machine.base.te.ICap;
-import crazypants.enderio.base.machine.interfaces.INotifier;
+import crazypants.enderio.base.machine.interfaces.Notifiable;
 import crazypants.enderio.base.paint.PaintUtil;
 import crazypants.enderio.base.paint.YetaUtil;
 import crazypants.enderio.base.render.IBlockStateWrapper;
@@ -77,7 +77,7 @@ import info.loenwind.autosave.annotations.Store;
 
 @Storable
 public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
-                               IConduitComponent.IConduitComponentProvider, ITileFilterContainer, INotifier {
+        ConduitComponent.ConduitComponentProvider, ITileFilterContainer, Notifiable {
 
     // TODO Fix duct-tape
     // TODO Check store
@@ -601,11 +601,11 @@ public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
             Set<Class<Conduit>> collidingTypes = new HashSet<Class<Conduit>>();
             for (CollidableComponent conCC : conduitsBounds) {
                 for (CollidableComponent innerCC : conduitsBounds) {
-                    if (!IPowerConduit.COLOR_CONTROLLER_ID.equals(innerCC.data) &&
-                            !IPowerConduit.COLOR_CONTROLLER_ID.equals(conCC.data) && conCC != innerCC &&
-                            conCC.bound.intersects(innerCC.bound)) {
+                    if (!IPowerConduit.COLOR_CONTROLLER_ID.equals(innerCC.data()) &&
+                            !IPowerConduit.COLOR_CONTROLLER_ID.equals(conCC.data()) && conCC != innerCC &&
+                            conCC.bound().intersects(innerCC.bound())) {
                         // Note: That check could probably be data!=null...
-                        collidingTypes.add((Class<Conduit>) conCC.conduitType);
+                        collidingTypes.add((Class<Conduit>) conCC.conduitType());
                     }
                 }
             }
@@ -622,9 +622,9 @@ public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
                 BoundingBox bb = null;
                 for (CollidableComponent cBB : colCores) {
                     if (bb == null) {
-                        bb = cBB.bound;
+                        bb = cBB.bound();
                     } else {
-                        bb = bb.expandBy(cBB.bound);
+                        bb = bb.expandBy(cBB.bound());
                     }
                 }
                 if (bb != null) {
@@ -641,10 +641,10 @@ public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
                     List<CollidableComponent> cores = new ArrayList<CollidableComponent>();
                     addConduitCores(cores, con);
                     if (cores.size() > 1) {
-                        BoundingBox bb = cores.get(0).bound;
+                        BoundingBox bb = cores.get(0).bound();
                         double area = bb.getArea();
                         for (CollidableComponent cc : cores) {
-                            bb = bb.expandBy(cc.bound);
+                            bb = bb.expandBy(cc.bound());
                         }
                         if (bb.getArea() > area * 1.5f) {
                             bb = bb.scale(1.05, 1.05, 1.05);
@@ -660,8 +660,8 @@ public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
             BoundingBox conBB = null;
             for (int i = 0; i < temp.size(); i++) {
                 CollidableComponent cc = temp.get(i);
-                if (cc.conduitType == null && cc.data == ConduitConnectorType.INTERNAL) {
-                    conBB = conBB == null ? cc.bound : conBB.expandBy(cc.bound);
+                if (cc.conduitType() == null && cc.data() == ConduitConnectorType.INTERNAL) {
+                    conBB = conBB == null ? cc.bound() : conBB.expandBy(cc.bound());
                     temp.remove(i);
                     i--;
                 }
@@ -686,7 +686,7 @@ public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
             }
             for (EnumFacing dir : externalDirs) {
                 if (dir != null) {
-                    BoundingBox bb = ConduitGeometryUtil.getInstance().getExternalConnectorBoundingBox(dir);
+                    BoundingBox bb = ConduitGeometryUtil.getINSTANCE().getExternalConnectorBoundingBox(dir);
                     CollidableComponent cc = new CollidableComponent(null, bb, dir, ConduitConnectorType.EXTERNAL);
                     temp.add(cc);
                 }
@@ -706,7 +706,7 @@ public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
     }
 
     private void addConduitCores(List<CollidableComponent> result, Conduit con) {
-        CollidableCache cc = CollidableCache.instance;
+        CollidableCache cc = CollidableCache.INSTANCE;
         Class<? extends Conduit> type = con.getCollidableType();
         Set<CollidableComponent> components = new LinkedHashSet<>();
         if (con.hasConnections()) {
@@ -793,8 +793,8 @@ public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
     private static void makeConduitHashCode(Collection<? extends ConduitClient> conduits,
                                             BlockStateWrapperConduitBundle.ConduitCacheKey hashCodes) {
         for (Conduit conduit : conduits) {
-            if (conduit instanceof IConduitComponent) {
-                ((IConduitComponent) conduit).hashCodeForModelCaching(hashCodes);
+            if (conduit instanceof ConduitComponent) {
+                ((ConduitComponent) conduit).hashCodeForModelCaching(hashCodes);
             } else {
                 hashCodes.add(conduit);
             }
@@ -875,11 +875,11 @@ public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
 
     @Override
     @Nonnull
-    public Set<? extends ILocalizable> getNotification() {
-        Set<ILocalizable> result = new HashSet<>();
+    public Set<? extends Localizable> getNotification() {
+        Set<Localizable> result = new HashSet<>();
         for (ConduitServer conduit : getServerConduits()) {
-            if (conduit instanceof INotifier) {
-                result.addAll(((INotifier) conduit).getNotification());
+            if (conduit instanceof Notifiable) {
+                result.addAll(((Notifiable) conduit).getNotification());
             }
         }
         return result;

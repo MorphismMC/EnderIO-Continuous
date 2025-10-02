@@ -315,7 +315,7 @@ public class LiquidConduit extends AbstractTankConduit {
         if (component.isCore()) {
             return ICON_CORE_KEY;
         }
-        final EnumFacing componentDirection = component.getDirection();
+        final EnumFacing componentDirection = component.direction();
         if (getConnectionMode(componentDirection) == ConnectionMode.INPUT) {
             return getFluidType() == null ? ICON_EMPTY_EXTRACT_KEY : ICON_EXTRACT_KEY;
         }

@@ -71,7 +71,7 @@ public abstract class AbstractTankConduit extends AbstractLiquidConduit {
                         }
                         return ConduitUtil.connectConduits(this, faceHit);
                     } else {
-                        EnumFacing connDir = component.getDirection();
+                        EnumFacing connDir = component.direction();
                         if (containsExternalConnection(connDir)) {
                             setConnectionMode(connDir, getNextConnectionMode(connDir));
                         } else if (containsConduitConnection(connDir)) {

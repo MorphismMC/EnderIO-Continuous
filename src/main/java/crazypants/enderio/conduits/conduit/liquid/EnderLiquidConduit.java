@@ -155,7 +155,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
                         // Attempt to join networks
                         return ConduitUtil.connectConduits(this, faceHit);
                     } else {
-                        EnumFacing connDir = component.getDirection();
+                        EnumFacing connDir = component.direction();
                         if (containsExternalConnection(connDir)) {
                             setConnectionMode(connDir, getNextConnectionMode(connDir));
                         } else if (containsConduitConnection(connDir)) {
@@ -242,7 +242,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
         if (component.isCore()) {
             return ICON_CORE_KEY;
         }
-        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data)) {
+        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data())) {
             return new ConduitTextureWrapper(IconUtil.instance.whiteTexture);
         }
         return ICON_KEY;
@@ -352,30 +352,30 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     }
 
     @Override
-    protected void readTypeSettings(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        super.readTypeSettings(dir, dataRoot);
-        setConnectionMode(dir, EnumReader.get(ConnectionMode.class, dataRoot.getShort("connectionMode")));
-        setExtractionSignalColor(dir, EnumReader.get(DyeColor.class, dataRoot.getShort("extractionSignalColor")));
+    protected void readTypeSettings(@Nonnull EnumFacing direction, @Nonnull NBTTagCompound data) {
+        super.readTypeSettings(direction, data);
+        setConnectionMode(direction, EnumReader.get(ConnectionMode.class, data.getShort("connectionMode")));
+        setExtractionSignalColor(direction, EnumReader.get(DyeColor.class, data.getShort("extractionSignalColor")));
         setExtractionRedstoneMode(
-                EnumReader.get(RedstoneControlMode.class, dataRoot.getShort("extractionRedstoneMode")), dir);
-        setInputColor(dir, EnumReader.get(DyeColor.class, dataRoot.getShort("inputColor")));
-        setOutputColor(dir, EnumReader.get(DyeColor.class, dataRoot.getShort("outputColor")));
-        setSelfFeedEnabled(dir, dataRoot.getBoolean("selfFeed"));
-        setRoundRobinEnabled(dir, dataRoot.getBoolean("roundRobin"));
-        setOutputPriority(dir, dataRoot.getInteger("outputPriority"));
+                EnumReader.get(RedstoneControlMode.class, data.getShort("extractionRedstoneMode")), direction);
+        setInputColor(direction, EnumReader.get(DyeColor.class, data.getShort("inputColor")));
+        setOutputColor(direction, EnumReader.get(DyeColor.class, data.getShort("outputColor")));
+        setSelfFeedEnabled(direction, data.getBoolean("selfFeed"));
+        setRoundRobinEnabled(direction, data.getBoolean("roundRobin"));
+        setOutputPriority(direction, data.getInteger("outputPriority"));
     }
 
     @Override
-    protected void writeTypeSettingsToNbt(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        super.writeTypeSettingsToNbt(dir, dataRoot);
-        dataRoot.setShort("connectionMode", (short) getConnectionMode(dir).ordinal());
-        dataRoot.setShort("extractionSignalColor", (short) getExtractionSignalColor(dir).ordinal());
-        dataRoot.setShort("extractionRedstoneMode", (short) getExtractionRedstoneMode(dir).ordinal());
-        dataRoot.setShort("inputColor", (short) getInputColor(dir).ordinal());
-        dataRoot.setShort("outputColor", (short) getOutputColor(dir).ordinal());
-        dataRoot.setBoolean("selfFeed", isSelfFeedEnabled(dir));
-        dataRoot.setBoolean("roundRobin", isRoundRobinEnabled(dir));
-        dataRoot.setInteger("outputPriority", getOutputPriority(dir));
+    protected void writeTypeSettingsToNBT(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound data) {
+        super.writeTypeSettingsToNBT(dir, data);
+        data.setShort("connectionMode", (short) getConnectionMode(dir).ordinal());
+        data.setShort("extractionSignalColor", (short) getExtractionSignalColor(dir).ordinal());
+        data.setShort("extractionRedstoneMode", (short) getExtractionRedstoneMode(dir).ordinal());
+        data.setShort("inputColor", (short) getInputColor(dir).ordinal());
+        data.setShort("outputColor", (short) getOutputColor(dir).ordinal());
+        data.setBoolean("selfFeed", isSelfFeedEnabled(dir));
+        data.setBoolean("roundRobin", isRoundRobinEnabled(dir));
+        data.setInteger("outputPriority", getOutputPriority(dir));
     }
 
     private boolean isDefault(IFluidFilter f) {
@@ -774,12 +774,12 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     @Nonnull
     public Collection<CollidableComponent> createCollidables(@Nonnull CacheKey key) {
         Collection<CollidableComponent> baseCollidables = super.createCollidables(key);
-        final EnumFacing keydir = key.dir;
+        final EnumFacing keydir = key.direction;
         if (keydir == null) {
             return baseCollidables;
         }
 
-        BoundingBox bb = ConduitGeometryUtil.getInstance().createBoundsForConnectionController(keydir, key.offset);
+        BoundingBox bb = ConduitGeometryUtil.getINSTANCE().createBoundsForConnectionController(keydir, key.offset);
         CollidableComponent cc = new CollidableComponent(ILiquidConduit.class, bb, keydir,
                 IPowerConduit.COLOR_CONTROLLER_ID);
 

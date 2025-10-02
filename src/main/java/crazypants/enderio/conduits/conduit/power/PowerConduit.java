@@ -183,8 +183,8 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
             final CollidableComponent component = res.component();
             DyeColor col = DyeColor.getColorFromDye(player.getHeldItemMainhand());
             if (col != null && component != null && component.isDirectional() &&
-                    isColorBandRendered(component.getDirection())) {
-                setExtractionSignalColor(component.getDirection(), col);
+                    isColorBandRendered(component.direction())) {
+                setExtractionSignalColor(component.direction(), col);
                 return true;
             } else if (ToolUtil.isToolEquipped(player, hand)) {
                 if (!getBundle().getTileEntity().getWorld().isRemote) {
@@ -198,7 +198,7 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
                             // Attempt to join networks
                             return ConduitUtil.connectConduits(this, faceHit);
                         } else {
-                            EnumFacing connDir = component.getDirection();
+                            EnumFacing connDir = component.direction();
                             if (externalConnections.contains(connDir)) {
                                 setConnectionMode(connDir, getNextConnectionMode(connDir));
                             } else if (containsConduitConnection(connDir)) {
@@ -251,19 +251,19 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
     }
 
     @Override
-    protected void readTypeSettings(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        setConnectionMode(dir,
-                NullHelper.first(ConnectionMode.values()[dataRoot.getShort("connectionMode")], ConnectionMode.NOT_SET));
-        setExtractionSignalColor(dir,
-                NullHelper.first(DyeColor.values()[dataRoot.getShort("extractionSignalColor")], DyeColor.RED));
-        setExtractionRedstoneMode(RedstoneControlMode.fromOrdinal(dataRoot.getShort("extractionRedstoneMode")), dir);
+    protected void readTypeSettings(@Nonnull EnumFacing direction, @Nonnull NBTTagCompound data) {
+        setConnectionMode(direction,
+                NullHelper.first(ConnectionMode.values()[data.getShort("connectionMode")], ConnectionMode.NOT_SET));
+        setExtractionSignalColor(direction,
+                NullHelper.first(DyeColor.values()[data.getShort("extractionSignalColor")], DyeColor.RED));
+        setExtractionRedstoneMode(RedstoneControlMode.fromOrdinal(data.getShort("extractionRedstoneMode")), direction);
     }
 
     @Override
-    protected void writeTypeSettingsToNbt(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        dataRoot.setShort("connectionMode", (short) getConnectionMode(dir).ordinal());
-        dataRoot.setShort("extractionSignalColor", (short) getExtractionSignalColor(dir).ordinal());
-        dataRoot.setShort("extractionRedstoneMode", (short) getExtractionRedstoneMode(dir).ordinal());
+    protected void writeTypeSettingsToNBT(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound data) {
+        data.setShort("connectionMode", (short) getConnectionMode(dir).ordinal());
+        data.setShort("extractionSignalColor", (short) getExtractionSignalColor(dir).ordinal());
+        data.setShort("extractionRedstoneMode", (short) getExtractionRedstoneMode(dir).ordinal());
     }
 
     @Override
@@ -525,12 +525,12 @@ public class PowerConduit extends AbstractConduit implements IPowerConduit {
     @Nonnull
     public Collection<CollidableComponent> createCollidables(@Nonnull CacheKey key) {
         Collection<CollidableComponent> baseCollidables = super.createCollidables(key);
-        final EnumFacing key_dir = key.dir;
+        final EnumFacing key_dir = key.direction;
         if (key_dir == null) {
             return baseCollidables;
         }
 
-        BoundingBox bb = ConduitGeometryUtil.getInstance().createBoundsForConnectionController(key_dir, key.offset);
+        BoundingBox bb = ConduitGeometryUtil.getINSTANCE().createBoundsForConnectionController(key_dir, key.offset);
         CollidableComponent cc = new CollidableComponent(IPowerConduit.class, bb, key_dir, COLOR_CONTROLLER_ID);
 
         List<CollidableComponent> result = new ArrayList<CollidableComponent>();
