@@ -13,7 +13,7 @@ public class DevVersionWarningHandler {
 
     @SubscribeEvent
     public static void onPlayerLoggon(PlayerLoggedInEvent evt) {
-        if (EnderIO.VERSION.contains("-") || EnderIO.VERSION.contains("@")) { // e.g. 1.2.3-nightly
+        if (EnderIO.MOD_VERSION.contains("-") || EnderIO.MOD_VERSION.contains("@")) { // e.g. 1.2.3-nightly
             evt.player.sendMessage(new TextComponentString(
                     TextFormatting.DARK_RED + "This is an " + TextFormatting.BLACK + "Ender IO " +
                             TextFormatting.DARK_RED + "development build!"));

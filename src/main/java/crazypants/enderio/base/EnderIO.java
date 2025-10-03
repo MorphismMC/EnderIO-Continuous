@@ -30,8 +30,6 @@ import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.server.permission.DefaultPermissionHandler;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-import org.apache.commons.lang3.tuple.Triple;
-
 import com.enderio.core.common.Lang;
 import com.enderio.core.common.mixin.SimpleMixinLoader;
 import com.enderio.core.common.util.NNList;
@@ -48,7 +46,6 @@ import crazypants.enderio.base.config.config.BaseConfig;
 import crazypants.enderio.base.config.config.DiagnosticsConfig;
 import crazypants.enderio.base.config.config.PersonalConfig;
 import crazypants.enderio.base.config.config.TeleportConfig;
-import crazypants.enderio.base.config.recipes.RecipeFactory;
 import crazypants.enderio.base.config.recipes.RecipeLoader;
 import crazypants.enderio.base.diagnostics.EnderIOCrashCallable;
 import crazypants.enderio.base.diagnostics.ProfilerAntiReactor;
@@ -69,21 +66,29 @@ import crazypants.enderio.base.recipe.spawner.EntityDataRegistry;
 import crazypants.enderio.base.recipe.vat.VatRecipeManager;
 import crazypants.enderio.base.scheduler.Celeb;
 import crazypants.enderio.base.scheduler.Scheduler;
+import org.jetbrains.annotations.NotNull;
 
 @Mod(modid = EnderIO.MODID,
      name = EnderIO.MOD_NAME,
-     version = EnderIO.VERSION,
-     dependencies = EnderIO.DEPENDENCIES,
+     version = EnderIO.MOD_VERSION,
+     dependencies = EnderIO.MOD_DEPENDENCIES,
      guiFactory = "crazypants.enderio.base.config.GUIFactory")
 public class EnderIO implements IEnderIOAddon {
 
-    public static final @Nonnull String MODID = "enderio";
-    public static final @Nonnull String DOMAIN = "enderio";
-    public static final @Nonnull String MOD_NAME = "Ender IO";
-    public static final @Nonnull String VERSION = EIOTags.VERSION;
+    // region Mod Info
 
-    private static final @Nonnull String DEFAULT_DEPENDENCIES = "after:endercore;after:hwyla;after:jei";
-    public static final @Nonnull String DEPENDENCIES = DEFAULT_DEPENDENCIES;
+    @NotNull
+    public static final String MODID = EIOTags.MOD_ID;
+    @NotNull
+    public static final String DOMAIN = EIOTags.MOD_ID;
+    @NotNull
+    public static final String MOD_NAME = EIOTags.MOD_NAME;
+    @NotNull
+    public static final String MOD_VERSION = EIOTags.VERSION;
+    @NotNull
+    public static final String MOD_DEPENDENCIES = "after:endercore;after:hwyla;after:jei";
+
+    // endregion
 
     @Instance(MODID)
     public static EnderIO instance;
@@ -324,6 +329,17 @@ public class EnderIO implements IEnderIOAddon {
         return new NNList<>("peaceful", "easy_recipes", "hard_recipes", "broken_spawner", "cheap_materials",
                 "legacy_recipes", "strict_iron", "optional_tweaks",
                 "unhide_base");
+    }
+
+    /**
+     * Get the {@link ResourceLocation} with its {@code path} at the mod namespace.
+     *
+     * @param path The path in the mod domain.
+     * @return     Returns the {@link ResourceLocation} of the mod.
+     */
+    @NotNull
+    public static ResourceLocation id(@NotNull String path) {
+        return new ResourceLocation(DOMAIN, path);
     }
 
     static void initCrashData() {
