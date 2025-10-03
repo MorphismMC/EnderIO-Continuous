@@ -12,33 +12,12 @@ import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.conduit.geom.Offset;
+import org.jetbrains.annotations.NotNull;
 
-public class ConduitBuilder {
+public final class ConduitBuilder {
 
-    private enum State {
-
-        EMPTY(true, false, false, false, false),
-        NETWORK(true, true, false, false, false),
-        PRE_CONDUIT(false, false, true, false, false),
-        CONDUIT(false, false, true, true, false),
-        POST_CONDUIT(false, false, true, false, true),
-
-        ;
-
-        private final boolean acceptNetworkData, acceptNetworkBuild, acceptConduitData, acceptConduitBuild,
-                acceptFinalize;
-
-        private State(boolean acceptNetworkData, boolean acceptNetworkBuild, boolean acceptConduitData,
-                      boolean acceptConduitBuild, boolean acceptFinalize) {
-            this.acceptNetworkData = acceptNetworkData;
-            this.acceptNetworkBuild = acceptNetworkBuild;
-            this.acceptConduitData = acceptConduitData;
-            this.acceptConduitBuild = acceptConduitBuild;
-            this.acceptFinalize = acceptFinalize;
-        }
-    }
-
-    private @Nonnull State state = State.EMPTY;
+    @NotNull
+    private State state = State.EMPTY;
 
     private ConduitBuilder() {}
 
@@ -229,4 +208,28 @@ public class ConduitBuilder {
             throw new RuntimeException("State error in Conduit Builder (" + state + ")");
         }
     }
+
+    private enum State {
+
+        EMPTY(true, false, false, false, false),
+        NETWORK(true, true, false, false, false),
+        PRE_CONDUIT(false, false, true, false, false),
+        CONDUIT(false, false, true, true, false),
+        POST_CONDUIT(false, false, true, false, true),
+
+        ;
+
+        private final boolean acceptNetworkData, acceptNetworkBuild, acceptConduitData, acceptConduitBuild,
+                acceptFinalize;
+
+        State(boolean acceptNetworkData, boolean acceptNetworkBuild, boolean acceptConduitData,
+              boolean acceptConduitBuild, boolean acceptFinalize) {
+            this.acceptNetworkData = acceptNetworkData;
+            this.acceptNetworkBuild = acceptNetworkBuild;
+            this.acceptConduitData = acceptConduitData;
+            this.acceptConduitBuild = acceptConduitBuild;
+            this.acceptFinalize = acceptFinalize;
+        }
+    }
+
 }

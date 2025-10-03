@@ -242,18 +242,18 @@ public abstract class AbstractTankConduit extends AbstractLiquidConduit {
     }
 
     @Override
-    public boolean canFill(EnumFacing side, FluidStack fluid) {
-        if (getNetwork() == null || !getConnectionMode(side).acceptsInput()) {
+    public boolean canFill(EnumFacing direction, FluidStack fluid) {
+        if (getNetwork() == null || !getConnectionMode(direction).acceptsInput()) {
             return false;
         }
-        return canExtractFromDir(side) && LiquidConduitNetwork.areFluidsCompatable(getFluidType(), fluid);
+        return canExtractFromDir(direction) && LiquidConduitNetwork.areFluidsCompatable(getFluidType(), fluid);
     }
 
     @Override
-    public boolean canDrain(EnumFacing side, FluidStack fluid) {
-        if (getNetwork() == null || !getConnectionMode(side).acceptsOutput()) {
+    public boolean canDrain(EnumFacing direction, FluidStack fluid) {
+        if (getNetwork() == null || !getConnectionMode(direction).acceptsOutput()) {
             return false;
         }
-        return canInputToDir(side) && LiquidConduitNetwork.areFluidsCompatable(getFluidType(), fluid);
+        return canInputToDir(direction) && LiquidConduitNetwork.areFluidsCompatable(getFluidType(), fluid);
     }
 }

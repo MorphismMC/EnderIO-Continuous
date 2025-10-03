@@ -234,8 +234,8 @@ public class LiquidConduitImpl extends AbstractTankConduit {
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
-        if (from == null || !getConnectionMode(from).acceptsInput() || network == null || fluid == null ||
+    public boolean canFill(EnumFacing direction, FluidStack fluid) {
+        if (direction == null || !getConnectionMode(direction).acceptsInput() || network == null || fluid == null ||
                 fluid.amount <= 0) {
             return false;
         }
@@ -246,8 +246,8 @@ public class LiquidConduitImpl extends AbstractTankConduit {
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, FluidStack fluid) {
-        if (from == null || !getConnectionMode(from).acceptsOutput() || tank.getFluid() == null || fluid == null) {
+    public boolean canDrain(EnumFacing direction, FluidStack fluid) {
+        if (direction == null || !getConnectionMode(direction).acceptsOutput() || tank.getFluid() == null || fluid == null) {
             return false;
         }
         return FluidUtil.areFluidsTheSame(tank.getFluid().getFluid(), fluid.getFluid());

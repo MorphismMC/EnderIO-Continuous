@@ -339,15 +339,15 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     // Fluid API
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
-        if (network == null || from == null) {
+    public boolean canFill(EnumFacing direction, FluidStack fluid) {
+        if (network == null || direction == null) {
             return false;
         }
-        return getConnectionMode(from).acceptsInput();
+        return getConnectionMode(direction).acceptsInput();
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, FluidStack fluid) {
+    public boolean canDrain(EnumFacing direction, FluidStack fluid) {
         return false;
     }
 

@@ -97,14 +97,14 @@ public abstract class AbstractLiquidConduit extends AbstractConduit implements L
     }
 
     @Override
-    public boolean canOutputToDir(@Nonnull EnumFacing dir) {
-        if (!canInputToDir(dir)) {
+    public boolean canOutputToDir(@Nonnull EnumFacing direction) {
+        if (!canInputToDir(direction)) {
             return false;
         }
-        if (conduitConnections.contains(dir)) {
+        if (conduitConnections.contains(direction)) {
             return true;
         }
-        if (!externalConnections.contains(dir)) {
+        if (!externalConnections.contains(direction)) {
             return false;
         }
         return true;
@@ -126,13 +126,13 @@ public abstract class AbstractLiquidConduit extends AbstractConduit implements L
     }
 
     @Override
-    public boolean canExtractFromDir(@Nonnull EnumFacing dir) {
-        return getConnectionMode(dir).acceptsInput();
+    public boolean canExtractFromDir(@Nonnull EnumFacing direction) {
+        return getConnectionMode(direction).acceptsInput();
     }
 
     @Override
-    public boolean canInputToDir(@Nonnull EnumFacing dir) {
-        return getConnectionMode(dir).acceptsOutput() && !autoExtractForDir(dir);
+    public boolean canInputToDir(@Nonnull EnumFacing direction) {
+        return getConnectionMode(direction).acceptsOutput() && !autoExtractForDir(direction);
     }
 
     /**
