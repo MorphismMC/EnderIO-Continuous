@@ -26,11 +26,11 @@ import com.enderio.core.common.vecmath.Vector4f;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitNetwork;
-import crazypants.enderio.base.conduit.IConduitTexture;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitTexture;
+import crazypants.enderio.base.conduit.GuiExternalConnection;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.invpanel.capability.CapabilityDatabaseHandler;
@@ -38,18 +38,17 @@ import crazypants.enderio.base.invpanel.capability.InventoryDatabaseSource;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.tool.ToolUtil;
 import crazypants.enderio.conduits.conduit.AbstractConduit;
-import crazypants.enderio.conduits.render.ConduitTexture;
 import crazypants.enderio.invpanel.init.InvpanelObject;
 import crazypants.enderio.invpanel.invpanel.TileInventoryPanel;
 
 public class DataConduit extends AbstractConduit implements IDataConduit {
 
-    static final @Nonnull Map<String, IConduitTexture> ICONS = new HashMap<>();
+    static final @Nonnull Map<String, ConduitTexture> ICONS = new HashMap<>();
 
     static {
-        ICONS.put(ICON_KEY, new ConduitTexture(TextureRegistry.registerTexture(ICON_KEY), ConduitTexture.arm(0)));
+        ICONS.put(ICON_KEY, new crazypants.enderio.conduits.render.ConduitTexture(TextureRegistry.registerTexture(ICON_KEY), crazypants.enderio.conduits.render.ConduitTexture.arm(0)));
         ICONS.put(ICON_CORE_KEY,
-                new ConduitTexture(TextureRegistry.registerTexture(ICON_CORE_KEY), ConduitTexture.core()));
+                new crazypants.enderio.conduits.render.ConduitTexture(TextureRegistry.registerTexture(ICON_CORE_KEY), crazypants.enderio.conduits.render.ConduitTexture.core()));
     }
 
     protected DataConduitNetwork network;
@@ -72,8 +71,8 @@ public class DataConduit extends AbstractConduit implements IDataConduit {
 
     @Override
     @Nonnull
-    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull IClientConduit con) {
-        return new DataSettings(gui, con);
+    public ITabPanel createGuiPanel(@Nonnull GuiExternalConnection gui, @Nonnull ConduitClient conduit) {
+        return new DataSettings(gui, conduit);
     }
 
     @Override
@@ -91,7 +90,7 @@ public class DataConduit extends AbstractConduit implements IDataConduit {
 
     @Override
     @Nonnull
-    public Class<? extends IConduit> getBaseConduitType() {
+    public Class<? extends Conduit> getBaseConduitType() {
         return IDataConduit.class;
     }
 
@@ -132,7 +131,7 @@ public class DataConduit extends AbstractConduit implements IDataConduit {
     }
 
     @Override
-    public boolean setNetwork(@Nonnull IConduitNetwork<?, ?> network) {
+    public boolean setNetwork(@Nonnull ConduitNetwork<?, ?> network) {
         this.network = (DataConduitNetwork) network;
         return super.setNetwork(network);
     }
@@ -146,9 +145,9 @@ public class DataConduit extends AbstractConduit implements IDataConduit {
     public boolean onBlockActivated(@Nonnull EntityPlayer player, @Nonnull EnumHand hand, @Nonnull RaytraceResult res,
                                     @Nonnull List<RaytraceResult> all) {
         if (ToolUtil.isToolEquipped(player, hand)) {
-            if (!getBundle().getEntity().getWorld().isRemote) {
-                final CollidableComponent component = res.component;
-                EnumFacing faceHit = res.movingObjectPosition.sideHit;
+            if (!getBundle().getTileEntity().getWorld().isRemote) {
+                final CollidableComponent component = res.component();
+                EnumFacing faceHit = res.movingObjectPosition().sideHit;
                 if (component.isCore()) {
                     if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
                         setConnectionMode(faceHit, ConnectionMode.IN_OUT);
@@ -156,7 +155,7 @@ public class DataConduit extends AbstractConduit implements IDataConduit {
                     }
                     return ConduitUtil.connectConduits(this, faceHit);
                 } else {
-                    EnumFacing connDir = component.getDirection();
+                    EnumFacing connDir = component.direction();
                     if (externalConnections.contains(connDir)) {
                         setConnectionMode(connDir, getNextConnectionMode(connDir));
                     } else if (containsConduitConnection(connDir)) {
@@ -255,12 +254,12 @@ public class DataConduit extends AbstractConduit implements IDataConduit {
     @SuppressWarnings("null")
     @Override
     @Nonnull
-    public IConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+    public ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
         return ICONS.get(component.isCore() ? ICON_CORE_KEY : ICON_KEY);
     }
 
     @Override
-    public @Nullable IConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
+    public @Nullable ConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
         return null;
     }
 

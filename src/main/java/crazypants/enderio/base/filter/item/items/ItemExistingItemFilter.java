@@ -32,17 +32,17 @@ import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIOTab;
 import crazypants.enderio.base.capability.ItemTools;
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.IFilterContainer;
+import crazypants.enderio.base.filter.FilterContainer;
 import crazypants.enderio.base.filter.gui.ContainerFilter;
 import crazypants.enderio.base.filter.gui.ExistingItemFilterGui;
 import crazypants.enderio.base.filter.item.ExistingItemFilter;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.init.ModObject;
 import crazypants.enderio.base.lang.Lang;
 import crazypants.enderio.util.EnumReader;
 import crazypants.enderio.util.NbtValue;
 
-public class ItemExistingItemFilter extends Item implements IItemFilterItemUpgrade, IResourceTooltipProvider {
+public class ItemExistingItemFilter extends Item implements ItemFilterItemUpgrade, IResourceTooltipProvider {
 
     public static ItemExistingItemFilter create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemExistingItemFilter(modObject);
@@ -57,8 +57,8 @@ public class ItemExistingItemFilter extends Item implements IItemFilterItemUpgra
     }
 
     @Override
-    public IItemFilter createFilterFromStack(@Nonnull ItemStack stack) {
-        IItemFilter filter = new ExistingItemFilter();
+    public ItemFilter createFilterFromStack(@Nonnull ItemStack stack) {
+        ItemFilter filter = new ExistingItemFilter();
         NBTTagCompound tag = NbtValue.FILTER.getTag(stack);
         filter.readFromNBT(tag);
         return filter;
@@ -124,10 +124,10 @@ public class ItemExistingItemFilter extends Item implements IItemFilterItemUpgra
     public GuiScreen getClientGuiElement(@Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos,
                                          @Nullable EnumFacing facing, int param1) {
         Container container = player.openContainer;
-        if (container instanceof IFilterContainer) {
+        if (container instanceof FilterContainer) {
             return new ExistingItemFilterGui(player.inventory,
                     new ContainerFilter(player, (TileEntityBase) world.getTileEntity(pos), facing, param1),
-                    world.getTileEntity(pos), ((IFilterContainer<IItemFilter>) container).getFilter(param1));
+                    world.getTileEntity(pos), ((FilterContainer<ItemFilter>) container).getFilter(param1));
         } else {
             return new ExistingItemFilterGui(player.inventory, new ContainerFilter(player, null, facing, param1), null,
                     FilterRegistry.getFilterForUpgrade(player.getHeldItem(EnumReader.get(EnumHand.class, param1))));

@@ -31,10 +31,10 @@ import com.enderio.core.common.vecmath.Vector4f;
 import crazypants.enderio.base.autosave.enderio.HandleIFilter;
 import crazypants.enderio.base.capability.ItemTools;
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.IFilter;
-import crazypants.enderio.base.filter.ITileFilterContainer;
-import crazypants.enderio.base.filter.item.IItemFilter;
-import crazypants.enderio.base.filter.item.items.IItemFilterItemUpgrade;
+import crazypants.enderio.base.filter.Filter;
+import crazypants.enderio.base.filter.TileFilterContainer;
+import crazypants.enderio.base.filter.item.ItemFilter;
+import crazypants.enderio.base.filter.item.items.ItemFilterItemUpgrade;
 import crazypants.enderio.base.machine.base.te.AbstractCapabilityMachineEntity;
 import crazypants.enderio.base.machine.interfaces.IHasFillLevel;
 import crazypants.enderio.base.machine.interfaces.IRedstoneModeControlable;
@@ -52,13 +52,13 @@ import info.loenwind.autosave.util.NBTAction;
 @Storable
 public class TileVacuumChest extends AbstractCapabilityMachineEntity
                              implements IRedstoneModeControlable, IPaintable.IPaintableTileEntity, IRanged,
-                             ITileFilterContainer, IHasFillLevel {
+        TileFilterContainer, IHasFillLevel {
 
     private static PredicateItemStack PREDICATE_FILTER = new PredicateItemStack() {
 
         @Override
         public boolean doApply(@Nonnull ItemStack input) {
-            return input.getItem() instanceof IItemFilterItemUpgrade;
+            return input.getItem() instanceof ItemFilterItemUpgrade;
         }
     };
 
@@ -69,7 +69,7 @@ public class TileVacuumChest extends AbstractCapabilityMachineEntity
             if (filter != null) {
                 FilterRegistry.writeFilterToStack(filter, oldStack);
             }
-            filter = FilterRegistry.<IItemFilter>getFilterForUpgrade(newStack);
+            filter = FilterRegistry.<ItemFilter>getFilterForUpgrade(newStack);
             forceUpdatePlayers();
         }
     };
@@ -83,7 +83,7 @@ public class TileVacuumChest extends AbstractCapabilityMachineEntity
     private int range = VacuumConfig.vacuumChestRange.get();
 
     @Store(handler = HandleIFilter.class)
-    private IItemFilter filter;
+    private ItemFilter filter;
 
     @Store({ NBTAction.CLIENT })
     private boolean clientActive;
@@ -225,7 +225,7 @@ public class TileVacuumChest extends AbstractCapabilityMachineEntity
         return filter != null;
     }
 
-    public IItemFilter getItemFilter() {
+    public ItemFilter getItemFilter() {
         return filter;
     }
 
@@ -264,12 +264,12 @@ public class TileVacuumChest extends AbstractCapabilityMachineEntity
     // RANGE END
 
     @Override
-    public void setFilter(int filterIndex, int param, @Nonnull IFilter filter) {
-        this.filter = (IItemFilter) filter;
+    public void setFilter(int filterIndex, int param, @Nonnull Filter filter) {
+        this.filter = (ItemFilter) filter;
     }
 
     @Override
-    public IFilter getFilter(int filterIndex, int param1) {
+    public Filter getFilter(int filterIndex, int param1) {
         return filter;
     }
 

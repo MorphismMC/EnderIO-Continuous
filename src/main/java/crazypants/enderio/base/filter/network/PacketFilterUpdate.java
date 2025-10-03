@@ -12,8 +12,8 @@ import com.enderio.core.common.network.MessageTileEntity;
 
 import crazypants.enderio.base.Log;
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.IFilter;
-import crazypants.enderio.base.filter.ITileFilterContainer;
+import crazypants.enderio.base.filter.Filter;
+import crazypants.enderio.base.filter.TileFilterContainer;
 import crazypants.enderio.base.filter.gui.ContainerFilter;
 import io.netty.buffer.ByteBuf;
 
@@ -21,11 +21,11 @@ public class PacketFilterUpdate extends MessageTileEntity<TileEntity> {
 
     protected int filterId;
     protected int param1;
-    protected IFilter filter;
+    protected Filter filter;
 
     public PacketFilterUpdate() {}
 
-    public PacketFilterUpdate(@Nonnull TileEntity te, @Nonnull IFilter filter, int filterId, int param1) {
+    public PacketFilterUpdate(@Nonnull TileEntity te, @Nonnull Filter filter, int filterId, int param1) {
         super(te);
         this.filter = filter;
         this.filterId = filterId;
@@ -48,7 +48,7 @@ public class PacketFilterUpdate extends MessageTileEntity<TileEntity> {
         filter = FilterRegistry.readFilter(buf);
     }
 
-    public ITileFilterContainer getFilterContainer(MessageContext ctx) {
+    public TileFilterContainer getFilterContainer(MessageContext ctx) {
         if (ctx.side == Side.SERVER) {
             if (ctx.getServerHandler().player.openContainer instanceof ContainerFilter) {
                 final TileEntity tileEntity = ((ContainerFilter) ctx.getServerHandler().player.openContainer)
@@ -58,8 +58,8 @@ public class PacketFilterUpdate extends MessageTileEntity<TileEntity> {
                             " tried to manipulate a filter while another gui was open!");
                     return null;
                 } else {
-                    if (tileEntity instanceof ITileFilterContainer) {
-                        return (ITileFilterContainer) tileEntity;
+                    if (tileEntity instanceof TileFilterContainer) {
+                        return (TileFilterContainer) tileEntity;
                     }
                 }
             }
@@ -71,7 +71,7 @@ public class PacketFilterUpdate extends MessageTileEntity<TileEntity> {
 
         @Override
         public IMessage onMessage(PacketFilterUpdate message, MessageContext ctx) {
-            ITileFilterContainer filterContainer = message.getFilterContainer(ctx);
+            TileFilterContainer filterContainer = message.getFilterContainer(ctx);
             if (filterContainer != null && message.filter != null) {
                 filterContainer.setFilter(message.filterId, message.param1, message.filter);
             }

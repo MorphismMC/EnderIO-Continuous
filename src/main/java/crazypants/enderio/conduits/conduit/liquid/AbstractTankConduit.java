@@ -21,7 +21,7 @@ import com.enderio.core.common.util.FluidUtil;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitNetwork;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.tool.ToolUtil;
@@ -48,10 +48,10 @@ public abstract class AbstractTankConduit extends AbstractLiquidConduit {
         AbstractTankConduitNetwork<? extends AbstractTankConduit> network = getTankNetwork();
         if (ToolUtil.isToolEquipped(player, hand)) {
 
-            if (!getBundle().getEntity().getWorld().isRemote) {
-                final CollidableComponent component = res.component;
+            if (!getBundle().getTileEntity().getWorld().isRemote) {
+                final CollidableComponent component = res.component();
                 if (component != null) {
-                    EnumFacing faceHit = res.movingObjectPosition.sideHit;
+                    EnumFacing faceHit = res.movingObjectPosition().sideHit;
                     if (component.isCore()) {
                         if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
                             setConnectionMode(faceHit, getNextConnectionMode(faceHit));
@@ -59,8 +59,7 @@ public abstract class AbstractTankConduit extends AbstractLiquidConduit {
                         }
                         // Attempt to join networks
                         BlockPos pos = getBundle().getLocation().offset(faceHit);
-                        ILiquidConduit liquidConduit = ConduitUtil.getConduit(getBundle().getEntity().getWorld(),
-                                pos.getX(), pos.getY(), pos.getZ(), ILiquidConduit.class);
+                        LiquidConduit liquidConduit = ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(), pos, LiquidConduit.class);
                         if (!(liquidConduit instanceof AbstractTankConduit) || !canJoinNeighbour(liquidConduit)) {
                             return false;
                         }
@@ -72,7 +71,7 @@ public abstract class AbstractTankConduit extends AbstractLiquidConduit {
                         }
                         return ConduitUtil.connectConduits(this, faceHit);
                     } else {
-                        EnumFacing connDir = component.getDirection();
+                        EnumFacing connDir = component.direction();
                         if (containsExternalConnection(connDir)) {
                             setConnectionMode(connDir, getNextConnectionMode(connDir));
                         } else if (containsConduitConnection(connDir)) {
@@ -90,8 +89,8 @@ public abstract class AbstractTankConduit extends AbstractLiquidConduit {
 
         } else if (heldItem.getItem() == Items.BUCKET) {
 
-            if (!getBundle().getEntity().getWorld().isRemote && network != null) {
-                long curTick = getBundle().getEntity().getWorld().getTotalWorldTime();
+            if (!getBundle().getTileEntity().getWorld().isRemote && network != null) {
+                long curTick = getBundle().getTileEntity().getWorld().getTotalWorldTime();
                 if (curTick - lastEmptyTick < 20) {
                     numEmptyEvents++;
                 } else {
@@ -116,7 +115,7 @@ public abstract class AbstractTankConduit extends AbstractLiquidConduit {
 
             FluidStack fluid = FluidUtil.getFluidTypeFromItem(heldItem);
             if (fluid != null) {
-                if (!getBundle().getEntity().getWorld().isRemote) {
+                if (!getBundle().getTileEntity().getWorld().isRemote) {
                     if (network != null && (network.getFluidType() == null || network.getTotalVolume() < 500 ||
                             LiquidConduitNetwork.areFluidsCompatable(getFluidType(), fluid))) {
                         network.setFluidType(fluid);
@@ -144,14 +143,14 @@ public abstract class AbstractTankConduit extends AbstractLiquidConduit {
     }
 
     private void setFluidTypeOnNetwork(AbstractTankConduit con, FluidStack type) {
-        IConduitNetwork<?, ?> n = con.getNetwork();
+        ConduitNetwork<?, ?> n = con.getNetwork();
         if (n != null) {
             AbstractTankConduitNetwork<?> network = (AbstractTankConduitNetwork<?>) n;
             network.setFluidType(type);
         }
     }
 
-    protected abstract boolean canJoinNeighbour(ILiquidConduit n);
+    protected abstract boolean canJoinNeighbour(LiquidConduit n);
 
     public abstract AbstractTankConduitNetwork<? extends AbstractTankConduit> getTankNetwork();
 
@@ -209,29 +208,29 @@ public abstract class AbstractTankConduit extends AbstractLiquidConduit {
     protected abstract void updateTank();
 
     @Override
-    public void readFromNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.readFromNBT(nbtRoot);
+    public void readFromNBT(@Nonnull NBTTagCompound data) {
+        super.readFromNBT(data);
         updateTank();
-        if (nbtRoot.hasKey("tank")) {
-            FluidStack liquid = FluidStack.loadFluidStackFromNBT(nbtRoot.getCompoundTag("tank"));
+        if (data.hasKey("tank")) {
+            FluidStack liquid = FluidStack.loadFluidStackFromNBT(data.getCompoundTag("tank"));
             tank.setLiquid(liquid);
         } else {
             tank.setLiquid(null);
         }
-        fluidTypeLocked = nbtRoot.getBoolean("fluidLocked");
+        fluidTypeLocked = data.getBoolean("fluidLocked");
     }
 
     @Override
-    public void writeToNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.writeToNBT(nbtRoot);
+    public void writeToNBT(@Nonnull NBTTagCompound data) {
+        super.writeToNBT(data);
         FluidStack ft = getFluidType();
         if (ConduitUtil.isFluidValid(ft)) {
             updateTank();
             ft = ft.copy();
             ft.amount = tank.getFluidAmount();
-            nbtRoot.setTag("tank", ft.writeToNBT(new NBTTagCompound()));
+            data.setTag("tank", ft.writeToNBT(new NBTTagCompound()));
         }
-        nbtRoot.setBoolean("fluidLocked", fluidTypeLocked);
+        data.setBoolean("fluidLocked", fluidTypeLocked);
     }
 
     @Override
@@ -243,18 +242,18 @@ public abstract class AbstractTankConduit extends AbstractLiquidConduit {
     }
 
     @Override
-    public boolean canFill(EnumFacing side, FluidStack fluid) {
-        if (getNetwork() == null || !getConnectionMode(side).acceptsInput()) {
+    public boolean canFill(EnumFacing direction, FluidStack fluid) {
+        if (getNetwork() == null || !getConnectionMode(direction).acceptsInput()) {
             return false;
         }
-        return canExtractFromDir(side) && LiquidConduitNetwork.areFluidsCompatable(getFluidType(), fluid);
+        return canExtractFromDir(direction) && LiquidConduitNetwork.areFluidsCompatable(getFluidType(), fluid);
     }
 
     @Override
-    public boolean canDrain(EnumFacing side, FluidStack fluid) {
-        if (getNetwork() == null || !getConnectionMode(side).acceptsOutput()) {
+    public boolean canDrain(EnumFacing direction, FluidStack fluid) {
+        if (getNetwork() == null || !getConnectionMode(direction).acceptsOutput()) {
             return false;
         }
-        return canInputToDir(side) && LiquidConduitNetwork.areFluidsCompatable(getFluidType(), fluid);
+        return canInputToDir(direction) && LiquidConduitNetwork.areFluidsCompatable(getFluidType(), fluid);
     }
 }

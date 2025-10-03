@@ -20,8 +20,8 @@ import crazypants.enderio.base.filter.gui.FilterGuiUtil;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.lang.Lang;
 import crazypants.enderio.conduit.gas.client.utils.GasRenderUtil;
+import crazypants.enderio.conduit.gas.common.filter.GasFilterImpl;
 import crazypants.enderio.conduit.gas.common.filter.GasFilter;
-import crazypants.enderio.conduit.gas.common.filter.IGasFilter;
 import mekanism.api.gas.GasStack;
 
 public class GasFilterGui extends AbstractFilterGui {
@@ -30,19 +30,19 @@ public class GasFilterGui extends AbstractFilterGui {
 
     private final IconButton whiteListB;
     @Nonnull
-    private final GasFilter filter;
+    private final GasFilterImpl filter;
 
     private int xOffset;
     private int yOffset;
 
     public GasFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer, TileEntity te,
-                        @Nonnull IGasFilter filterIn) {
+                        @Nonnull GasFilter filterIn) {
         super(playerInv, filterContainer, te, filterIn, "gas_filter");
 
         xOffset = 13;
         yOffset = 34;
 
-        filter = (GasFilter) filterIn;
+        filter = (GasFilterImpl) filterIn;
 
         whiteListB = new IconButton(this, ID_WHITELIST, xOffset + 98, yOffset + 1, IconEIO.FILTER_WHITELIST);
         whiteListB.setToolTip(Lang.GUI_ITEM_FILTER_WHITELIST.get());

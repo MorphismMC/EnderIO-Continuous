@@ -10,10 +10,10 @@ import net.minecraftforge.client.model.ModelLoader.White;
 
 import com.enderio.core.client.render.ColorUtil;
 
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.conduits.render.BakedQuadBuilder;
 import crazypants.enderio.conduits.render.DefaultConduitRenderer;
@@ -21,7 +21,7 @@ import crazypants.enderio.conduits.render.DefaultConduitRenderer;
 public class OCConduitRenderer extends DefaultConduitRenderer {
 
     @Override
-    public boolean isRendererForConduit(@Nonnull IConduit conduit) {
+    public boolean isRendererForConduit(@Nonnull Conduit conduit) {
         return conduit instanceof IOCConduit;
     }
 
@@ -32,17 +32,17 @@ public class OCConduitRenderer extends DefaultConduitRenderer {
      */
 
     @Override
-    protected void addConduitQuads(@Nonnull IConduitBundle bundle, @Nonnull IClientConduit conduit,
-                                   @Nonnull IConduitTexture tex,
-                                   @Nonnull CollidableComponent component, float selfIllum, BlockRenderLayer layer,
+    protected void addConduitQuads(@Nonnull ConduitBundle bundle, @Nonnull ConduitClient conduit,
+                                   @Nonnull ConduitTexture texture,
+                                   @Nonnull CollidableComponent component, float brightness, BlockRenderLayer layer,
                                    @Nonnull List<BakedQuad> quads) {
-        if (IOCConduit.COLOR_CONTROLLER_ID.equals(component.data)) {
-            if (conduit.containsExternalConnection(component.getDirection())) {
-                int c = ((IOCConduit) conduit).getSignalColor(component.getDirection()).getColor();
-                BakedQuadBuilder.addBakedQuads(quads, component.bound, White.INSTANCE, ColorUtil.toFloat4(c));
+        if (IOCConduit.COLOR_CONTROLLER_ID.equals(component.data())) {
+            if (conduit.containsExternalConnection(component.direction())) {
+                int c = ((IOCConduit) conduit).getSignalColor(component.direction()).getColor();
+                BakedQuadBuilder.addBakedQuads(quads, component.bound(), White.INSTANCE, ColorUtil.toFloat4(c));
             }
         } else {
-            super.addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);
+            super.addConduitQuads(bundle, conduit, texture, component, brightness, layer, quads);
         }
     }
 }

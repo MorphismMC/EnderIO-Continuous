@@ -13,17 +13,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConduitDisplayMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.conduit.geom.Offset;
 import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.gui.IconEIO;
-import crazypants.enderio.conduits.conduit.AbstractItemConduit;
+import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 import crazypants.enderio.conduits.render.ConduitBundleRenderManager;
 
-public class ItemRedstoneConduit extends AbstractItemConduit {
+public class ItemRedstoneConduit extends AbstractConduitItem {
 
     public static ItemRedstoneConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemRedstoneConduit(modObject);
@@ -51,12 +51,12 @@ public class ItemRedstoneConduit extends AbstractItemConduit {
     }
 
     @Override
-    public @Nonnull Class<? extends IConduit> getBaseConduitType() {
+    public @Nonnull Class<? extends Conduit> getBaseConduitType() {
         return IRedstoneConduit.class;
     }
 
     @Override
-    public IServerConduit createConduit(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
+    public ConduitServer createConduit(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
         return new InsulatedRedstoneConduit();
     }
 

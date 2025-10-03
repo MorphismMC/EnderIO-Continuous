@@ -17,7 +17,7 @@ import com.enderio.core.client.gui.widget.GhostSlot;
 import com.enderio.core.common.network.NetworkUtil;
 import com.enderio.core.common.util.NNList;
 
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.util.Prep;
 import forestry.api.genetics.AlleleManager;
 import forestry.api.genetics.IGenome;
@@ -27,7 +27,7 @@ import io.netty.buffer.ByteBuf;
 
 // TODO: Move to integration-forestry after big conduit merge
 
-public class SpeciesItemFilter implements IInventory, IItemFilter.WithGhostSlots {
+public class SpeciesItemFilter implements IInventory, ItemFilter.WithGhostSlots {
 
     private static final boolean DEFAULT_BLACKLIST = false;
     private static final boolean DEFAULT_STICKY = false;

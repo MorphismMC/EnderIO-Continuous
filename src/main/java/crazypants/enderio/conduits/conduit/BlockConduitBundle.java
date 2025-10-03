@@ -65,11 +65,11 @@ import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.ItemEIO;
 import crazypants.enderio.base.conduit.ConduitDisplayMode;
 import crazypants.enderio.base.conduit.ConduitUtil;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
-import crazypants.enderio.base.conduit.IConduitBundle.FacadeRenderState;
-import crazypants.enderio.base.conduit.IConduitItem;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
+import crazypants.enderio.base.conduit.ConduitBundle.FacadeRenderState;
+import crazypants.enderio.base.conduit.ConduitItem;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.facade.EnumFacadeType;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
@@ -151,7 +151,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     @Nullable
     public ItemEIO createBlockItem(@Nonnull IModObject modObject) {
         return null;
-    };
+    }
 
     @Override
     public int getMetaFromState(@Nonnull IBlockState state) {
@@ -199,9 +199,9 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
             }
         } else if (target.hitInfo instanceof CollidableComponent) {
             CollidableComponent cc = (CollidableComponent) target.hitInfo;
-            IConduit con = cb.getConduit(cc.conduitType);
-            if (con != null && con instanceof IClientConduit.WithDefaultRendering) {
-                tex = ((IClientConduit.WithDefaultRendering) con).getTextureForState(cc).getCroppedSprite();
+            Conduit con = cb.getConduit(cc.conduitType());
+            if (con != null && con instanceof ConduitClient.WithDefaultRendering) {
+                tex = ((ConduitClient.WithDefaultRendering) con).getTextureForState(cc).getCroppedSprite();
             }
         }
         if (tex == null) {
@@ -306,10 +306,10 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
             CollidableComponent cc = (CollidableComponent) target.hitInfo;
             TileConduitBundle bundle = getTileEntity(world, pos);
             if (bundle != null) {
-                IConduit conduit = bundle.getConduit(cc.conduitType);
+                Conduit conduit = bundle.getConduit(cc.conduitType());
                 if (conduit != null) {
                     ret = conduit.createItem();
-                } else if (cc.conduitType == null && bundle.hasFacade()) {
+                } else if (cc.conduitType() == null && bundle.hasFacade()) {
                     bundle.getFacadeType();
                     // use the facade
                     ret = new ItemStack(ModObject.itemConduitFacade.getItemNN(), 1,
@@ -361,7 +361,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
             PaintUtil.setSourceBlock(stack, te.getPaintSource());
             drops.add(stack);
         }
-        for (IConduit conduit : te.getConduits()) {
+        for (Conduit conduit : te.getConduits()) {
             drops.addAll(conduit.getDrops());
         }
     }
@@ -369,7 +369,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     @Override
     public boolean isSideSolid(@Nonnull IBlockState bs, @Nonnull IBlockAccess world, @Nonnull BlockPos pos,
                                @Nonnull EnumFacing side) {
-        IConduitBundle te = getTileEntitySafe(world, pos);
+        ConduitBundle te = getTileEntitySafe(world, pos);
         if (te == null) {
             return false;
         }
@@ -407,7 +407,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
         if (bs.getValue(OPAQUE)) {
             return 255;
         }
-        IConduitBundle te = getTileEntitySafe(world, pos);
+        ConduitBundle te = getTileEntitySafe(world, pos);
         if (te == null) {
             return getLightOpacity(bs);
         }
@@ -429,8 +429,8 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
             }
         }
         if (ConduitConfig.dynamicLighting.get()) {
-            Collection<? extends IConduit> conduits = te.getConduits();
-            for (IConduit conduit : conduits) {
+            Collection<? extends Conduit> conduits = te.getConduits();
+            for (Conduit conduit : conduits) {
                 result += conduit.getLightValue();
             }
         }
@@ -442,7 +442,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     @Nonnull
     public SoundType getSoundType(@Nonnull IBlockState state, @Nonnull World world, @Nonnull BlockPos pos,
                                   @Nullable Entity entity) {
-        IConduitBundle te = getTileEntitySafe(world, pos);
+        ConduitBundle te = getTileEntitySafe(world, pos);
         if (te != null && te.hasFacade()) {
             return te.getPaintSourceNN().getBlock().getSoundType();
         }
@@ -453,7 +453,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     @Override
     @SideOnly(Side.CLIENT)
     public int getPackedLightmapCoords(@Nonnull IBlockState bs, @Nonnull IBlockAccess worldIn, @Nonnull BlockPos pos) {
-        IConduitBundle te = getTileEntitySafe(worldIn, pos);
+        ConduitBundle te = getTileEntitySafe(worldIn, pos);
         if (te != null && te.hasFacade()) {
             if (te.getFacadeRenderedAs() == FacadeRenderState.WIRE_FRAME) {
                 return 255;
@@ -500,7 +500,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     @Deprecated
     @Override
     public float getBlockHardness(@Nonnull IBlockState bs, @Nonnull World world, @Nonnull BlockPos pos) {
-        IConduitBundle te = getTileEntity(world, pos);
+        ConduitBundle te = getTileEntity(world, pos);
         if (te == null) {
             return super.getBlockHardness(bs, world, pos);
         }
@@ -511,7 +511,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     public float getExplosionResistance(@Nonnull World world, @Nonnull BlockPos pos, @Nullable Entity par1Entity,
                                         @Nonnull Explosion explosion) {
         float resist = super.getExplosionResistance(world, pos, par1Entity, explosion);
-        IConduitBundle te = getTileEntity(world, pos);
+        ConduitBundle te = getTileEntity(world, pos);
         return te != null && te.getFacadeType().isHardened() ? resist * 10 : resist;
     }
 
@@ -555,7 +555,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     @Override
     public boolean removedByPlayer(@Nonnull IBlockState bs, @Nonnull World world, @Nonnull BlockPos pos,
                                    @Nonnull EntityPlayer player, boolean willHarvest) {
-        IConduitBundle te = getTileEntity(world, pos);
+        ConduitBundle te = getTileEntity(world, pos);
         if (te == null) {
             return true;
         }
@@ -603,12 +603,12 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
         return false;
     }
 
-    private boolean breakConduit(IConduitBundle te, List<ItemStack> drop, RaytraceResult rt, EntityPlayer player) {
+    private boolean breakConduit(ConduitBundle te, List<ItemStack> drop, RaytraceResult rt, EntityPlayer player) {
         if (rt == null) {
             return false;
         }
-        CollidableComponent component = rt.component;
-        Class<? extends IConduit> type = component.conduitType;
+        CollidableComponent component = rt.component();
+        Class<? extends Conduit> type = component.conduitType();
         if (!YetaUtil.renderConduit(player, type)) {
             return false;
         }
@@ -616,9 +616,9 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
         if (type == null) {
             // broke a connector so drop any conduits with no connections as there
             // is no other way to remove these
-            List<IConduit> cons = new ArrayList<IConduit>(te.getConduits());
+            List<Conduit> cons = new ArrayList<Conduit>(te.getConduits());
             boolean droppedUnconected = false;
-            for (IConduit con : cons) {
+            for (Conduit con : cons) {
                 if (con.getConduitConnections().isEmpty() && con.getExternalConnections().isEmpty() &&
                         YetaUtil.renderConduit(player, con)) {
                     te.removeConduit(con);
@@ -628,7 +628,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
             }
             // If there isn't, then drop em all
             if (!droppedUnconected) {
-                for (IConduit con : cons) {
+                for (Conduit con : cons) {
                     if (con != null && YetaUtil.renderConduit(player, con)) {
                         te.removeConduit(con);
                         drop.addAll(con.getDrops());
@@ -636,7 +636,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
                 }
             }
         } else {
-            IConduit con = te.getConduit(type);
+            Conduit con = te.getConduit(type);
             if (con != null) {
                 te.removeConduit(con);
                 drop.addAll(con.getDrops());
@@ -648,7 +648,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
 
     @Override
     public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
-        IConduitBundle te = getTileEntity(world, pos);
+        ConduitBundle te = getTileEntity(world, pos);
         if (te == null) {
             return;
         }
@@ -670,7 +670,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     public boolean onBlockActivated(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state,
                                     @Nonnull EntityPlayer player, @Nonnull EnumHand hand,
                                     @Nonnull EnumFacing side, float hitX, float hitY, float hitZ) {
-        IConduitBundle bundle = getTileEntity(world, pos);
+        ConduitBundle bundle = getTileEntity(world, pos);
         if (bundle == null) {
             return false;
         }
@@ -707,24 +707,24 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
         // Check conduit defined actions
         List<RaytraceResult> all = doRayTraceAll(world, pos, player);
         for (RaytraceResult raytraceResult : RaytraceResult.sort(Util.getEyePosition(player), all)) {
-            if (raytraceResult.component.data instanceof ConduitConnectorType) {
-                if (raytraceResult.component.data == ConduitConnectorType.INTERNAL &&
+            if (raytraceResult.component().data() instanceof ConduitConnectorType) {
+                if (raytraceResult.component().data() == ConduitConnectorType.INTERNAL &&
                         YetaUtil.renderInternalComponent(player)) {
                     // this is the gray box that's enclosing cores
                     return false;
-                } else if (raytraceResult.component.isDirectional()) {
+                } else if (raytraceResult.component().isDirectional()) {
                     // this is a connector plate
                     if (!world.isRemote) {
-                        openGui(world, pos, player, raytraceResult.component.getDirection(),
-                                raytraceResult.component.getDirection().ordinal());
+                        openGui(world, pos, player, raytraceResult.component().direction(),
+                                raytraceResult.component().direction().ordinal());
                     }
                     return true;
                 }
-            } else if (raytraceResult.component.conduitType != null) {
-                final IConduit componentConduit = bundle.getConduit(raytraceResult.component.conduitType);
+            } else if (raytraceResult.component().conduitType() != null) {
+                final Conduit componentConduit = bundle.getConduit(raytraceResult.component().conduitType());
                 if (componentConduit != null && YetaUtil.renderConduit(player, componentConduit) &&
                         componentConduit.onBlockActivated(player, hand, raytraceResult, all)) {
-                    bundle.getEntity().markDirty();
+                    bundle.getTileEntity().markDirty();
                     return true;
                 }
             }
@@ -760,7 +760,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     }
 
     private boolean handleConduitProbeClick(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player,
-                                            @Nonnull IConduitBundle bundle,
+                                            @Nonnull ConduitBundle bundle,
                                             @Nonnull ItemStack stack) {
         if (stack.getItemDamage() != 1) {
             return false; // not in copy paste mode
@@ -769,17 +769,17 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
         if (rr == null) {
             return false;
         }
-        CollidableComponent component = rr.component;
+        CollidableComponent component = rr.component();
         if (component.isCore()) {
             return false;
         }
-        return ItemConduitProbe.copyPasteSettings(player, stack, bundle, component.getDirection());
+        return ItemConduitProbe.copyPasteSettings(player, stack, bundle, component.direction());
     }
 
     private boolean handleConduitClick(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player,
-                                       @Nonnull IConduitBundle bundle,
+                                       @Nonnull ConduitBundle bundle,
                                        @Nonnull ItemStack stack, @Nonnull EnumHand hand) {
-        IConduitItem equipped = (IConduitItem) stack.getItem();
+        ConduitItem equipped = (ConduitItem) stack.getItem();
         if (!bundle.hasType(equipped.getBaseConduitType())) {
             if (!world.isRemote) {
                 if (bundle.addConduit(equipped.createConduit(stack, player))) {
@@ -855,7 +855,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     public void addCollisionBoxToList(@Nonnull IBlockState state, @Nonnull World world, @Nonnull BlockPos pos,
                                       @Nonnull AxisAlignedBB axisalignedbb,
                                       @Nonnull List<AxisAlignedBB> arraylist, @Nullable Entity par7Entity, boolean b) {
-        IConduitBundle con = getTileEntity(world, pos);
+        ConduitBundle con = getTileEntity(world, pos);
         if (con == null) {
             return;
         }
@@ -866,8 +866,8 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
 
             Collection<CollidableComponent> collidableComponents = con.getCollidableComponents();
             for (CollidableComponent bnd : collidableComponents) {
-                setBlockBounds(bnd.bound.minX, bnd.bound.minY, bnd.bound.minZ, bnd.bound.maxX, bnd.bound.maxY,
-                        bnd.bound.maxZ);
+                setBlockBounds(bnd.bound().minX, bnd.bound().minY, bnd.bound().minZ, bnd.bound().maxX, bnd.bound().maxY,
+                        bnd.bound().maxZ);
                 super.addCollisionBoxToList(state, world, pos, axisalignedbb, arraylist, par7Entity, b);
             }
 
@@ -890,7 +890,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
             // FIXME is this valid?
             return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
         }
-        IConduitBundle con = te;
+        ConduitBundle con = te;
 
         BoundingBox minBB = null;
 
@@ -899,18 +899,18 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
             List<RaytraceResult> results = doRayTraceAll(world, pos, player);
             Iterator<RaytraceResult> iter = results.iterator();
             while (iter.hasNext()) {
-                CollidableComponent component = iter.next().component;
-                if (component.conduitType == null && component.data != ConduitConnectorType.EXTERNAL) {
+                CollidableComponent component = iter.next().component();
+                if (component.conduitType() == null && component.data() != ConduitConnectorType.EXTERNAL) {
                     iter.remove();
                 }
             }
 
             RaytraceResult hit = RaytraceResult.getClosestHit(Util.getEyePosition(player), results);
-            CollidableComponent component = hit == null ? null : hit.component;
+            CollidableComponent component = hit == null ? null : hit.component();
             if (component != null) {
-                minBB = component.bound;
-                if (component.isDirectional() && component.conduitType == null) {
-                    EnumFacing dir = component.getDirection();
+                minBB = component.bound();
+                if (component.isDirectional() && component.conduitType() == null) {
+                    EnumFacing dir = component.direction();
                     dir = dir.getOpposite();
                     float trans = 0.0125f;
                     minBB = minBB.translate(dir.getXOffset() * trans, dir.getYOffset() * trans,
@@ -943,9 +943,9 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
         RaytraceResult raytraceResult = doRayTrace(world, pos, origin, direction, null);
         RayTraceResult ret = null;
         if (raytraceResult != null) {
-            ret = raytraceResult.movingObjectPosition;
+            ret = raytraceResult.movingObjectPosition();
             // FIXME No it's not!!
-            ret.hitInfo = raytraceResult.component;
+            ret.hitInfo = raytraceResult.component();
         }
 
         return ret;
@@ -979,10 +979,10 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
                                                             @Nonnull BlockPos pos, @Nonnull Vec3d origin,
                                                             @Nonnull Vec3d direction, EntityPlayer player) {
         TileEntity te = world.getTileEntity(pos);
-        if (!(te instanceof IConduitBundle)) {
+        if (!(te instanceof ConduitBundle)) {
             return NNList.emptyList();
         }
-        IConduitBundle bundle = (IConduitBundle) te;
+        ConduitBundle bundle = (ConduitBundle) te;
         NNList<RaytraceResult> hits = new NNList<RaytraceResult>();
 
         if (YetaUtil.isSolidFacadeRendered(bundle, player)) {
@@ -995,10 +995,10 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
         } else {
             ConduitDisplayMode mode = YetaUtil.getDisplayMode(player);
             for (CollidableComponent component : new ArrayList<CollidableComponent>(bundle.getCollidableComponents())) {
-                if (mode.isAll() || component.conduitType == null ||
-                        YetaUtil.renderConduit(player, component.conduitType)) {
-                    setBlockBounds(component.bound.minX, component.bound.minY, component.bound.minZ,
-                            component.bound.maxX, component.bound.maxY, component.bound.maxZ);
+                if (mode.isAll() || component.conduitType() == null ||
+                        YetaUtil.renderConduit(player, component.conduitType())) {
+                    setBlockBounds(component.bound().minX, component.bound().minY, component.bound().minZ,
+                            component.bound().maxX, component.bound().maxY, component.bound().maxZ);
                     RayTraceResult hitPos = super.collisionRayTrace(bs, world, pos, origin, direction);
                     if (hitPos != null) {
                         hits.add(new RaytraceResult(component, hitPos));
@@ -1023,7 +1023,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     }
 
     private IRedstoneConduit getRedstoneConduit(@Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
-        IConduitBundle te = getTileEntity(world, pos);
+        ConduitBundle te = getTileEntity(world, pos);
         if (te == null) {
             return null;
         }

@@ -16,7 +16,7 @@ import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridHost;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitBundle;
 
 public class MEConduitGrid implements IGridBlock {
 
@@ -58,7 +58,7 @@ public class MEConduitGrid implements IGridBlock {
 
     @Override
     public @Nonnull DimensionalCoord getLocation() {
-        return new DimensionalCoord(conduit.getBundle().getEntity());
+        return new DimensionalCoord(conduit.getBundle().getTileEntity());
     }
 
     @Override
@@ -73,7 +73,7 @@ public class MEConduitGrid implements IGridBlock {
 
     @Override
     public @Nonnull IGridHost getMachine() {
-        IConduitBundle bundle = conduit.getBundle();
+        ConduitBundle bundle = conduit.getBundle();
         if (bundle instanceof IGridHost) {
             return ((IGridHost) bundle);
         }

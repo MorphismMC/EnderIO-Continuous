@@ -9,19 +9,19 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.IFilter;
-import crazypants.enderio.base.filter.IItemFilterUpgrade;
+import crazypants.enderio.base.filter.Filter;
+import crazypants.enderio.base.filter.ItemFilterUpgrade;
 import crazypants.enderio.util.EnumReader;
 import io.netty.buffer.ByteBuf;
 
 public class PacketHeldFilterUpdate implements IMessage {
 
-    private IFilter filter;
+    private Filter filter;
     private int param;
 
     public PacketHeldFilterUpdate() {}
 
-    public PacketHeldFilterUpdate(@Nonnull IFilter filter, int param) {
+    public PacketHeldFilterUpdate(@Nonnull Filter filter, int param) {
         this.filter = filter;
         this.param = param;
     }
@@ -48,7 +48,7 @@ public class PacketHeldFilterUpdate implements IMessage {
         public IMessage onMessage(PacketHeldFilterUpdate message, MessageContext ctx) {
             ItemStack filterStack = ctx.getServerHandler().player
                     .getHeldItem(EnumReader.get(EnumHand.class, message.param));
-            if (!filterStack.isEmpty() && filterStack.getItem() instanceof IItemFilterUpgrade) {
+            if (!filterStack.isEmpty() && filterStack.getItem() instanceof ItemFilterUpgrade) {
                 FilterRegistry.writeFilterToStack(message.filter, filterStack);
             }
             return null;

@@ -16,14 +16,14 @@ import com.enderio.core.client.render.EnderWidget;
 import com.enderio.core.common.util.DyeColor;
 
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.GuiExternalConnection;
 import crazypants.enderio.base.filter.gui.FilterGuiUtil;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.gui.RedstoneModeButton;
 import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.network.PacketHandler;
-import crazypants.enderio.conduits.conduit.item.IItemConduit;
+import crazypants.enderio.conduits.conduit.item.ItemConduit;
 import crazypants.enderio.conduits.init.ConduitObject;
 import crazypants.enderio.conduits.lang.Lang;
 import crazypants.enderio.conduits.network.PacketExtractMode;
@@ -40,7 +40,7 @@ public class ItemSettings extends BaseSettingsPanel {
     private static final int ID_INSERT_CHANNEL = 23;
     private static final int ID_EXTRACT_CHANNEL = 27;
 
-    private @Nonnull IItemConduit itemConduit;
+    private @Nonnull ItemConduit itemConduit;
 
     private final ToggleButton loopB;
     private final ToggleButton roundRobinB;
@@ -57,10 +57,10 @@ public class ItemSettings extends BaseSettingsPanel {
     private int priLeft = 46;
     private int priWidth = 32;
 
-    public ItemSettings(@Nonnull final IGuiExternalConnection gui, @Nonnull IClientConduit con) {
+    public ItemSettings(@Nonnull final GuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_ITEM, ConduitObject.item_item_conduit.getUnlocalisedName(), gui, con,
                 "filter_upgrade_settings");
-        itemConduit = (IItemConduit) con;
+        itemConduit = (ItemConduit) con;
 
         int x = leftColumn;
         int y = customTop;

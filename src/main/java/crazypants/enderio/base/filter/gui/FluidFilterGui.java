@@ -16,8 +16,8 @@ import net.minecraftforge.fluids.FluidStack;
 import com.enderio.core.client.gui.button.IconButton;
 import com.enderio.core.client.render.RenderUtil;
 
+import crazypants.enderio.base.filter.fluid.FluidFilterImpl;
 import crazypants.enderio.base.filter.fluid.FluidFilter;
-import crazypants.enderio.base.filter.fluid.IFluidFilter;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.lang.Lang;
 
@@ -27,19 +27,19 @@ public class FluidFilterGui extends AbstractFilterGui {
 
     private final IconButton whiteListB;
 
-    private final @Nonnull FluidFilter filter;
+    private final @Nonnull FluidFilterImpl filter;
 
     private int xOffset;
     private int yOffset;
 
     public FluidFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer, TileEntity te,
-                          @Nonnull IFluidFilter filterIn) {
+                          @Nonnull FluidFilter filterIn) {
         super(playerInv, filterContainer, te, filterIn, "fluid_filter");
 
         xOffset = 13;
         yOffset = 34;
 
-        filter = (FluidFilter) filterIn;
+        filter = (FluidFilterImpl) filterIn;
 
         int butLeft = xOffset + 98;
 

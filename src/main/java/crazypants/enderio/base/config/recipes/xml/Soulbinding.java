@@ -20,7 +20,7 @@ import com.enderio.core.common.util.NNList.Callback;
 import crazypants.enderio.base.config.recipes.InvalidRecipeConfigException;
 import crazypants.enderio.base.config.recipes.StaxFactory;
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.IFilter;
+import crazypants.enderio.base.filter.Filter;
 import crazypants.enderio.base.filter.item.SoulFilter;
 import crazypants.enderio.base.recipe.MachineRecipeRegistry;
 import crazypants.enderio.base.recipe.RecipeLevel;
@@ -47,7 +47,7 @@ public class Soulbinding extends AbstractCrafting {
             @Override
             @Nonnull
             public ItemStack apply(ItemStack output, CapturedMob mobType) {
-                final IFilter filter = FilterRegistry.getFilterForUpgrade(output);
+                final Filter filter = FilterRegistry.getFilterForUpgrade(output);
                 if (filter instanceof SoulFilter) {
                     ((SoulFilter) filter).getSouls().add(mobType);
                     FilterRegistry.writeFilterToStack(filter, output);

@@ -18,8 +18,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import crazypants.enderio.api.tool.IHideFacades;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConduitDisplayMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.paint.IPaintable.IPaintableTileEntity;
 import crazypants.enderio.base.tool.ToolUtil;
 
@@ -94,7 +94,7 @@ public class YetaUtil {
         return shouldHeldItemHideFacades(player);
     }
 
-    public static boolean isSolidFacadeRendered(@Nonnull IConduitBundle bundle, EntityPlayer player) {
+    public static boolean isSolidFacadeRendered(@Nonnull ConduitBundle bundle, EntityPlayer player) {
         return bundle.hasFacade() && !isFacadeHidden(bundle, player);
     }
 
@@ -105,14 +105,14 @@ public class YetaUtil {
         return getDisplayMode(player).isAll();
     }
 
-    public static boolean renderConduit(EntityPlayer player, @Nullable Class<? extends IConduit> conduitType) {
+    public static boolean renderConduit(EntityPlayer player, @Nullable Class<? extends Conduit> conduitType) {
         if (player == null || player.world.isRemote) {
             return lastCheckResult.renderConduit(conduitType);
         }
         return getDisplayMode(player).renderConduit(conduitType);
     }
 
-    public static boolean renderConduit(EntityPlayer player, @Nonnull IConduit con) {
+    public static boolean renderConduit(EntityPlayer player, @Nonnull Conduit con) {
         return renderConduit(player, con.getBaseConduitType());
     }
 
@@ -144,11 +144,11 @@ public class YetaUtil {
             this.displayMode = displayMode;
         }
 
-        public boolean renderConduit(@Nullable Class<? extends IConduit> conduitType) {
+        public boolean renderConduit(@Nullable Class<? extends Conduit> conduitType) {
             return displayMode.renderConduit(conduitType);
         }
 
-        public boolean renderConduit(@Nonnull IConduit con) {
+        public boolean renderConduit(@Nonnull Conduit con) {
             return renderConduit(con.getBaseConduitType());
         }
     }

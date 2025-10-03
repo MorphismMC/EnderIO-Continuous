@@ -10,19 +10,19 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.enderio.core.common.util.DyeColor;
 
-import crazypants.enderio.base.conduit.IExtractor;
+import crazypants.enderio.base.conduit.ConduitExtractor;
 import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.util.EnumReader;
 import io.netty.buffer.ByteBuf;
 
-public class PacketExtractMode extends AbstractConduitPacket.Sided<IExtractor> {
+public class PacketExtractMode extends AbstractConduitPacket.Sided<ConduitExtractor> {
 
     private @Nonnull RedstoneControlMode mode = RedstoneControlMode.OFF;
     private @Nonnull DyeColor color = DyeColor.BLACK;
 
     public PacketExtractMode() {}
 
-    public PacketExtractMode(@Nonnull IExtractor con, @Nonnull EnumFacing dir) {
+    public PacketExtractMode(@Nonnull ConduitExtractor con, @Nonnull EnumFacing dir) {
         super(con, dir);
         mode = con.getExtractionRedstoneMode(dir);
         color = con.getExtractionSignalColor(dir);
@@ -46,7 +46,7 @@ public class PacketExtractMode extends AbstractConduitPacket.Sided<IExtractor> {
 
         @Override
         public IMessage onMessage(PacketExtractMode message, MessageContext ctx) {
-            final IExtractor conduit = message.getConduit(ctx);
+            final ConduitExtractor conduit = message.getConduit(ctx);
             if (conduit != null) {
                 conduit.setExtractionRedstoneMode(message.mode, message.dir);
                 conduit.setExtractionSignalColor(message.dir, message.color);

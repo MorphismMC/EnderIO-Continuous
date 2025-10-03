@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod(modid = EnderIODummy.MODID,
      name = EnderIODummy.MOD_NAME,
-     version = EnderIO.VERSION,
+     version = EnderIO.MOD_VERSION,
      dependencies = "after:" + EnderIO.MODID)
 public class EnderIODummy {
 

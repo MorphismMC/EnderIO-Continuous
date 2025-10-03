@@ -30,9 +30,9 @@ import com.enderio.core.common.vecmath.Vector4f;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitNetwork;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableCache.CacheKey;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
@@ -41,20 +41,19 @@ import crazypants.enderio.base.conduit.item.FunctionUpgrade;
 import crazypants.enderio.base.conduit.item.ItemFunctionUpgrade;
 import crazypants.enderio.base.filter.FilterRegistry;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
-import crazypants.enderio.base.filter.capability.IFilterHolder;
+import crazypants.enderio.base.filter.capability.FilterHolder;
 import crazypants.enderio.base.lang.LangFluid;
 import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.tool.ToolUtil;
 import crazypants.enderio.conduits.capability.CapabilityUpgradeHolder;
-import crazypants.enderio.conduits.capability.IUpgradeHolder;
-import crazypants.enderio.conduits.conduit.IEnderConduit;
-import crazypants.enderio.conduits.conduit.item.ItemConduit;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
+import crazypants.enderio.conduits.capability.UpgradeHolder;
+import crazypants.enderio.conduits.conduit.ConduitEnder;
+import crazypants.enderio.conduits.conduit.item.ItemConduitImpl;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduitImpl;
 import crazypants.enderio.conduits.lang.Lang;
 import crazypants.enderio.conduits.render.BlockStateWrapperConduitBundle;
-import crazypants.enderio.conduits.render.ConduitTexture;
 import crazypants.enderio.conduits.render.ConduitTextureWrapper;
 import crazypants.enderio.util.EnumReader;
 import crazypants.enderio.util.Prep;
@@ -64,28 +63,28 @@ import crazypants.enderio.conduit.gas.common.conduit.AbstractGasConduit;
 import crazypants.enderio.conduit.gas.common.conduit.GasConduitObject;
 import crazypants.enderio.conduit.gas.common.conduit.IGasConduit;
 import crazypants.enderio.conduit.gas.common.config.GasConduitConfig;
+import crazypants.enderio.conduit.gas.common.filter.GasFilterImpl;
 import crazypants.enderio.conduit.gas.common.filter.GasFilter;
-import crazypants.enderio.conduit.gas.common.filter.IGasFilter;
-import crazypants.enderio.conduit.gas.common.filter.IItemFilterGasUpgrade;
+import crazypants.enderio.conduit.gas.common.filter.ItemFilterGasUpgrade;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 
 public class EnderGasConduit extends AbstractGasConduit
-                             implements IFilterHolder<IGasFilter>, IUpgradeHolder, IEnderConduit {
+                             implements FilterHolder<GasFilter>, UpgradeHolder, ConduitEnder {
 
-    public static final IConduitTexture ICON_KEY = new ConduitTexture(
-            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit", false), ConduitTexture.arm(3));
-    public static final IConduitTexture ICON_CORE_KEY = new ConduitTexture(
-            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit_core", false), ConduitTexture.core(2));
+    public static final ConduitTexture ICON_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit", false), crazypants.enderio.conduits.render.ConduitTexture.arm(3));
+    public static final ConduitTexture ICON_CORE_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit_core", false), crazypants.enderio.conduits.render.ConduitTexture.core(2));
 
     private EnderGasConduitNetwork network;
     private int ticksSinceFailedExtract;
 
     @Nonnull
-    private final EnumMap<EnumFacing, IGasFilter> outputFilters = new EnumMap<>(EnumFacing.class);
+    private final EnumMap<EnumFacing, GasFilter> outputFilters = new EnumMap<>(EnumFacing.class);
     @Nonnull
-    private final EnumMap<EnumFacing, IGasFilter> inputFilters = new EnumMap<>(EnumFacing.class);
+    private final EnumMap<EnumFacing, GasFilter> inputFilters = new EnumMap<>(EnumFacing.class);
     @Nonnull
     private final EnumMap<EnumFacing, ItemStack> outputFilterUpgrades = new EnumMap<>(EnumFacing.class);
     @Nonnull
@@ -142,10 +141,10 @@ public class EnderGasConduit extends AbstractGasConduit
             return false;
         }
 
-        if (!getBundle().getEntity().getWorld().isRemote) {
-            CollidableComponent component = res.component;
+        if (!getBundle().getTileEntity().getWorld().isRemote) {
+            CollidableComponent component = res.component();
             if (component != null) {
-                EnumFacing faceHit = res.movingObjectPosition.sideHit;
+                EnumFacing faceHit = res.movingObjectPosition().sideHit;
                 if (component.isCore()) {
                     if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
                         setConnectionMode(faceHit, getNextConnectionMode(faceHit));
@@ -154,7 +153,7 @@ public class EnderGasConduit extends AbstractGasConduit
                     // Attempt to join networks
                     return ConduitUtil.connectConduits(this, faceHit);
                 } else {
-                    EnumFacing connDir = component.getDirection();
+                    EnumFacing connDir = component.direction();
                     if (containsExternalConnection(connDir)) {
                         setConnectionMode(connDir, getNextConnectionMode(connDir));
                     } else if (containsConduitConnection(connDir)) {
@@ -168,15 +167,15 @@ public class EnderGasConduit extends AbstractGasConduit
 
     @Override
     @Nullable
-    public IConduitNetwork<?, ?> getNetwork() {
+    public ConduitNetwork<?, ?> getNetwork() {
         return network;
     }
 
-    public IGasFilter getFilter(@Nonnull EnumFacing dir, boolean isInput) {
+    public GasFilter getFilter(@Nonnull EnumFacing dir, boolean isInput) {
         return isInput ? inputFilters.get(dir) : outputFilters.get(dir);
     }
 
-    public void setFilter(@Nonnull EnumFacing dir, @Nonnull IGasFilter filter, boolean isInput) {
+    public void setFilter(@Nonnull EnumFacing dir, @Nonnull GasFilter filter, boolean isInput) {
         if (isInput) {
             inputFilters.put(dir, filter);
         } else {
@@ -197,7 +196,7 @@ public class EnderGasConduit extends AbstractGasConduit
         } else {
             outputFilterUpgrades.put(dir, stack);
         }
-        IGasFilter filter = FilterRegistry.getFilterForUpgrade(stack);
+        GasFilter filter = FilterRegistry.getFilterForUpgrade(stack);
         if (filter != null) {
             setFilter(dir, filter, isInput);
         }
@@ -205,7 +204,7 @@ public class EnderGasConduit extends AbstractGasConduit
     }
 
     @Override
-    public boolean setNetwork(@Nonnull IConduitNetwork<?, ?> network) {
+    public boolean setNetwork(@Nonnull ConduitNetwork<?, ?> network) {
         if (network instanceof EnderGasConduitNetwork) {
             this.network = (EnderGasConduitNetwork) network;
             externalConnections.forEach(dir -> this.network.connectionChanged(this, dir));
@@ -226,11 +225,11 @@ public class EnderGasConduit extends AbstractGasConduit
     @SideOnly(Side.CLIENT)
     @Override
     @Nonnull
-    public IConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+    public ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
         if (component.isCore()) {
             return ICON_CORE_KEY;
         }
-        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data)) {
+        if (PowerConduitImpl.COLOR_CONTROLLER_ID.equals(component.data())) {
             return new ConduitTextureWrapper(IconUtil.instance.whiteTexture);
         }
         return ICON_KEY;
@@ -238,8 +237,8 @@ public class EnderGasConduit extends AbstractGasConduit
 
     @Nonnull
     @Override
-    public IConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
-        return ItemConduit.ICON_KEY_ENDER;
+    public ConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
+        return ItemConduitImpl.ICON_KEY_ENDER;
     }
 
     @Nullable
@@ -260,20 +259,20 @@ public class EnderGasConduit extends AbstractGasConduit
     }
 
     @Override
-    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull IConduit con) {
+    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull Conduit con) {
         return super.canConnectToConduit(direction, con) && con instanceof EnderGasConduit;
     }
 
     @Override
-    public void setConnectionMode(@Nonnull EnumFacing dir, @Nonnull ConnectionMode mode) {
-        super.setConnectionMode(dir, mode);
-        refreshConnection(dir);
+    public void setConnectionMode(@Nonnull EnumFacing direction, @Nonnull ConnectionMode mode) {
+        super.setConnectionMode(direction, mode);
+        refreshConnection(direction);
     }
 
     @Override
-    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing dir) {
-        super.setExtractionRedstoneMode(mode, dir);
-        refreshConnection(dir);
+    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing direction) {
+        super.setExtractionRedstoneMode(mode, direction);
+        refreshConnection(direction);
     }
 
     @Override
@@ -351,112 +350,112 @@ public class EnderGasConduit extends AbstractGasConduit
     }
 
     @Override
-    protected void readTypeSettings(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        super.readTypeSettings(dir, dataRoot);
-        setConnectionMode(dir, EnumReader.get(ConnectionMode.class, dataRoot.getShort("connectionMode")));
-        setExtractionSignalColor(dir, EnumReader.get(DyeColor.class, dataRoot.getShort("extractionSignalColor")));
+    protected void readTypeSettings(@Nonnull EnumFacing direction, @Nonnull NBTTagCompound data) {
+        super.readTypeSettings(direction, data);
+        setConnectionMode(direction, EnumReader.get(ConnectionMode.class, data.getShort("connectionMode")));
+        setExtractionSignalColor(direction, EnumReader.get(DyeColor.class, data.getShort("extractionSignalColor")));
         setExtractionRedstoneMode(
-                EnumReader.get(RedstoneControlMode.class, dataRoot.getShort("extractionRedstoneMode")), dir);
-        setInputColor(dir, EnumReader.get(DyeColor.class, dataRoot.getShort("inputColor")));
-        setOutputColor(dir, EnumReader.get(DyeColor.class, dataRoot.getShort("outputColor")));
-        setSelfFeedEnabled(dir, dataRoot.getBoolean("selfFeed"));
-        setRoundRobinEnabled(dir, dataRoot.getBoolean("roundRobin"));
-        setOutputPriority(dir, dataRoot.getInteger("outputPriority"));
+                EnumReader.get(RedstoneControlMode.class, data.getShort("extractionRedstoneMode")), direction);
+        setInputColor(direction, EnumReader.get(DyeColor.class, data.getShort("inputColor")));
+        setOutputColor(direction, EnumReader.get(DyeColor.class, data.getShort("outputColor")));
+        setSelfFeedEnabled(direction, data.getBoolean("selfFeed"));
+        setRoundRobinEnabled(direction, data.getBoolean("roundRobin"));
+        setOutputPriority(direction, data.getInteger("outputPriority"));
     }
 
     @Override
-    protected void writeTypeSettingsToNbt(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        super.writeTypeSettingsToNbt(dir, dataRoot);
-        dataRoot.setShort("connectionMode", (short) getConnectionMode(dir).ordinal());
-        dataRoot.setShort("extractionSignalColor", (short) getExtractionSignalColor(dir).ordinal());
-        dataRoot.setShort("extractionRedstoneMode", (short) getExtractionRedstoneMode(dir).ordinal());
-        dataRoot.setShort("inputColor", (short) getInputColor(dir).ordinal());
-        dataRoot.setShort("outputColor", (short) getOutputColor(dir).ordinal());
-        dataRoot.setBoolean("selfFeed", isSelfFeedEnabled(dir));
-        dataRoot.setBoolean("roundRobin", isRoundRobinEnabled(dir));
-        dataRoot.setInteger("outputPriority", getOutputPriority(dir));
+    protected void writeTypeSettingsToNBT(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound data) {
+        super.writeTypeSettingsToNBT(dir, data);
+        data.setShort("connectionMode", (short) getConnectionMode(dir).ordinal());
+        data.setShort("extractionSignalColor", (short) getExtractionSignalColor(dir).ordinal());
+        data.setShort("extractionRedstoneMode", (short) getExtractionRedstoneMode(dir).ordinal());
+        data.setShort("inputColor", (short) getInputColor(dir).ordinal());
+        data.setShort("outputColor", (short) getOutputColor(dir).ordinal());
+        data.setBoolean("selfFeed", isSelfFeedEnabled(dir));
+        data.setBoolean("roundRobin", isRoundRobinEnabled(dir));
+        data.setInteger("outputPriority", getOutputPriority(dir));
     }
 
-    private boolean isDefault(IGasFilter f) {
-        return f instanceof GasFilter && f.isDefault();
+    private boolean isDefault(GasFilter f) {
+        return f instanceof GasFilterImpl && f.isDefault();
     }
 
     @Override
-    public void writeToNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.writeToNBT(nbtRoot);
-        for (Entry<EnumFacing, IGasFilter> entry : inputFilters.entrySet()) {
+    public void writeToNBT(@Nonnull NBTTagCompound data) {
+        super.writeToNBT(data);
+        for (Entry<EnumFacing, GasFilter> entry : inputFilters.entrySet()) {
             if (entry.getValue() != null) {
-                IGasFilter g = entry.getValue();
+                GasFilter g = entry.getValue();
                 if (!isDefault(g)) {
                     NBTTagCompound itemRoot = new NBTTagCompound();
                     FilterRegistry.writeFilterToNbt(g, itemRoot);
-                    nbtRoot.setTag("inGasFilts." + entry.getKey().name(), itemRoot);
+                    data.setTag("inGasFilts." + entry.getKey().name(), itemRoot);
                 }
             }
         }
-        for (Entry<EnumFacing, IGasFilter> entry : outputFilters.entrySet()) {
+        for (Entry<EnumFacing, GasFilter> entry : outputFilters.entrySet()) {
             if (entry.getValue() != null) {
-                IGasFilter g = entry.getValue();
+                GasFilter g = entry.getValue();
                 if (!isDefault(g)) {
                     NBTTagCompound itemRoot = new NBTTagCompound();
                     FilterRegistry.writeFilterToNbt(g, itemRoot);
-                    nbtRoot.setTag("outGasFilts." + entry.getKey().name(), itemRoot);
+                    data.setTag("outGasFilts." + entry.getKey().name(), itemRoot);
                 }
             }
         }
         for (Entry<EnumFacing, ItemStack> entry : inputFilterUpgrades.entrySet()) {
             ItemStack up = entry.getValue();
             if (up != null && Prep.isValid(up)) {
-                IGasFilter filter = getFilter(entry.getKey(), true);
+                GasFilter filter = getFilter(entry.getKey(), true);
                 FilterRegistry.writeFilterToStack(filter, up);
 
                 NBTTagCompound itemRoot = new NBTTagCompound();
                 up.writeToNBT(itemRoot);
-                nbtRoot.setTag("inputGasFilterUpgrades." + entry.getKey().name(), itemRoot);
+                data.setTag("inputGasFilterUpgrades." + entry.getKey().name(), itemRoot);
             }
         }
 
         for (Entry<EnumFacing, ItemStack> entry : outputFilterUpgrades.entrySet()) {
             ItemStack up = entry.getValue();
             if (up != null && Prep.isValid(up)) {
-                IGasFilter filter = getFilter(entry.getKey(), false);
+                GasFilter filter = getFilter(entry.getKey(), false);
                 FilterRegistry.writeFilterToStack(filter, up);
 
                 NBTTagCompound itemRoot = new NBTTagCompound();
                 up.writeToNBT(itemRoot);
-                nbtRoot.setTag("outputGasFilterUpgrades." + entry.getKey().name(), itemRoot);
+                data.setTag("outputGasFilterUpgrades." + entry.getKey().name(), itemRoot);
             }
         }
 
         for (Entry<EnumFacing, DyeColor> entry : inputColors.entrySet()) {
             if (entry.getValue() != null) {
                 short ord = (short) entry.getValue().ordinal();
-                nbtRoot.setShort("inSC." + entry.getKey().name(), ord);
+                data.setShort("inSC." + entry.getKey().name(), ord);
             }
         }
 
         for (Entry<EnumFacing, DyeColor> entry : outputColors.entrySet()) {
             if (entry.getValue() != null) {
                 short ord = (short) entry.getValue().ordinal();
-                nbtRoot.setShort("outSC." + entry.getKey().name(), ord);
+                data.setShort("outSC." + entry.getKey().name(), ord);
             }
         }
 
         for (Entry<EnumFacing, Integer> entry : priorities.entrySet()) {
             if (entry.getValue() != null) {
-                nbtRoot.setInteger("priority." + entry.getKey().name(), entry.getValue());
+                data.setInteger("priority." + entry.getKey().name(), entry.getValue());
             }
         }
 
         for (Entry<EnumFacing, Boolean> entry : roundRobin.entrySet()) {
             if (entry.getValue() != null) {
-                nbtRoot.setBoolean("roundRobin." + entry.getKey().name(), entry.getValue());
+                data.setBoolean("roundRobin." + entry.getKey().name(), entry.getValue());
             }
         }
 
         for (Entry<EnumFacing, Boolean> entry : selfFeed.entrySet()) {
             if (entry.getValue() != null) {
-                nbtRoot.setBoolean("selfFeed." + entry.getKey().name(), entry.getValue());
+                data.setBoolean("selfFeed." + entry.getKey().name(), entry.getValue());
             }
         }
 
@@ -465,82 +464,82 @@ public class EnderGasConduit extends AbstractGasConduit
             if (up != null && Prep.isValid(up)) {
                 NBTTagCompound itemRoot = new NBTTagCompound();
                 up.writeToNBT(itemRoot);
-                nbtRoot.setTag("functionUpgrades." + entry.getKey().name(), itemRoot);
+                data.setTag("functionUpgrades." + entry.getKey().name(), itemRoot);
             }
         }
     }
 
     @Override
-    public void readFromNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.readFromNBT(nbtRoot);
+    public void readFromNBT(@Nonnull NBTTagCompound data) {
+        super.readFromNBT(data);
         for (EnumFacing dir : EnumFacing.VALUES) {
             String key = "inGasFilts." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound filterTag = (NBTTagCompound) nbtRoot.getTag(key);
-                IGasFilter filter = (IGasFilter) FilterRegistry.loadFilterFromNbt(filterTag);
+            if (data.hasKey(key)) {
+                NBTTagCompound filterTag = (NBTTagCompound) data.getTag(key);
+                GasFilter filter = (GasFilter) FilterRegistry.loadFilterFromNbt(filterTag);
                 inputFilters.put(dir, filter);
             }
 
             key = "inputGasFilterUpgrades." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound upTag = (NBTTagCompound) nbtRoot.getTag(key);
+            if (data.hasKey(key)) {
+                NBTTagCompound upTag = (NBTTagCompound) data.getTag(key);
                 ItemStack ups = new ItemStack(upTag);
                 inputFilterUpgrades.put(dir, ups);
             }
 
             key = "outputGasFilterUpgrades." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound upTag = (NBTTagCompound) nbtRoot.getTag(key);
+            if (data.hasKey(key)) {
+                NBTTagCompound upTag = (NBTTagCompound) data.getTag(key);
                 ItemStack ups = new ItemStack(upTag);
                 outputFilterUpgrades.put(dir, ups);
             }
 
             key = "outGasFilts." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound filterTag = (NBTTagCompound) nbtRoot.getTag(key);
-                IGasFilter filter = (IGasFilter) FilterRegistry.loadFilterFromNbt(filterTag);
+            if (data.hasKey(key)) {
+                NBTTagCompound filterTag = (NBTTagCompound) data.getTag(key);
+                GasFilter filter = (GasFilter) FilterRegistry.loadFilterFromNbt(filterTag);
                 outputFilters.put(dir, filter);
             }
 
             key = "inSC." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                short ord = nbtRoot.getShort(key);
+            if (data.hasKey(key)) {
+                short ord = data.getShort(key);
                 if (ord >= 0 && ord < DyeColor.values().length) {
                     inputColors.put(dir, EnumReader.get(DyeColor.class, ord));
                 }
             }
 
             key = "outSC." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                short ord = nbtRoot.getShort(key);
+            if (data.hasKey(key)) {
+                short ord = data.getShort(key);
                 if (ord >= 0 && ord < DyeColor.values().length) {
                     outputColors.put(dir, EnumReader.get(DyeColor.class, ord));
                 }
             }
 
             key = "priority." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                int val = nbtRoot.getInteger(key);
+            if (data.hasKey(key)) {
+                int val = data.getInteger(key);
                 priorities.put(dir, val);
             }
 
             key = "roundRobin." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                boolean val = nbtRoot.getBoolean(key);
+            if (data.hasKey(key)) {
+                boolean val = data.getBoolean(key);
                 roundRobin.put(dir, val);
             } else {
                 roundRobin.remove(dir);
             }
 
             key = "selfFeed." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                boolean val = nbtRoot.getBoolean(key);
+            if (data.hasKey(key)) {
+                boolean val = data.getBoolean(key);
                 selfFeed.put(dir, val);
             }
 
             key = "functionUpgrades." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound upTag = (NBTTagCompound) nbtRoot.getTag(key);
+            if (data.hasKey(key)) {
+                NBTTagCompound upTag = (NBTTagCompound) data.getTag(key);
                 ItemStack ups = new ItemStack(upTag);
                 functionUpgrades.put(dir, ups);
             }
@@ -575,7 +574,7 @@ public class EnderGasConduit extends AbstractGasConduit
     }
 
     @Override
-    public IGasFilter getFilter(int filterIndex, int param1) {
+    public GasFilter getFilter(int filterIndex, int param1) {
         if (filterIndex == getInputFilterIndex()) {
             return getFilter(EnumFacing.byIndex(param1), true);
         } else if (filterIndex == getOutputFilterIndex()) {
@@ -585,7 +584,7 @@ public class EnderGasConduit extends AbstractGasConduit
     }
 
     @Override
-    public void setFilter(int filterIndex, EnumFacing side, @Nonnull IGasFilter filter) {
+    public void setFilter(int filterIndex, EnumFacing side, @Nonnull GasFilter filter) {
         if (filterIndex == getInputFilterIndex()) {
             setFilter(side, filter, true);
         } else if (filterIndex == getOutputFilterIndex()) {
@@ -614,7 +613,7 @@ public class EnderGasConduit extends AbstractGasConduit
 
     @Override
     public boolean isFilterUpgradeAccepted(@Nonnull ItemStack stack, boolean isInput) {
-        return stack.getItem() instanceof IItemFilterGasUpgrade;
+        return stack.getItem() instanceof ItemFilterGasUpgrade;
     }
 
     // ------------------------------------------------
@@ -652,17 +651,17 @@ public class EnderGasConduit extends AbstractGasConduit
     }
 
     @Override
-    public void setClientDirty() {
+    public void markDirty() {
         setClientStateDirty();
         collidablesDirty = true;
     }
 
     @Override
-    public void refreshConnection(@Nonnull EnumFacing dir) {
+    public void refreshConnection(@Nonnull EnumFacing direction) {
         if (network == null) {
             return;
         }
-        network.connectionChanged(this, dir);
+        network.connectionChanged(this, direction);
     }
 
     // -------------------------------
@@ -694,7 +693,7 @@ public class EnderGasConduit extends AbstractGasConduit
     public int getUpgradeSlotLimit(@Nonnull ItemStack stack) {
         return stack.getItem() instanceof ItemFunctionUpgrade ?
                 ((ItemFunctionUpgrade) stack.getItem()).getUpgradeSlotLimit() :
-                IUpgradeHolder.super.getUpgradeSlotLimit(stack);
+                UpgradeHolder.super.getUpgradeSlotLimit(stack);
     }
 
     @Override
@@ -745,14 +744,14 @@ public class EnderGasConduit extends AbstractGasConduit
     @Nonnull
     public Collection<CollidableComponent> createCollidables(@Nonnull CacheKey key) {
         Collection<CollidableComponent> baseCollidables = super.createCollidables(key);
-        EnumFacing keydir = key.dir;
+        EnumFacing keydir = key.direction;
         if (keydir == null) {
             return baseCollidables;
         }
 
-        BoundingBox bb = ConduitGeometryUtil.getInstance().createBoundsForConnectionController(keydir, key.offset);
+        BoundingBox bb = ConduitGeometryUtil.getINSTANCE().createBoundsForConnectionController(keydir, key.offset);
         CollidableComponent cc = new CollidableComponent(IGasConduit.class, bb, keydir,
-                IPowerConduit.COLOR_CONTROLLER_ID);
+                PowerConduit.COLOR_CONTROLLER_ID);
 
         List<CollidableComponent> result = new ArrayList<>(baseCollidables);
         result.add(cc);

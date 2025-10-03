@@ -53,7 +53,7 @@ public class ModInterferenceWarner {
         // installation specific as possible without digging into parts of the user's pc we have no business of
         // touching (like hdd ID's). The only store a CRC of the data to not expose people's personal data when
         // they share config files.
-        String installationSpecificString = System.getProperty("user.dir") + EnderIO.VERSION;
+        String installationSpecificString = System.getProperty("user.dir") + EnderIO.MOD_VERSION;
         CRC32 crc32 = new CRC32();
         crc32.update(installationSpecificString.getBytes(), 0, installationSpecificString.getBytes().length);
         return crc32.getValue();

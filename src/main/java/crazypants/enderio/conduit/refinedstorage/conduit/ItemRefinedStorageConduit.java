@@ -11,16 +11,16 @@ import net.minecraft.util.ResourceLocation;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConduitDisplayMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.conduit.geom.Offset;
 import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.gui.IconEIO;
-import crazypants.enderio.conduits.conduit.AbstractItemConduit;
+import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 
-public class ItemRefinedStorageConduit extends AbstractItemConduit {
+public class ItemRefinedStorageConduit extends AbstractConduitItem {
 
     public static ItemRefinedStorageConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemRefinedStorageConduit(modObject);
@@ -33,20 +33,20 @@ public class ItemRefinedStorageConduit extends AbstractItemConduit {
                 .setClass(getBaseConduitType())
                 .setOffsets(Offset.WEST_UP, Offset.NORTH_UP, Offset.NORTH_WEST, Offset.WEST_UP).build()
                 .setUUID(new ResourceLocation(EnderIO.DOMAIN, "refinedstorage_conduit"))
-                .setClass(RefinedStorageConduit.class).build().finish());
+                .setClass(RefinedStorageConduitImpl.class).build().finish());
         ConduitDisplayMode.registerDisplayMode(
                 new ConduitDisplayMode(getBaseConduitType(), IconEIO.WRENCH_OVERLAY_RS, IconEIO.WRENCH_OVERLAY_RS_OFF));
     }
 
     @Override
     @Nonnull
-    public Class<? extends IConduit> getBaseConduitType() {
-        return IRefinedStorageConduit.class;
+    public Class<? extends Conduit> getBaseConduitType() {
+        return RefinedStorageConduit.class;
     }
 
     @Override
-    public IServerConduit createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
-        return new RefinedStorageConduit();
+    public ConduitServer createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
+        return new RefinedStorageConduitImpl();
     }
 
     @Override

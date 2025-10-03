@@ -11,10 +11,10 @@ import net.minecraft.util.math.Vec3d;
 
 import com.enderio.core.common.util.NNList;
 
-import crazypants.enderio.api.ILocalizable;
+import crazypants.enderio.api.Localizable;
 import crazypants.enderio.api.capacitor.ICapacitorKey;
 import crazypants.enderio.base.machine.baselegacy.SlotDefinition;
-import crazypants.enderio.base.machine.interfaces.INotifier;
+import crazypants.enderio.base.machine.interfaces.Notifiable;
 import crazypants.enderio.base.machine.modes.EntityAction;
 import crazypants.enderio.machines.lang.Lang;
 import crazypants.enderio.util.CapturedMob;
@@ -23,7 +23,7 @@ import info.loenwind.autosave.annotations.Storable;
 
 @Storable
 public abstract class AbstractMobObeliskEntity extends AbstractRangedObeliskEntity
-                                               implements EntityAction.Implementer, INotifier {
+                                               implements EntityAction.Implementer, Notifiable {
 
     public AbstractMobObeliskEntity(@Nonnull SlotDefinition slotDefinition, @Nonnull ICapacitorKey maxEnergyRecieved,
                                     @Nonnull ICapacitorKey maxEnergyStored,
@@ -83,8 +83,8 @@ public abstract class AbstractMobObeliskEntity extends AbstractRangedObeliskEnti
 
     @Override
     @Nonnull
-    public Set<? extends ILocalizable> getNotification() {
-        return canWork() ? Collections.emptySet() : Collections.singleton(new ILocalizable() {
+    public Set<? extends Localizable> getNotification() {
+        return canWork() ? Collections.emptySet() : Collections.singleton(new Localizable() {
 
             @Override
             @Nonnull

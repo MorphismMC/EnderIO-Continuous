@@ -18,19 +18,19 @@ import com.enderio.core.client.handlers.SpecialTooltipHandler;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConduitDisplayMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.conduit.geom.Offset;
 import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.gui.IconEIO;
-import crazypants.enderio.conduits.conduit.AbstractItemConduit;
+import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 import crazypants.enderio.conduits.config.ConduitConfig;
 import crazypants.enderio.conduits.lang.Lang;
 import crazypants.enderio.conduits.render.ConduitBundleRenderManager;
 
-public class ItemLiquidConduit extends AbstractItemConduit implements IAdvancedTooltipProvider {
+public class ItemLiquidConduit extends AbstractConduitItem implements IAdvancedTooltipProvider {
 
     public static ItemLiquidConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemLiquidConduit(modObject);
@@ -46,7 +46,7 @@ public class ItemLiquidConduit extends AbstractItemConduit implements IAdvancedT
                 .setClass(getBaseConduitType())
                 .setOffsets(Offset.WEST, Offset.NORTH, Offset.WEST, Offset.WEST).build()
                 .setUUID(new ResourceLocation(EnderIO.DOMAIN, "liquid_conduit"))
-                .setClass(LiquidConduit.class).build()
+                .setClass(LiquidConduitImpl.class).build()
                 .setUUID(new ResourceLocation(EnderIO.DOMAIN, "advanced_liquid_conduit"))
                 .setClass(AdvancedLiquidConduit.class)
                 .build().setUUID(new ResourceLocation(EnderIO.DOMAIN, "ender_liquid_conduit"))
@@ -67,18 +67,18 @@ public class ItemLiquidConduit extends AbstractItemConduit implements IAdvancedT
     }
 
     @Override
-    public @Nonnull Class<? extends IConduit> getBaseConduitType() {
-        return ILiquidConduit.class;
+    public @Nonnull Class<? extends Conduit> getBaseConduitType() {
+        return LiquidConduit.class;
     }
 
     @Override
-    public IServerConduit createConduit(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
+    public ConduitServer createConduit(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
         if (stack.getItemDamage() == 1) {
             return new AdvancedLiquidConduit();
         } else if (stack.getItemDamage() == 2) {
             return new EnderLiquidConduit();
         }
-        return new LiquidConduit();
+        return new LiquidConduitImpl();
     }
 
     @Override

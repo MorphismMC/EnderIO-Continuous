@@ -11,16 +11,16 @@ import net.minecraft.util.ResourceLocation;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConduitDisplayMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.conduit.geom.Offset;
 import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.gui.IconEIO;
-import crazypants.enderio.conduits.conduit.AbstractItemConduit;
+import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 
-public class ItemDataConduit extends AbstractItemConduit {
+public class ItemDataConduit extends AbstractConduitItem {
 
     public static ItemDataConduit create(@Nonnull IModObject modObj, @Nullable Block block) {
         return new ItemDataConduit(modObj);
@@ -39,12 +39,12 @@ public class ItemDataConduit extends AbstractItemConduit {
 
     @Override
     @Nonnull
-    public Class<? extends IConduit> getBaseConduitType() {
+    public Class<? extends Conduit> getBaseConduitType() {
         return IDataConduit.class;
     }
 
     @Override
-    public IServerConduit createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
+    public ConduitServer createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
         return new DataConduit();
     }
 

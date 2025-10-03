@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import crazypants.enderio.api.tool.IConduitControl;
+import crazypants.enderio.api.tool.ConduitControllable;
 import crazypants.enderio.base.conduit.ConduitDisplayMode;
 import crazypants.enderio.base.item.conduitprobe.ItemConduitProbe;
 import crazypants.enderio.base.item.conduitprobe.PacketConduitProbeMode;
@@ -27,7 +27,7 @@ public class ToolTickHandler {
         if (event.getDwheel() != 0 && player.isSneaking()) {
             ItemStack stack = player.getHeldItemMainhand();
             Item item = stack.getItem();
-            if (item instanceof IConduitControl) {
+            if (item instanceof ConduitControllable) {
                 changeDisplayMode(stack, player, event.getDwheel());
                 event.setCanceled(true);
             } else if (item instanceof ItemConduitProbe) {
@@ -38,7 +38,7 @@ public class ToolTickHandler {
     }
 
     private void changeDisplayMode(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, int dWheel) {
-        if (!((IConduitControl) stack.getItem()).showOverlay(stack, player)) {
+        if (!((ConduitControllable) stack.getItem()).showOverlay(stack, player)) {
             return;
         }
         ConduitDisplayMode mode = ConduitDisplayMode.getDisplayMode(stack);

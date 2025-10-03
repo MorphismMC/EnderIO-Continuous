@@ -10,11 +10,11 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import com.enderio.core.common.util.NNList;
 
-import crazypants.enderio.base.conduit.IConduit;
+import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.conduit.item.ItemFunctionUpgrade;
-import crazypants.enderio.base.filter.IFilter;
-import crazypants.enderio.base.filter.capability.IFilterHolder;
-import crazypants.enderio.conduits.capability.IUpgradeHolder;
+import crazypants.enderio.base.filter.Filter;
+import crazypants.enderio.base.filter.capability.FilterHolder;
+import crazypants.enderio.conduits.capability.UpgradeHolder;
 
 /**
  * The Inventory for Holding Conduit Upgrades
@@ -23,18 +23,18 @@ public class InventoryUpgrades implements IItemHandlerModifiable {
 
     private @Nonnull EnumFacing dir;
 
-    private IFilterHolder<IFilter> filterHolder;
-    private IUpgradeHolder upgradeHolder;
+    private FilterHolder<Filter> filterHolder;
+    private UpgradeHolder upgradeHolder;
 
     public InventoryUpgrades(@Nonnull EnumFacing dir) {
         this.dir = dir;
     }
 
-    public void setFilterHolder(IFilterHolder<IFilter> filterHolder) {
+    public void setFilterHolder(FilterHolder<Filter> filterHolder) {
         this.filterHolder = filterHolder;
     }
 
-    public void setUpgradeHolder(IUpgradeHolder upgradeHolder) {
+    public void setUpgradeHolder(UpgradeHolder upgradeHolder) {
         this.upgradeHolder = upgradeHolder;
     }
 
@@ -111,7 +111,7 @@ public class InventoryUpgrades implements IItemHandlerModifiable {
         }
     }
 
-    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack, IConduit con) {
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack, Conduit con) {
         if (stack.isEmpty()) {
             return false;
         }
@@ -126,16 +126,16 @@ public class InventoryUpgrades implements IItemHandlerModifiable {
         return false;
     }
 
-    private boolean isFilterUpgradeAccepted(@Nonnull ItemStack stack, IConduit con, boolean isInput) {
-        if (con instanceof IFilterHolder) {
-            return ((IFilterHolder<?>) con).isFilterUpgradeAccepted(stack, isInput);
+    private boolean isFilterUpgradeAccepted(@Nonnull ItemStack stack, Conduit con, boolean isInput) {
+        if (con instanceof FilterHolder) {
+            return ((FilterHolder<?>) con).isFilterUpgradeAccepted(stack, isInput);
         }
         return false;
     }
 
-    private boolean isFunctionUpgradeAccepted(@Nonnull ItemStack stack, IConduit con) {
-        if (stack.getItem() instanceof ItemFunctionUpgrade && con instanceof IUpgradeHolder) {
-            return ((IUpgradeHolder) con).isFunctionUpgradeAccepted(stack);
+    private boolean isFunctionUpgradeAccepted(@Nonnull ItemStack stack, Conduit con) {
+        if (stack.getItem() instanceof ItemFunctionUpgrade && con instanceof UpgradeHolder) {
+            return ((UpgradeHolder) con).isFunctionUpgradeAccepted(stack);
         }
         return false;
     }

@@ -20,15 +20,14 @@ import com.enderio.core.common.util.NNList;
 
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.GuiExternalConnection;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.gui.RedstoneModeButton;
 import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.network.PacketHandler;
 import crazypants.enderio.conduits.gui.BaseSettingsPanel;
 import crazypants.enderio.conduits.gui.ConduitRedstoneModeControlable;
-import crazypants.enderio.conduits.gui.GuiExternalConnection;
 import crazypants.enderio.conduits.init.ConduitObject;
 import crazypants.enderio.conduits.lang.Lang;
 import crazypants.enderio.conduits.network.PacketExtractMode;
@@ -41,15 +40,15 @@ import crazypants.enderio.conduit.gas.common.network.PacketEnderGasConduit;
 
 public class GasSettings extends BaseSettingsPanel {
 
-    static final int ID_REDSTONE_BUTTON = GuiExternalConnection.nextButtonId();
+    static final int ID_REDSTONE_BUTTON = crazypants.enderio.conduits.gui.GuiExternalConnection.nextButtonId();
 
-    private static final int ID_COLOR_BUTTON = GuiExternalConnection.nextButtonId();
-    private static final int ID_INSERT_CHANNEL = GuiExternalConnection.nextButtonId();
-    private static final int ID_EXTRACT_CHANNEL = GuiExternalConnection.nextButtonId();
-    private static final int ID_PRIORITY_UP = GuiExternalConnection.nextButtonId();
-    private static final int ID_PRIORITY_DOWN = GuiExternalConnection.nextButtonId();
-    private static final int ID_ROUND_ROBIN = GuiExternalConnection.nextButtonId();
-    private static final int ID_LOOP = GuiExternalConnection.nextButtonId();
+    private static final int ID_COLOR_BUTTON = crazypants.enderio.conduits.gui.GuiExternalConnection.nextButtonId();
+    private static final int ID_INSERT_CHANNEL = crazypants.enderio.conduits.gui.GuiExternalConnection.nextButtonId();
+    private static final int ID_EXTRACT_CHANNEL = crazypants.enderio.conduits.gui.GuiExternalConnection.nextButtonId();
+    private static final int ID_PRIORITY_UP = crazypants.enderio.conduits.gui.GuiExternalConnection.nextButtonId();
+    private static final int ID_PRIORITY_DOWN = crazypants.enderio.conduits.gui.GuiExternalConnection.nextButtonId();
+    private static final int ID_ROUND_ROBIN = crazypants.enderio.conduits.gui.GuiExternalConnection.nextButtonId();
+    private static final int ID_LOOP = crazypants.enderio.conduits.gui.GuiExternalConnection.nextButtonId();
 
     private final RedstoneModeButton<?> rsB;
     private final ColorButton colorB;
@@ -71,7 +70,7 @@ public class GasSettings extends BaseSettingsPanel {
     @Nonnull
     private final IGasConduit conduit;
 
-    public GasSettings(@Nonnull final IGuiExternalConnection gui, @Nonnull IClientConduit con) {
+    public GasSettings(@Nonnull final GuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_GAS, GasConduitObject.itemGasConduit.getUnlocalisedName(), gui, con,
                 "in_out_settings");
 

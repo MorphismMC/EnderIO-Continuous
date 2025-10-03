@@ -6,8 +6,8 @@ import javax.annotation.Nonnull;
 
 import com.enderio.core.common.util.NNList;
 
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.ConduitServer;
 
 /**
  * Use the {@link ConduitBuilder}
@@ -18,12 +18,12 @@ public class ConduitDefinition {
     private final @Nonnull ConduitTypeDefinition network;
     private final @Nonnull UUID conduitUUID;
     private final @Nonnull NNList<UUID> aliases = new NNList<>();
-    private final @Nonnull Class<? extends IServerConduit> serverClass;
-    private final @Nonnull Class<? extends IClientConduit> clientClass;
+    private final @Nonnull Class<? extends ConduitServer> serverClass;
+    private final @Nonnull Class<? extends ConduitClient> clientClass;
 
     public ConduitDefinition(@Nonnull ConduitTypeDefinition network, @Nonnull UUID conduitUUID,
-                             @Nonnull Class<? extends IServerConduit> serverClass,
-                             @Nonnull Class<? extends IClientConduit> clientClass) {
+                             @Nonnull Class<? extends ConduitServer> serverClass,
+                             @Nonnull Class<? extends ConduitClient> clientClass) {
         this.network = network;
         this.conduitUUID = conduitUUID;
         this.serverClass = serverClass;
@@ -35,9 +35,9 @@ public class ConduitDefinition {
         network.addMember(this);
     }
 
-    public <T extends IServerConduit & IClientConduit> ConduitDefinition(@Nonnull ConduitTypeDefinition network,
-                                                                         @Nonnull UUID conduitUUID,
-                                                                         @Nonnull Class<? extends T> serverClass) {
+    public <T extends ConduitServer & ConduitClient> ConduitDefinition(@Nonnull ConduitTypeDefinition network,
+                                                                       @Nonnull UUID conduitUUID,
+                                                                       @Nonnull Class<? extends T> serverClass) {
         this(network, conduitUUID, serverClass, serverClass);
     }
 
@@ -53,11 +53,11 @@ public class ConduitDefinition {
         return aliases;
     }
 
-    public @Nonnull Class<? extends IServerConduit> getServerClass() {
+    public @Nonnull Class<? extends ConduitServer> getServerClass() {
         return serverClass;
     }
 
-    public @Nonnull Class<? extends IClientConduit> getClientClass() {
+    public @Nonnull Class<? extends ConduitClient> getClientClass() {
         return clientClass;
     }
 

@@ -16,7 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 import com.enderio.core.common.fluid.FluidWrapper;
 import com.enderio.core.common.fluid.IFluidWrapper;
 
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.diagnostics.Prof;
 import crazypants.enderio.conduits.config.ConduitConfig;
 
@@ -94,7 +94,7 @@ public class AdvancedLiquidConduitNetwork extends AbstractTankConduitNetwork<Adv
                 }
                 con.getTank().setLiquid(f);
                 BlockPos pos = con.getBundle().getLocation();
-                con.getBundle().getEntity().getWorld().markChunkDirty(pos, con.getBundle().getEntity());
+                con.getBundle().getTileEntity().getWorld().markChunkDirty(pos, con.getBundle().getTileEntity());
             }
 
         }
@@ -152,7 +152,7 @@ public class AdvancedLiquidConduitNetwork extends AbstractTankConduitNetwork<Adv
                 if (ticksEmpty > 40) {
                     setFluidType(null);
                     ticksEmpty = 0;
-                    for (IServerConduit con : getConduits()) {
+                    for (ConduitServer con : getConduits()) {
                         con.setActive(false);
                     }
                     lastSyncedActive = false;
@@ -164,7 +164,7 @@ public class AdvancedLiquidConduitNetwork extends AbstractTankConduitNetwork<Adv
         ticksEmpty = 0;
 
         if (!lastSyncedActive) {
-            for (IServerConduit con : getConduits()) {
+            for (ConduitServer con : getConduits()) {
                 con.setActive(true);
             }
             lastSyncedActive = true;

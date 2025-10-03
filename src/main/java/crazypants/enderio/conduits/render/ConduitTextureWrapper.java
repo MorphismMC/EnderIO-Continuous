@@ -6,10 +6,10 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 import com.enderio.core.common.vecmath.Vector4f;
 
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.render.registry.TextureRegistry.TextureSupplier;
 
-public class ConduitTextureWrapper implements IConduitTexture {
+public class ConduitTextureWrapper implements ConduitTexture {
 
     private static final @Nonnull Vector4f FULL = new Vector4f(0, 0, 1, 1);
 

@@ -10,21 +10,21 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import crazypants.enderio.base.filter.fluid.FluidFilterImpl;
 import crazypants.enderio.base.filter.fluid.FluidFilter;
-import crazypants.enderio.base.filter.fluid.IFluidFilter;
 import crazypants.enderio.conduits.conduit.liquid.EnderLiquidConduit;
-import crazypants.enderio.conduits.conduit.liquid.ILiquidConduit;
+import crazypants.enderio.conduits.conduit.liquid.LiquidConduit;
 import io.netty.buffer.ByteBuf;
 
-public class PacketFluidFilter extends AbstractConduitPacket.Sided<ILiquidConduit> {
+public class PacketFluidFilter extends AbstractConduitPacket.Sided<LiquidConduit> {
 
     private boolean isInput;
-    private @Nonnull IFluidFilter filter = new FluidFilter();
+    private @Nonnull FluidFilter filter = new FluidFilterImpl();
 
     public PacketFluidFilter() {}
 
     public PacketFluidFilter(@Nonnull EnderLiquidConduit eConduit, @Nonnull EnumFacing dir,
-                             @Nonnull IFluidFilter filter, boolean isInput) {
+                             @Nonnull FluidFilter filter, boolean isInput) {
         super(eConduit, dir);
         this.filter = filter;
         this.isInput = isInput;
@@ -53,7 +53,7 @@ public class PacketFluidFilter extends AbstractConduitPacket.Sided<ILiquidCondui
 
         @Override
         public IMessage onMessage(PacketFluidFilter message, MessageContext ctx) {
-            ILiquidConduit conduit = message.getConduit(ctx);
+            LiquidConduit conduit = message.getConduit(ctx);
             if (!(conduit instanceof EnderLiquidConduit)) {
                 return null;
             }

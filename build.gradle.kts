@@ -74,6 +74,9 @@ tasks {
         compileOnlyApi("org.jetbrains:annotations:24.1.0")
         annotationProcessor("org.jetbrains:annotations:24.1.0")
 
+        compileOnly("org.projectlombok:lombok:1.18.24")
+        annotationProcessor("org.projectlombok:lombok:1.18.24")
+
         localImplementation(deobf("curse.maven:journeymap-32274:5172461"))
         localImplementation(deobf("mezz.jei:jei_1.12.2:4.16.1.302"))
         localImplementation(deobf("curse.maven:top-245211:2667280"))

@@ -33,12 +33,12 @@ import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
-import crazypants.enderio.base.conduit.IConduitNetwork;
-import crazypants.enderio.base.conduit.IConduitTexture;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitTexture;
+import crazypants.enderio.base.conduit.GuiExternalConnection;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.render.registry.TextureRegistry;
@@ -47,21 +47,20 @@ import crazypants.enderio.conduit.me.gui.MESettings;
 import crazypants.enderio.conduits.conduit.AbstractConduit;
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
 import crazypants.enderio.conduits.conduit.TileConduitBundle;
-import crazypants.enderio.conduits.render.ConduitTexture;
 
 public class MEConduit extends AbstractConduit implements IMEConduit {
 
     protected MEConduitNetwork network;
     protected MEConduitGrid grid;
 
-    public static IConduitTexture coreTextureN = new ConduitTexture(
-            TextureRegistry.registerTexture("blocks/me_conduit_core"), ConduitTexture.core());
-    public static IConduitTexture coreTextureD = new ConduitTexture(
-            TextureRegistry.registerTexture("blocks/me_conduit_core_dense"), ConduitTexture.core());
-    public static IConduitTexture longTextureN = new ConduitTexture(
-            TextureRegistry.registerTexture("blocks/me_conduit"), ConduitTexture.arm(0));
-    public static IConduitTexture longTextureD = new ConduitTexture(
-            TextureRegistry.registerTexture("blocks/me_conduit"), ConduitTexture.arm(1));
+    public static ConduitTexture coreTextureN = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/me_conduit_core"), crazypants.enderio.conduits.render.ConduitTexture.core());
+    public static ConduitTexture coreTextureD = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/me_conduit_core_dense"), crazypants.enderio.conduits.render.ConduitTexture.core());
+    public static ConduitTexture longTextureN = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/me_conduit"), crazypants.enderio.conduits.render.ConduitTexture.arm(0));
+    public static ConduitTexture longTextureD = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/me_conduit"), crazypants.enderio.conduits.render.ConduitTexture.arm(1));
 
     private boolean isDense;
     private int playerID = -1;
@@ -85,7 +84,7 @@ public class MEConduit extends AbstractConduit implements IMEConduit {
 
     @Override
     @Nonnull
-    public Class<? extends IConduit> getBaseConduitType() {
+    public Class<? extends Conduit> getBaseConduitType() {
         return IMEConduit.class;
     }
 
@@ -101,24 +100,24 @@ public class MEConduit extends AbstractConduit implements IMEConduit {
     }
 
     @Override
-    public boolean setNetwork(@Nonnull IConduitNetwork<?, ?> network) {
+    public boolean setNetwork(@Nonnull ConduitNetwork<?, ?> network) {
         this.network = (MEConduitNetwork) network;
         return super.setNetwork(network);
     }
 
     @Override
-    public void writeToNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.writeToNBT(nbtRoot);
-        nbtRoot.setBoolean("isDense", isDense);
-        nbtRoot.setInteger("playerID", playerID);
+    public void writeToNBT(@Nonnull NBTTagCompound data) {
+        super.writeToNBT(data);
+        data.setBoolean("isDense", isDense);
+        data.setInteger("playerID", playerID);
     }
 
     @Override
-    public void readFromNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.readFromNBT(nbtRoot);
-        isDense = nbtRoot.getBoolean("isDense");
-        if (nbtRoot.hasKey("playerID")) {
-            playerID = nbtRoot.getInteger("playerID");
+    public void readFromNBT(@Nonnull NBTTagCompound data) {
+        super.readFromNBT(data);
+        isDense = data.getBoolean("isDense");
+        if (data.hasKey("playerID")) {
+            playerID = data.getInteger("playerID");
         } else {
             playerID = -1;
         }
@@ -178,7 +177,7 @@ public class MEConduit extends AbstractConduit implements IMEConduit {
     }
 
     @Override
-    public @Nonnull IConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+    public @Nonnull ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
         if (component.isCore()) {
             return (isDense ? coreTextureD : coreTextureN);
         } else {
@@ -187,7 +186,7 @@ public class MEConduit extends AbstractConduit implements IMEConduit {
     }
 
     @Override
-    public @Nullable IConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
+    public @Nullable ConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
         return null;
     }
 
@@ -218,19 +217,19 @@ public class MEConduit extends AbstractConduit implements IMEConduit {
     }
 
     @Override
-    public @Nonnull ConnectionMode getNextConnectionMode(@Nonnull EnumFacing dir) {
-        ConnectionMode mode = getConnectionMode(dir);
+    public @Nonnull ConnectionMode getNextConnectionMode(@Nonnull EnumFacing direction) {
+        ConnectionMode mode = getConnectionMode(direction);
         mode = mode == ConnectionMode.IN_OUT ? ConnectionMode.DISABLED : ConnectionMode.IN_OUT;
         return mode;
     }
 
     @Override
-    public @Nonnull ConnectionMode getPreviousConnectionMode(@Nonnull EnumFacing dir) {
-        return getNextConnectionMode(dir);
+    public @Nonnull ConnectionMode getPreviousConnectionMode(@Nonnull EnumFacing direction) {
+        return getNextConnectionMode(direction);
     }
 
     @Override
-    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull IConduit conduit) {
+    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull Conduit conduit) {
         if (!super.canConnectToConduit(direction, conduit)) {
             return false;
         }
@@ -256,10 +255,10 @@ public class MEConduit extends AbstractConduit implements IMEConduit {
     public boolean onBlockActivated(@Nonnull EntityPlayer player, @Nonnull EnumHand hand, @Nonnull RaytraceResult res,
                                     @Nonnull List<RaytraceResult> all) {
         if (ToolUtil.isToolEquipped(player, hand)) {
-            if (!getBundle().getEntity().getWorld().isRemote) {
-                final CollidableComponent component = res.component;
+            if (!getBundle().getTileEntity().getWorld().isRemote) {
+                final CollidableComponent component = res.component();
                 if (component != null) {
-                    EnumFacing faceHit = res.movingObjectPosition.sideHit;
+                    EnumFacing faceHit = res.movingObjectPosition().sideHit;
                     if (component.isCore()) {
                         if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
                             setConnectionMode(faceHit, ConnectionMode.IN_OUT);
@@ -267,7 +266,7 @@ public class MEConduit extends AbstractConduit implements IMEConduit {
                         }
                         return ConduitUtil.connectConduits(this, faceHit);
                     } else {
-                        EnumFacing connDir = component.getDirection();
+                        EnumFacing connDir = component.direction();
                         if (externalConnections.contains(connDir)) {
                             setConnectionMode(connDir, getNextConnectionMode(connDir));
                         } else if (containsConduitConnection(connDir)) {
@@ -284,8 +283,8 @@ public class MEConduit extends AbstractConduit implements IMEConduit {
     @Method(modid = "appliedenergistics2")
     private void onNodeChanged(@Nonnull BlockPos pos) {
         for (EnumFacing dir : EnumFacing.VALUES) {
-            TileEntity te = getBundle().getEntity();
-            if (te instanceof IGridHost && !(te instanceof IConduitBundle)) {
+            TileEntity te = getBundle().getTileEntity();
+            if (te instanceof IGridHost && !(te instanceof ConduitBundle)) {
                 IGridNode node = ((IGridHost) te).getGridNode(AEPartLocation.INTERNAL);
                 if (node == null) {
                     node = ((IGridHost) te).getGridNode(AEPartLocation.fromFacing(dir.getOpposite()));
@@ -300,7 +299,7 @@ public class MEConduit extends AbstractConduit implements IMEConduit {
     @Override
     public void onAddedToBundle() {
         for (EnumFacing dir : EnumFacing.VALUES) {
-            TileEntity te = getBundle().getEntity();
+            TileEntity te = getBundle().getTileEntity();
             if (te instanceof TileConduitBundle) {
                 IMEConduit cond = ((TileConduitBundle) te).getConduit(IMEConduit.class);
                 if (cond != null) {
@@ -366,8 +365,8 @@ public class MEConduit extends AbstractConduit implements IMEConduit {
     @SideOnly(Side.CLIENT)
     @Override
     @Nonnull
-    public ITabPanel createGuiPanel(@Nonnull IGuiExternalConnection gui, @Nonnull IClientConduit con) {
-        return new MESettings(gui, con);
+    public ITabPanel createGuiPanel(@Nonnull GuiExternalConnection gui, @Nonnull ConduitClient conduit) {
+        return new MESettings(gui, conduit);
     }
 
     @SideOnly(Side.CLIENT)

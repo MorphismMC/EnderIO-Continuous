@@ -22,36 +22,36 @@ import crazypants.enderio.base.events.EnderIOLifecycleEvent;
 public class CapabilityFilterHolder {
 
     @SuppressWarnings({ "null", "rawtypes" })
-    @CapabilityInject(IFilterHolder.class)
+    @CapabilityInject(FilterHolder.class)
     @Nonnull
-    public static Capability<IFilterHolder> FILTER_HOLDER_CAPABILITY = null;
+    public static Capability<FilterHolder> FILTER_HOLDER_CAPABILITY = null;
 
     @SubscribeEvent
     public static void create(EnderIOLifecycleEvent.PreInit event) {
-        CapabilityManager.INSTANCE.register(IFilterHolder.class, new Storage(), new Factory());
+        CapabilityManager.INSTANCE.register(FilterHolder.class, new Storage(), new Factory());
 
         NullHelper.notnullJ(FILTER_HOLDER_CAPABILITY, "Filter Holder Capability is not registered");
     }
 
     @SuppressWarnings("rawtypes")
-    private static class Storage implements Capability.IStorage<IFilterHolder> {
+    private static class Storage implements Capability.IStorage<FilterHolder> {
 
         @Override
         @Nullable
-        public NBTBase writeNBT(Capability<IFilterHolder> capability, IFilterHolder instance, EnumFacing side) {
+        public NBTBase writeNBT(Capability<FilterHolder> capability, FilterHolder instance, EnumFacing side) {
             return null;
         }
 
         @Override
-        public void readNBT(Capability<IFilterHolder> capability, IFilterHolder instance, EnumFacing side,
+        public void readNBT(Capability<FilterHolder> capability, FilterHolder instance, EnumFacing side,
                             NBTBase nbt) {}
     }
 
     @SuppressWarnings("rawtypes")
-    private static class Factory implements Callable<IFilterHolder> {
+    private static class Factory implements Callable<FilterHolder> {
 
         @Override
-        public IFilterHolder call() throws Exception {
+        public FilterHolder call() throws Exception {
             return null;
         }
     }

@@ -5,10 +5,10 @@ import java.util.EnumSet;
 import net.minecraft.util.EnumFacing;
 
 import appeng.api.networking.IGridNode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.ConduitServer;
 
-public interface IMEConduit extends IServerConduit, IClientConduit {
+public interface IMEConduit extends ConduitServer, ConduitClient {
 
     MEConduitGrid getGrid();
 

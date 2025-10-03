@@ -17,7 +17,7 @@ import crazypants.enderio.util.NbtValue;
 import crazypants.enderio.util.Prep;
 import io.netty.buffer.ByteBuf;
 
-public class ExistingItemFilter implements IItemFilter {
+public class ExistingItemFilter implements ItemFilter {
 
     private boolean matchMeta = true;
     private boolean useOreDict = false;

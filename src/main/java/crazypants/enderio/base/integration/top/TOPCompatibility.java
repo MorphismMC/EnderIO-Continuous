@@ -28,7 +28,7 @@ import com.enderio.core.common.util.NNList.Callback;
 import com.enderio.core.common.util.NullHelper;
 import com.google.common.base.Function;
 
-import crazypants.enderio.api.ILocalizable;
+import crazypants.enderio.api.Localizable;
 import crazypants.enderio.base.BlockEio;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.Log;
@@ -246,7 +246,7 @@ public class TOPCompatibility implements Function<ITheOneProbe, Void>, IProbeInf
         if (data.notifications != null && !data.notifications.isEmpty()) {
             IProbeInfo vertical = addIcon(eiobox.get().horizontal(eiobox.center()), IconEIO.REDSTONE_MODE_NEVER)
                     .vertical(eiobox.getProbeinfo().defaultLayoutStyle().spacing(-1));
-            for (ILocalizable notification : data.notifications) {
+            for (Localizable notification : data.notifications) {
                 vertical.text(locRaw(notification.getUnlocalizedName()));
             }
         }

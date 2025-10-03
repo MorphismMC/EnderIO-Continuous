@@ -19,7 +19,7 @@ import crazypants.enderio.base.EnderIOTab;
 import crazypants.enderio.base.filter.redstone.IOutputSignalFilter;
 import crazypants.enderio.base.filter.redstone.InvertingOutputSignalFilter;
 
-public class ItemInvertingOutputSignalFilter extends Item implements IItemOutputSignalFilterUpgrade {
+public class ItemInvertingOutputSignalFilter extends Item implements ItemOutputSignalFilterUpgrade {
 
     public static ItemInvertingOutputSignalFilter create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemInvertingOutputSignalFilter(modObject);

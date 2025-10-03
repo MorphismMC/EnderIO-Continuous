@@ -7,18 +7,18 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import crazypants.enderio.base.conduit.IConduit;
+import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.conduits.gui.ExternalConnectionContainer;
 import io.netty.buffer.ByteBuf;
 
-public class PacketSlotVisibility extends AbstractConduitPacket<IConduit> {
+public class PacketSlotVisibility extends AbstractConduitPacket<Conduit> {
 
     private boolean filterVisible;
     private boolean upgradeVisible;
 
     public PacketSlotVisibility() {}
 
-    public PacketSlotVisibility(@Nonnull IConduit conduit, boolean filterVisible, boolean upgradeVisible) {
+    public PacketSlotVisibility(@Nonnull Conduit conduit, boolean filterVisible, boolean upgradeVisible) {
         super(conduit);
         this.filterVisible = filterVisible;
         this.upgradeVisible = upgradeVisible;
@@ -43,7 +43,7 @@ public class PacketSlotVisibility extends AbstractConduitPacket<IConduit> {
 
         @Override
         public IMessage onMessage(PacketSlotVisibility message, MessageContext ctx) {
-            IConduit conduit = message.getConduit(ctx);
+            Conduit conduit = message.getConduit(ctx);
             EntityPlayerMP player = ctx.getServerHandler().player;
             if (conduit != null && player.openContainer instanceof ExternalConnectionContainer) {
                 ExternalConnectionContainer ecc = (ExternalConnectionContainer) player.openContainer;

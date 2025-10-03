@@ -19,14 +19,13 @@ import net.minecraft.util.ResourceLocation;
 
 import com.enderio.core.api.client.gui.ITabPanel;
 
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
-import crazypants.enderio.base.conduit.IExternalConnectionContainer;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.ConduitBundle;
+import crazypants.enderio.base.conduit.ExternalConnectionContainer;
 import crazypants.enderio.base.gui.GuiContainerBaseEIO;
 import crazypants.enderio.conduits.conduit.TileConduitBundle;
 
-public class GuiExternalConnection extends GuiContainerBaseEIO<IConduitBundle> implements IGuiExternalConnection {
+public class GuiExternalConnection extends GuiContainerBaseEIO<ConduitBundle> implements crazypants.enderio.base.conduit.GuiExternalConnection {
 
     private static int nextButtonId = 1;
 
@@ -40,24 +39,24 @@ public class GuiExternalConnection extends GuiContainerBaseEIO<IConduitBundle> i
     private final @Nonnull List<ITabPanel> tabs = new ArrayList<ITabPanel>();
     private int activeTab = 0;
 
-    private final IExternalConnectionContainer container;
+    private final ExternalConnectionContainer container;
 
-    public GuiExternalConnection(@Nonnull InventoryPlayer playerInv, @Nonnull IConduitBundle bundle,
+    public GuiExternalConnection(@Nonnull InventoryPlayer playerInv, @Nonnull ConduitBundle bundle,
                                  @Nonnull EnumFacing dir) {
-        super(bundle, new ExternalConnectionContainer(playerInv, dir, (TileConduitBundle) bundle.getEntity()).init(),
+        super(bundle, new crazypants.enderio.conduits.gui.ExternalConnectionContainer(playerInv, dir, (TileConduitBundle) bundle.getTileEntity()).init(),
                 "item_filter");
-        container = (ExternalConnectionContainer) inventorySlots;
+        container = (crazypants.enderio.conduits.gui.ExternalConnectionContainer) inventorySlots;
         this.playerInv = playerInv;
         this.dir = dir;
 
         ySize = 194;
         xSize = 206;
 
-        List<IClientConduit> cons = new ArrayList<>(bundle.getClientConduits());
-        Collections.sort(cons, new Comparator<IClientConduit>() {
+        List<ConduitClient> cons = new ArrayList<>(bundle.getClientConduits());
+        Collections.sort(cons, new Comparator<ConduitClient>() {
 
             @Override
-            public int compare(@Nullable IClientConduit o1, @Nullable IClientConduit o2) {
+            public int compare(@Nullable ConduitClient o1, @Nullable ConduitClient o2) {
                 return Integer.compare(o1 != null ? o1.getGuiPanelTabOrder() : 0,
                         o2 != null ? o2.getGuiPanelTabOrder() : 0);
             }
@@ -71,7 +70,7 @@ public class GuiExternalConnection extends GuiContainerBaseEIO<IConduitBundle> i
          * close if their tab is selected.
          */
 
-        for (IClientConduit con : cons) {
+        for (ConduitClient con : cons) {
             if (con.containsExternalConnection(dir) || con.canConnectToExternal(dir, true)) {
                 tabs.add(con.createGuiPanel(this, con));
             }
@@ -99,7 +98,7 @@ public class GuiExternalConnection extends GuiContainerBaseEIO<IConduitBundle> i
         if (activeTab < tabs.size() && activeTab >= 0) {
             final ITabPanel tab = tabs.get(activeTab);
             if (tab != null) {
-                for (IClientConduit con : getOwner().getClientConduits()) {
+                for (ConduitClient con : getOwner().getClientConduits()) {
                     if (con.updateGuiPanel(tab)) {
                         return tab;
                     }
@@ -185,7 +184,7 @@ public class GuiExternalConnection extends GuiContainerBaseEIO<IConduitBundle> i
     }
 
     @Override
-    public IExternalConnectionContainer getContainer() {
+    public ExternalConnectionContainer getContainer() {
         return container;
     }
 

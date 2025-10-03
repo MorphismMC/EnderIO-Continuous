@@ -15,26 +15,26 @@ import com.enderio.core.common.util.BlockCoord;
 
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.Log;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.conduits.conduit.TileConduitBundle;
 import crazypants.enderio.conduits.gui.ExternalConnectionContainer;
 import crazypants.enderio.util.EnumReader;
 import io.netty.buffer.ByteBuf;
 
-public abstract class AbstractConduitPacket<T extends IConduit> extends AbstractConduitBundlePacket {
+public abstract class AbstractConduitPacket<T extends Conduit> extends AbstractConduitBundlePacket {
 
     private UUID uuid;
 
     public AbstractConduitPacket() {}
 
     public AbstractConduitPacket(@Nonnull T conduit) {
-        super(conduit.getBundle().getEntity());
+        super(conduit.getBundle().getTileEntity());
         this.uuid = ConduitRegistry.getNetwork(conduit).getUUID();
     }
 
-    protected Class<? extends IConduit> getConType() {
+    protected Class<? extends Conduit> getConType() {
         return ConduitRegistry.getNetwork(uuid).getBaseType();
     }
 
@@ -71,13 +71,13 @@ public abstract class AbstractConduitPacket<T extends IConduit> extends Abstract
         }
         World world = getWorld(ctx);
         TileEntity tileEntity = getTileEntity(world);
-        if (tileEntity instanceof IConduitBundle) {
-            return (T) ((IConduitBundle) tileEntity).getConduit(getConType());
+        if (tileEntity instanceof ConduitBundle) {
+            return (T) ((ConduitBundle) tileEntity).getConduit(getConType());
         }
         return null;
     }
 
-    public static abstract class Sided<T extends IConduit> extends AbstractConduitPacket<T> {
+    public static abstract class Sided<T extends Conduit> extends AbstractConduitPacket<T> {
 
         protected @Nonnull EnumFacing dir = EnumFacing.DOWN;
 

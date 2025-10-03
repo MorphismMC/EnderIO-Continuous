@@ -26,9 +26,9 @@ import com.enderio.core.client.render.RenderUtil;
 import com.enderio.core.common.vecmath.Vector4f;
 
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitNetwork;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableCache.CacheKey;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.conduit.geom.ConduitGeometryUtil;
@@ -36,23 +36,22 @@ import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.render.registry.TextureRegistry.TextureSupplier;
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduitImpl;
 import crazypants.enderio.conduits.config.ConduitConfig;
 import crazypants.enderio.conduits.render.BlockStateWrapperConduitBundle;
-import crazypants.enderio.conduits.render.ConduitTexture;
 import crazypants.enderio.conduits.render.ConduitTextureWrapper;
 
 public class AdvancedLiquidConduit extends AbstractTankConduit {
 
     public static final int CONDUIT_VOLUME = Fluid.BUCKET_VOLUME;
 
-    public static final IConduitTexture ICON_KEY = new ConduitTexture(
-            TextureRegistry.registerTexture("blocks/liquid_conduit"), ConduitTexture.arm(1));
-    public static final IConduitTexture ICON_KEY_LOCKED = new ConduitTexture(
-            TextureRegistry.registerTexture("blocks/liquid_conduit"), ConduitTexture.arm(2));
-    public static final IConduitTexture ICON_CORE_KEY = new ConduitTexture(
-            TextureRegistry.registerTexture("blocks/conduit_core_1"), ConduitTexture.core(1));
+    public static final ConduitTexture ICON_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/liquid_conduit"), crazypants.enderio.conduits.render.ConduitTexture.arm(1));
+    public static final ConduitTexture ICON_KEY_LOCKED = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/liquid_conduit"), crazypants.enderio.conduits.render.ConduitTexture.arm(2));
+    public static final ConduitTexture ICON_CORE_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/conduit_core_1"), crazypants.enderio.conduits.render.ConduitTexture.core(1));
 
     public static final TextureSupplier ICON_EMPTY_EDGE = TextureRegistry
             .registerTexture("blocks/liquid_conduit_advanced_edge");
@@ -97,7 +96,7 @@ public class AdvancedLiquidConduit extends AbstractTankConduit {
     }
 
     @Override
-    public boolean setNetwork(@Nonnull IConduitNetwork<?, ?> network) {
+    public boolean setNetwork(@Nonnull ConduitNetwork<?, ?> network) {
         if (!(network instanceof AdvancedLiquidConduitNetwork)) {
             return false;
         }
@@ -121,7 +120,7 @@ public class AdvancedLiquidConduit extends AbstractTankConduit {
     }
 
     @Override
-    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull IConduit con) {
+    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull Conduit con) {
         if (!super.canConnectToConduit(direction, con)) {
             return false;
         }
@@ -135,15 +134,15 @@ public class AdvancedLiquidConduit extends AbstractTankConduit {
     }
 
     @Override
-    public void setConnectionMode(@Nonnull EnumFacing dir, @Nonnull ConnectionMode mode) {
-        super.setConnectionMode(dir, mode);
-        refreshInputs(dir);
+    public void setConnectionMode(@Nonnull EnumFacing direction, @Nonnull ConnectionMode mode) {
+        super.setConnectionMode(direction, mode);
+        refreshInputs(direction);
     }
 
     @Override
-    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing dir) {
-        super.setExtractionRedstoneMode(mode, dir);
-        refreshInputs(dir);
+    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing direction) {
+        super.setExtractionRedstoneMode(mode, direction);
+        refreshInputs(direction);
     }
 
     private void refreshInputs(@Nonnull EnumFacing dir) {
@@ -176,11 +175,11 @@ public class AdvancedLiquidConduit extends AbstractTankConduit {
     @SideOnly(Side.CLIENT)
     @Override
     @Nonnull
-    public IConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+    public ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
         if (component.isCore()) {
             return ICON_CORE_KEY;
         }
-        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data)) {
+        if (PowerConduitImpl.COLOR_CONTROLLER_ID.equals(component.data())) {
             return new ConduitTextureWrapper(IconUtil.instance.whiteTexture);
         }
         return fluidTypeLocked ? ICON_KEY_LOCKED : ICON_KEY;
@@ -193,7 +192,7 @@ public class AdvancedLiquidConduit extends AbstractTankConduit {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public @Nullable IConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
+    public @Nullable ConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
         if (isActive() && tank.containsValidLiquid()) {
             return new ConduitTextureWrapper(RenderUtil.getStillTexture(tank.getFluid()));
         }
@@ -240,7 +239,7 @@ public class AdvancedLiquidConduit extends AbstractTankConduit {
     // --------------- End -------------------------
 
     @Override
-    protected boolean canJoinNeighbour(ILiquidConduit n) {
+    protected boolean canJoinNeighbour(LiquidConduit n) {
         return n instanceof AdvancedLiquidConduit;
     }
 
@@ -271,14 +270,14 @@ public class AdvancedLiquidConduit extends AbstractTankConduit {
     @Nonnull
     public Collection<CollidableComponent> createCollidables(@Nonnull CacheKey key) {
         Collection<CollidableComponent> baseCollidables = super.createCollidables(key);
-        final EnumFacing keydir = key.dir;
+        final EnumFacing keydir = key.direction;
         if (keydir == null) {
             return baseCollidables;
         }
 
-        BoundingBox bb = ConduitGeometryUtil.getInstance().createBoundsForConnectionController(keydir, key.offset);
-        CollidableComponent cc = new CollidableComponent(ILiquidConduit.class, bb, keydir,
-                IPowerConduit.COLOR_CONTROLLER_ID);
+        BoundingBox bb = ConduitGeometryUtil.getINSTANCE().createBoundsForConnectionController(keydir, key.offset);
+        CollidableComponent cc = new CollidableComponent(LiquidConduit.class, bb, keydir,
+                PowerConduit.COLOR_CONTROLLER_ID);
 
         List<CollidableComponent> result = new ArrayList<CollidableComponent>();
         result.addAll(baseCollidables);

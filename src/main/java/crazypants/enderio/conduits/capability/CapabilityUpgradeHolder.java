@@ -15,33 +15,33 @@ import com.enderio.core.common.util.NullHelper;
 
 public class CapabilityUpgradeHolder {
 
-    @CapabilityInject(IUpgradeHolder.class)
+    @CapabilityInject(UpgradeHolder.class)
     @Nonnull
-    public static Capability<IUpgradeHolder> UPGRADE_HOLDER_CAPABILITY = null;
+    public static Capability<UpgradeHolder> UPGRADE_HOLDER_CAPABILITY = null;
 
     public static void register() {
-        CapabilityManager.INSTANCE.register(IUpgradeHolder.class, new Storage(), new Factory());
+        CapabilityManager.INSTANCE.register(UpgradeHolder.class, new Storage(), new Factory());
 
         NullHelper.notnullJ(UPGRADE_HOLDER_CAPABILITY, "Filter Holder Capability is not registered");
     }
 
-    private static class Storage implements Capability.IStorage<IUpgradeHolder> {
+    private static class Storage implements Capability.IStorage<UpgradeHolder> {
 
         @Override
         @Nullable
-        public NBTBase writeNBT(Capability<IUpgradeHolder> capability, IUpgradeHolder instance, EnumFacing side) {
+        public NBTBase writeNBT(Capability<UpgradeHolder> capability, UpgradeHolder instance, EnumFacing side) {
             return null;
         }
 
         @Override
-        public void readNBT(Capability<IUpgradeHolder> capability, IUpgradeHolder instance, EnumFacing side,
+        public void readNBT(Capability<UpgradeHolder> capability, UpgradeHolder instance, EnumFacing side,
                             NBTBase nbt) {}
     }
 
-    private static class Factory implements Callable<IUpgradeHolder> {
+    private static class Factory implements Callable<UpgradeHolder> {
 
         @Override
-        public IUpgradeHolder call() throws Exception {
+        public UpgradeHolder call() throws Exception {
             return null;
         }
     }

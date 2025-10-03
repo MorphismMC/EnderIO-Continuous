@@ -16,7 +16,7 @@ import com.enderio.core.client.gui.button.ColorButton;
 import com.enderio.core.client.render.ColorUtil;
 import com.enderio.core.common.util.DyeColor;
 
-import crazypants.enderio.base.filter.IFilter;
+import crazypants.enderio.base.filter.Filter;
 import crazypants.enderio.base.filter.redstone.LogicOutputSignalFilter;
 import crazypants.enderio.base.lang.Lang;
 import crazypants.enderio.util.EnumReader;
@@ -33,7 +33,7 @@ public class RedstoneSignalLogicGui extends AbstractFilterGui {
     private final @Nonnull List<ColorButton> colorButtons;
 
     public RedstoneSignalLogicGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer,
-                                  TileEntity te, @Nonnull IFilter filterIn) {
+                                  TileEntity te, @Nonnull Filter filterIn) {
         super(playerInv, filterContainer, te, filterIn);
 
         filter = (LogicOutputSignalFilter) filterIn;

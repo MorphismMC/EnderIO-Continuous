@@ -6,11 +6,11 @@ import javax.annotation.Nullable;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.IItemHandler;
 
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.invpanel.capability.InventoryDatabaseSource;
 
-public interface IDataConduit extends IClientConduit, IServerConduit {
+public interface IDataConduit extends ConduitClient, ConduitServer {
 
     public static final @Nonnull String ICON_KEY = "blocks/data_conduit";
     public static final @Nonnull String ICON_CORE_KEY = "blocks/data_conduit_core";

@@ -18,9 +18,9 @@ import com.enderio.core.common.util.NullHelper;
 
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIO;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.conduit.geom.Offset;
 import crazypants.enderio.base.conduit.geom.Offsets;
 
@@ -29,7 +29,7 @@ public class ConduitRegistry {
     private static final Map<UUID, ConduitTypeDefinition> UUID_TO_NETWORK = new HashMap<>();
     private static final Map<UUID, ConduitDefinition> UUID_TO_CONDUIT = new HashMap<>();
 
-    private static final Map<Class<? extends IConduit>, UUID> CLASS_TO_UUID = new IdentityHashMap<Class<? extends IConduit>, UUID>();
+    private static final Map<Class<? extends Conduit>, UUID> CLASS_TO_UUID = new IdentityHashMap<Class<? extends Conduit>, UUID>();
 
     /**
      * Register a new conduit type.
@@ -93,7 +93,7 @@ public class ConduitRegistry {
     /**
      * Add a member to an already registered conduit type. The given ConduitDefinition MUST belong to an already
      * registered ConduitTypeDefinition, you can access
-     * all registered types with {@link #getNetwork(IConduit)}.
+     * all registered types with {@link #getNetwork(Conduit)}.
      * <p>
      * Please be advised that may or may not work. Especially conduit types where the members need to interact with each
      * other will not magically work.
@@ -120,7 +120,7 @@ public class ConduitRegistry {
     /**
      * Returns the ConduitDefinition for the given conduit instance (member).
      */
-    public static ConduitDefinition get(IConduit conduit) {
+    public static ConduitDefinition get(Conduit conduit) {
         return UUID_TO_CONDUIT.get(CLASS_TO_UUID.get(conduit.getClass()));
     }
 
@@ -134,7 +134,7 @@ public class ConduitRegistry {
     /**
      * Returns the ConduitTypeDefinition for the given conduit instance (member).
      */
-    public static ConduitTypeDefinition getNetwork(IConduit conduit) {
+    public static ConduitTypeDefinition getNetwork(Conduit conduit) {
         return getNetwork(CLASS_TO_UUID.get(conduit.getClass()));
     }
 
@@ -156,7 +156,7 @@ public class ConduitRegistry {
     /**
      * Returns a new conduit instance (member) for the given member UUID (<em>not</em> network/type UUID).
      */
-    public static IServerConduit getServerInstance(UUID uuid) {
+    public static ConduitServer getServerInstance(UUID uuid) {
         try {
             return UUID_TO_CONDUIT.get(uuid).getServerClass().newInstance();
         } catch (Exception e) {
@@ -167,7 +167,7 @@ public class ConduitRegistry {
     /**
      * Returns a new conduit client proxy instance (member) for the given member UUID (<em>not</em> network/type UUID).
      */
-    public static IClientConduit getClientInstance(UUID uuid) {
+    public static ConduitClient getClientInstance(UUID uuid) {
         try {
             return UUID_TO_CONDUIT.get(uuid).getClientClass().newInstance();
         } catch (Exception e) {
@@ -177,7 +177,7 @@ public class ConduitRegistry {
 
     private static boolean sortingSupported = true;
 
-    public static void sort(List<IConduit> conduits) {
+    public static void sort(List<Conduit> conduits) {
         if (sortingSupported) {
             try {
                 Collections.sort(conduits, CONDUIT_COMPERATOR);
@@ -189,10 +189,10 @@ public class ConduitRegistry {
         }
     }
 
-    private static final Comparator<IConduit> CONDUIT_COMPERATOR = new Comparator<IConduit>() {
+    private static final Comparator<Conduit> CONDUIT_COMPERATOR = new Comparator<Conduit>() {
 
         @Override
-        public int compare(IConduit o1, IConduit o2) {
+        public int compare(Conduit o1, Conduit o2) {
             return getNetwork(o1).getUUID().compareTo(getNetwork(o2).getUUID());
         }
     };

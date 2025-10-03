@@ -4,31 +4,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.util.EnumFacing;
 
-import crazypants.enderio.base.conduit.IConduit;
+import crazypants.enderio.base.conduit.Conduit;
+import org.jetbrains.annotations.NotNull;
 
 public class Offsets {
+
+    private static final Map<OffsetKey, Offset> OFFSETS = new HashMap<>();
 
     /**
      * Registers a set of offsets for a new conduit. (API method)
      * 
-     * @param type
-     *             The class of the conduit
-     * @param none
-     *             The offset for the node
-     * @param x
-     *             The offset for conduit arms on the X axis
-     * @param y
-     *             The offset for conduit arms on the Y axis
-     * @param z
-     *             The offset for conduit arms on the Z axis
-     * @return true if the offset was registered. false if the conduit already is registered or if one of the axis is
-     *         already in use.
+     * @param type The class of the conduit.
+     * @param none The offset for the node.
+     * @param x    The offset for conduit arms on the X axis.
+     * @param y    The offset for conduit arms on the Y axis.
+     * @param z    The offset for conduit arms on the Z axis.
+     * @return     Returns {@code true} if the offset was registered, returns {@code false} if the conduit already is
+     *             registered or if one of the axis is already in use.
      */
-    public static boolean registerOffsets(Class<? extends IConduit> type, Offset none, Offset x, Offset y, Offset z) {
+    public static boolean registerOffsets(Class<? extends Conduit> type, Offset none, Offset x, Offset y, Offset z) {
         OffsetKey keyNone = key(type, Axis.NONE);
         OffsetKey keyX = key(type, Axis.X);
         OffsetKey keyY = key(type, Axis.Y);
@@ -58,43 +54,36 @@ public class Offsets {
         return true;
     }
 
-    private static Map<OffsetKey, Offset> OFFSETS = new HashMap<OffsetKey, Offset>();
-
-    // new ConduitRegistry.ConduitInfo(getBaseConduitType(), Offset.NORTH_UP, Offset.NORTH_UP, Offset.NORTH_WEST,
-    // Offset.WEST_UP);
-
-    // new ConduitRegistry.ConduitInfo(getBaseConduitType(), Offset.SOUTH_DOWN, Offset.SOUTH_DOWN, Offset.SOUTH_EAST,
-    // Offset.EAST_DOWN);
-
-    public static @Nonnull Offset get(Class<? extends IConduit> type, EnumFacing dir) {
-        Offset res = OFFSETS.get(key(type, getAxisForDir(dir)));
+    @NotNull
+    public static Offset get(Class<? extends Conduit> type, EnumFacing direction) {
+        Offset res = OFFSETS.get(key(type, getAxisForDir(direction)));
         if (res == null) {
             res = Offset.NONE;
         }
         return res;
     }
 
-    public static OffsetKey key(Class<? extends IConduit> type, Axis axis) {
+    public static OffsetKey key(Class<? extends Conduit> type, Axis axis) {
         return new OffsetKey(type, axis);
     }
 
-    public static Axis getAxisForDir(EnumFacing dir) {
-        if (dir == null) {
+    public static Axis getAxisForDir(EnumFacing direction) {
+        if (direction == null) {
             return Axis.NONE;
         }
-        if (dir == EnumFacing.EAST || dir == EnumFacing.WEST) {
+        if (direction == EnumFacing.EAST || direction == EnumFacing.WEST) {
             return Axis.X;
         }
-        if (dir == EnumFacing.UP || dir == EnumFacing.DOWN) {
+        if (direction == EnumFacing.UP || direction == EnumFacing.DOWN) {
             return Axis.Y;
         }
-        if (dir == EnumFacing.NORTH || dir == EnumFacing.SOUTH) {
+        if (direction == EnumFacing.NORTH || direction == EnumFacing.SOUTH) {
             return Axis.Z;
         }
         return Axis.NONE;
     }
 
-    public static enum Axis {
+    public enum Axis {
         NONE,
         X,
         Y,
@@ -106,7 +95,7 @@ public class Offsets {
         String typeName;
         Axis axis;
 
-        private OffsetKey(Class<? extends IConduit> type, Axis axis) {
+        private OffsetKey(Class<? extends Conduit> type, Axis axis) {
             this.typeName = type.getCanonicalName();
             this.axis = axis;
         }
@@ -121,33 +110,32 @@ public class Offsets {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
+        public boolean equals(Object o) {
+            if (this == o) {
                 return true;
             }
-            if (obj == null) {
+            if (o == null) {
                 return false;
             }
-            if (getClass() != obj.getClass()) {
+            if (getClass() != o.getClass()) {
                 return false;
             }
-            OffsetKey other = (OffsetKey) obj;
+            OffsetKey other = (OffsetKey) o;
             if (axis != other.axis) {
                 return false;
             }
             if (typeName == null) {
-                if (other.typeName != null) {
-                    return false;
-                }
-            } else if (!typeName.equals(other.typeName)) {
-                return false;
+                return other.typeName == null;
+            } else {
+                return typeName.equals(other.typeName);
             }
-            return true;
         }
 
         @Override
         public String toString() {
             return "OffsetKey [typeName=" + typeName + ", axis=" + axis + "]";
         }
+
     }
+
 }

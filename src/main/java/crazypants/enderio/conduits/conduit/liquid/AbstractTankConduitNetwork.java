@@ -7,13 +7,13 @@ import net.minecraftforge.fluids.FluidStack;
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
 
 public class AbstractTankConduitNetwork<T extends AbstractTankConduit>
-                                       extends AbstractConduitNetwork<ILiquidConduit, T> {
+                                       extends AbstractConduitNetwork<LiquidConduit, T> {
 
     protected FluidStack liquidType;
     protected boolean fluidTypeLocked = false;
 
     protected AbstractTankConduitNetwork(@Nonnull Class<T> cl) {
-        super(cl, ILiquidConduit.class);
+        super(cl, LiquidConduit.class);
     }
 
     public FluidStack getFluidType() {

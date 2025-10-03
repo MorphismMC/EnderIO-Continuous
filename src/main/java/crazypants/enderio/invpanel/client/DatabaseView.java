@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
 
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 
 public class DatabaseView {
 
@@ -39,7 +39,7 @@ public class DatabaseView {
     private @Nonnull SortOrder order = SortOrder.NAME;
     private boolean invertSortOrder;
     private boolean needsSorting;
-    private IItemFilter itemFilter;
+    private ItemFilter itemFilter;
     private @Nonnull String currentFilter;
     private boolean needsFiltering;
     private boolean needsNewFiltering;
@@ -73,7 +73,7 @@ public class DatabaseView {
         }
     }
 
-    public void setItemFilter(@Nullable IItemFilter itemFilter) {
+    public void setItemFilter(@Nullable ItemFilter itemFilter) {
         if (this.itemFilter != itemFilter) {
             this.itemFilter = itemFilter;
             needsNewFiltering = true;

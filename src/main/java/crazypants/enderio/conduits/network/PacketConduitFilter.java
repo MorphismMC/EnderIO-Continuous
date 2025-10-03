@@ -8,17 +8,17 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import crazypants.enderio.base.conduit.IConduit;
+import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.IFilter;
+import crazypants.enderio.base.filter.Filter;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
-import crazypants.enderio.base.filter.capability.IFilterHolder;
+import crazypants.enderio.base.filter.capability.FilterHolder;
 import io.netty.buffer.ByteBuf;
 
-public class PacketConduitFilter<T extends IConduit> extends AbstractConduitPacket.Sided<T> {
+public class PacketConduitFilter<T extends Conduit> extends AbstractConduitPacket.Sided<T> {
 
-    protected IFilter inputFilter;
-    protected IFilter outputFilter;
+    protected Filter inputFilter;
+    protected Filter outputFilter;
 
     public PacketConduitFilter() {}
 
@@ -26,7 +26,7 @@ public class PacketConduitFilter<T extends IConduit> extends AbstractConduitPack
         super(con, dir);
 
         if (con.hasInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, dir)) {
-            IFilterHolder<IFilter> filterHolder = con
+            FilterHolder<Filter> filterHolder = con
                     .getInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, dir);
             if (filterHolder != null) {
                 inputFilter = filterHolder.getFilter(filterHolder.getInputFilterIndex(), dir.ordinal());
@@ -54,13 +54,13 @@ public class PacketConduitFilter<T extends IConduit> extends AbstractConduitPack
 
         @Override
         public IMessage onMessage(PacketConduitFilter message, MessageContext ctx) {
-            IConduit conduit = message.getConduit(ctx);
+            Conduit conduit = message.getConduit(ctx);
             if (conduit != null) {
-                final IFilter inputFilter = message.inputFilter;
+                final Filter inputFilter = message.inputFilter;
                 if (inputFilter != null) {
                     applyFilter(message.dir, conduit, inputFilter, true);
                 }
-                final IFilter outputFilter = message.outputFilter;
+                final Filter outputFilter = message.outputFilter;
                 if (outputFilter != null) {
                     applyFilter(message.dir, conduit, outputFilter, false);
                 }
@@ -71,10 +71,10 @@ public class PacketConduitFilter<T extends IConduit> extends AbstractConduitPack
             return null;
         }
 
-        private void applyFilter(@Nonnull EnumFacing dir, @Nonnull IConduit conduit, @Nonnull IFilter filter,
+        private void applyFilter(@Nonnull EnumFacing dir, @Nonnull Conduit conduit, @Nonnull Filter filter,
                                  boolean isInput) {
             if (conduit.hasInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, dir)) {
-                IFilterHolder<IFilter> filterHolder = conduit
+                FilterHolder<Filter> filterHolder = conduit
                         .getInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, dir);
                 if (filterHolder != null) {
                     if (isInput) {

@@ -14,10 +14,10 @@ import com.enderio.core.common.util.DyeColor;
 import com.enderio.core.common.util.NNList;
 
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
-import crazypants.enderio.base.filter.IFilter;
-import crazypants.enderio.base.filter.IFilterContainer;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.GuiExternalConnection;
+import crazypants.enderio.base.filter.Filter;
+import crazypants.enderio.base.filter.FilterContainer;
 import crazypants.enderio.base.filter.gui.FilterGuiUtil;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.init.ModObject;
@@ -31,9 +31,9 @@ import crazypants.enderio.util.EnumReader;
 
 public class RedstoneSettings extends BaseSettingsPanel {
 
-    private static final int ID_INPUT_COLOR_BUTTON = GuiExternalConnection.nextButtonId();
-    private static final int ID_STRONG_BUTTON = GuiExternalConnection.nextButtonId();
-    private static final int ID_OUTPUT_COLOR_BUTTON = GuiExternalConnection.nextButtonId();
+    private static final int ID_INPUT_COLOR_BUTTON = crazypants.enderio.conduits.gui.GuiExternalConnection.nextButtonId();
+    private static final int ID_STRONG_BUTTON = crazypants.enderio.conduits.gui.GuiExternalConnection.nextButtonId();
+    private static final int ID_OUTPUT_COLOR_BUTTON = crazypants.enderio.conduits.gui.GuiExternalConnection.nextButtonId();
     private @Nonnull ColorButton inputColorB;
     private @Nonnull ColorButton outputColorB;
 
@@ -43,7 +43,7 @@ public class RedstoneSettings extends BaseSettingsPanel {
     private @Nonnull String signalStrengthStr = Lang.GUI_REDSTONE_SIGNAL_STRENGTH.get();
     private @Nonnull IRedstoneConduit insCon;
 
-    public RedstoneSettings(@Nonnull final IGuiExternalConnection gui, @Nonnull IClientConduit con) {
+    public RedstoneSettings(@Nonnull final GuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_REDSTONE, ConduitObject.item_redstone_conduit.getUnlocalisedName(), gui, con,
                 "filter_settings");
 
@@ -103,7 +103,7 @@ public class RedstoneSettings extends BaseSettingsPanel {
     }
 
     @Override
-    public boolean updateConduit(@Nonnull IClientConduit conduit) {
+    public boolean updateConduit(@Nonnull ConduitClient conduit) {
         this.con = conduit;
         // Note: Redstone conduits track their connections a bit differently to other conduits, so we need to catch the
         // case that it is not actually
@@ -163,7 +163,7 @@ public class RedstoneSettings extends BaseSettingsPanel {
 
     @Override
     protected boolean hasFilterGui(boolean output) {
-        return ((IFilter) ((IFilterContainer<?>) gui.getContainer())
+        return ((Filter) ((FilterContainer<?>) gui.getContainer())
                 .getFilter(!output ? FilterGuiUtil.INDEX_INPUT_REDSTONE : FilterGuiUtil.INDEX_OUTPUT_REDSTONE))
                         .hasGui();
     }

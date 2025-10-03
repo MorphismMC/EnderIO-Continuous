@@ -16,11 +16,11 @@ import com.enderio.core.common.fluid.IFluidWrapper.ITankInfoWrapper;
 import com.enderio.core.common.util.RoundRobinIterator;
 
 import crazypants.enderio.base.Log;
-import crazypants.enderio.base.filter.fluid.IFluidFilter;
+import crazypants.enderio.base.filter.fluid.FluidFilter;
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
 import crazypants.enderio.conduits.config.ConduitConfig;
 
-public class EnderLiquidConduitNetwork extends AbstractConduitNetwork<ILiquidConduit, EnderLiquidConduit> {
+public class EnderLiquidConduitNetwork extends AbstractConduitNetwork<LiquidConduit, EnderLiquidConduit> {
 
     List<NetworkTank> tanks = new ArrayList<NetworkTank>();
     Map<NetworkTankKey, NetworkTank> tankMap = new HashMap<NetworkTankKey, NetworkTank>();
@@ -30,7 +30,7 @@ public class EnderLiquidConduitNetwork extends AbstractConduitNetwork<ILiquidCon
     boolean filling;
 
     public EnderLiquidConduitNetwork() {
-        super(EnderLiquidConduit.class, ILiquidConduit.class);
+        super(EnderLiquidConduit.class, LiquidConduit.class);
     }
 
     public void connectionChanged(@Nonnull EnderLiquidConduit con, @Nonnull EnumFacing conDir) {
@@ -199,7 +199,7 @@ public class EnderLiquidConduitNetwork extends AbstractConduitNetwork<ILiquidCon
         if (drained == null) {
             return false;
         }
-        IFluidFilter filter = con.getFilter(conDir, isInput);
+        FluidFilter filter = con.getFilter(conDir, isInput);
         if (filter == null || filter.isEmpty()) {
             return true;
         }

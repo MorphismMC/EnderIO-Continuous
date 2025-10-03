@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
-import crazypants.enderio.base.conduit.ConduitUtil.UnloadedBlockException;
+import crazypants.enderio.base.conduit.UnloadedBlockException;
 import crazypants.enderio.base.diagnostics.Prof;
 import crazypants.enderio.conduit.gas.common.conduit.AbstractGasTankConduit;
 import crazypants.enderio.conduit.gas.common.conduit.AbstractGasTankConduitNetwork;
@@ -67,7 +67,7 @@ public class GasConduitNetwork extends AbstractGasTankConduitNetwork<GasConduit>
         }
 
         ticksEmpty = 0;
-        long curTime = cons.get(0).getBundle().getEntity().getWorld().getTotalWorldTime();
+        long curTime = cons.get(0).getBundle().getTileEntity().getWorld().getTotalWorldTime();
 
         if (gasType != null && gasType.getGas() != null && !isEmpty()) {
             if (curTime % 2 == 0) {
@@ -228,8 +228,7 @@ public class GasConduitNetwork extends AbstractGasTankConduitNetwork<GasConduit>
 
         try {
             BlockPos pos = con.getBundle().getLocation();
-            Collection<IGasConduit> connections = ConduitUtil.getConnectedConduits(
-                    con.getBundle().getEntity().getWorld(), pos.getX(), pos.getY(), pos.getZ(), IGasConduit.class);
+            Collection<IGasConduit> connections = ConduitUtil.getConnectedConduits(con.getBundle().getTileEntity().getWorld(), pos, IGasConduit.class);
             for (IGasConduit n : connections) {
                 GasConduit neighbour = (GasConduit) n;
                 if (canFlowTo(con, neighbour)) { // can only flow within same network

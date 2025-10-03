@@ -15,7 +15,7 @@ import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.events.ModSoundRegisterEvent;
 
 @EventBusSubscriber(modid = EnderIO.MODID)
-public enum SoundRegistry implements IModSound {
+public enum SoundRegistry implements ModSound {
 
     ZOMBIE_BUBBLE(SoundCategory.BLOCKS, "generator.zombie.bubble"),
     NIGHTVISION_ON(SoundCategory.PLAYERS, "ds.nightvision.on"),

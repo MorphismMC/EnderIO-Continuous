@@ -2,8 +2,6 @@ package crazypants.enderio.conduits.conduit;
 
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
@@ -14,6 +12,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import com.google.common.collect.Maps;
 
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
+import org.jetbrains.annotations.NotNull;
 
 public class ConduitBundleStateMapper extends StateMapperBase {
 
@@ -22,14 +21,12 @@ public class ConduitBundleStateMapper extends StateMapperBase {
         ModelLoader.setCustomStateMapper(ConduitRegistry.getConduitModObjectNN().getBlockNN(), mapper);
     }
 
+    @NotNull
     @Override
-    protected @Nonnull ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
-        Map<IProperty<?>, Comparable<?>> map = Maps
-                .<IProperty<?>, Comparable<?>>newLinkedHashMap(state.getProperties());
-
+    protected ModelResourceLocation getModelResourceLocation(@NotNull IBlockState state) {
+        Map<IProperty<?>, Comparable<?>> map = Maps.newLinkedHashMap(state.getProperties());
         map.remove(BlockConduitBundle.OPAQUE);
-
-        return new ModelResourceLocation(Block.REGISTRY.getNameForObject(state.getBlock()),
-                this.getPropertyString(map));
+        return new ModelResourceLocation(Block.REGISTRY.getNameForObject(state.getBlock()), getPropertyString(map));
     }
+
 }

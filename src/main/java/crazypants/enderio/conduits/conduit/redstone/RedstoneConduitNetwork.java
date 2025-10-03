@@ -19,8 +19,8 @@ import com.enderio.core.common.util.NNList;
 import com.enderio.core.common.util.NNList.NNIterator;
 import com.enderio.core.common.util.NullHelper;
 
-import crazypants.enderio.base.conduit.ConduitUtil.UnloadedBlockException;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.UnloadedBlockException;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.conduit.redstone.signals.BundledSignal;
 import crazypants.enderio.base.conduit.redstone.signals.CombinedSignal;
 import crazypants.enderio.base.conduit.redstone.signals.Signal;
@@ -43,9 +43,9 @@ public class RedstoneConduitNetwork extends AbstractConduitNetwork<IRedstoneCond
     }
 
     @Override
-    public void init(@Nonnull IConduitBundle tile, Collection<IRedstoneConduit> connections,
+    public void init(@Nonnull ConduitBundle bundle, Collection<IRedstoneConduit> connections,
                      @Nonnull World world) throws UnloadedBlockException {
-        super.init(tile, connections, world);
+        super.init(bundle, connections, world);
         updatingNetwork++;
         notifyNeigborsOfSignalUpdate();
         updatingNetwork--;
@@ -151,7 +151,7 @@ public class RedstoneConduitNetwork extends AbstractConduitNetwork<IRedstoneCond
     private String conduitsString() {
         StringBuilder sb = new StringBuilder();
         for (IRedstoneConduit con : getConduits()) {
-            TileEntity te = con.getBundle().getEntity();
+            TileEntity te = con.getBundle().getTileEntity();
             sb.append("<").append(te.getPos().getX()).append(",").append(te.getPos().getY()).append(",")
                     .append(te.getPos().getZ()).append(">");
         }
@@ -176,7 +176,7 @@ public class RedstoneConduitNetwork extends AbstractConduitNetwork<IRedstoneCond
     }
 
     private void notifyConduitNeighbours(@Nonnull IRedstoneConduit con) {
-        TileEntity te = con.getBundle().getEntity();
+        TileEntity te = con.getBundle().getTileEntity();
 
         World world = te.getWorld();
 

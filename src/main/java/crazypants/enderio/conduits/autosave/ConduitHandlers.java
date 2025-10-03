@@ -13,9 +13,9 @@ public class ConduitHandlers extends BaseHandlers {
     @SubscribeEvent
     public static void register(EnderIOLifecycleEvent.PreInit event) {
         // Conduits
-        REGISTRY.register(new HandleIConduit());
+        REGISTRY.register(new ConduitHandler());
 
         // Powertools
-        REGISTRY.register(new HandleStatCollector());
+        REGISTRY.register(new StatCollectorHandler());
     }
 }

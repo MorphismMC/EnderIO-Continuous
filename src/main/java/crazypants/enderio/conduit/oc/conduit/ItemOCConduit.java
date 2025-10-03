@@ -13,19 +13,19 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConduitDisplayMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.conduit.geom.Offset;
 import crazypants.enderio.base.conduit.registry.ConduitBuilder;
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.conduit.oc.OCUtil;
 import crazypants.enderio.conduit.oc.init.ConduitOpenComputersObject;
-import crazypants.enderio.conduits.conduit.AbstractItemConduit;
+import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 import crazypants.enderio.conduits.render.ConduitBundleRenderManager;
 
-public class ItemOCConduit extends AbstractItemConduit {
+public class ItemOCConduit extends AbstractConduitItem {
 
     public static ItemOCConduit create(@Nonnull IModObject mo, @Nullable Block block) {
         if (OCUtil.isOCEnabled()) {
@@ -54,12 +54,12 @@ public class ItemOCConduit extends AbstractItemConduit {
     }
 
     @Override
-    public @Nonnull Class<? extends IConduit> getBaseConduitType() {
+    public @Nonnull Class<? extends Conduit> getBaseConduitType() {
         return IOCConduit.class;
     }
 
     @Override
-    public IServerConduit createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
+    public ConduitServer createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
         return new OCConduit(item.getItemDamage());
     }
 

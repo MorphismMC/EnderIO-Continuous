@@ -35,9 +35,9 @@ import com.enderio.core.common.vecmath.Vector4f;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitNetwork;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.RaytraceResult;
 import crazypants.enderio.base.conduit.geom.CollidableCache.CacheKey;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
@@ -46,42 +46,41 @@ import crazypants.enderio.base.conduit.item.FunctionUpgrade;
 import crazypants.enderio.base.conduit.item.ItemFunctionUpgrade;
 import crazypants.enderio.base.filter.FilterRegistry;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
-import crazypants.enderio.base.filter.capability.IFilterHolder;
+import crazypants.enderio.base.filter.capability.FilterHolder;
+import crazypants.enderio.base.filter.fluid.FluidFilterImpl;
 import crazypants.enderio.base.filter.fluid.FluidFilter;
-import crazypants.enderio.base.filter.fluid.IFluidFilter;
-import crazypants.enderio.base.filter.fluid.items.IItemFilterFluidUpgrade;
+import crazypants.enderio.base.filter.fluid.items.ItemFilterFluidUpgrade;
 import crazypants.enderio.base.filter.gui.FilterGuiUtil;
 import crazypants.enderio.base.lang.LangFluid;
 import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.tool.ToolUtil;
 import crazypants.enderio.conduits.capability.CapabilityUpgradeHolder;
-import crazypants.enderio.conduits.capability.IUpgradeHolder;
-import crazypants.enderio.conduits.conduit.IEnderConduit;
-import crazypants.enderio.conduits.conduit.item.ItemConduit;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
+import crazypants.enderio.conduits.capability.UpgradeHolder;
+import crazypants.enderio.conduits.conduit.ConduitEnder;
+import crazypants.enderio.conduits.conduit.item.ItemConduitImpl;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduitImpl;
 import crazypants.enderio.conduits.config.ConduitConfig;
 import crazypants.enderio.conduits.render.BlockStateWrapperConduitBundle;
-import crazypants.enderio.conduits.render.ConduitTexture;
 import crazypants.enderio.conduits.render.ConduitTextureWrapper;
 import crazypants.enderio.util.EnumReader;
 import crazypants.enderio.util.Prep;
 
 public class EnderLiquidConduit extends AbstractLiquidConduit
-                                implements IFilterHolder<IFluidFilter>, IUpgradeHolder, IEnderConduit {
+                                implements FilterHolder<FluidFilter>, UpgradeHolder, ConduitEnder {
 
-    public static final IConduitTexture ICON_KEY = new ConduitTexture(
-            TextureRegistry.registerTexture("blocks/liquid_conduit"), ConduitTexture.arm(3));
-    public static final IConduitTexture ICON_CORE_KEY = new ConduitTexture(
-            TextureRegistry.registerTexture("blocks/conduit_core_1"), ConduitTexture.core(2));
+    public static final ConduitTexture ICON_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/liquid_conduit"), crazypants.enderio.conduits.render.ConduitTexture.arm(3));
+    public static final ConduitTexture ICON_CORE_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/conduit_core_1"), crazypants.enderio.conduits.render.ConduitTexture.core(2));
 
     private EnderLiquidConduitNetwork network;
     private int ticksSinceFailedExtract;
 
-    private final @Nonnull EnumMap<EnumFacing, IFluidFilter> outputFilters = new EnumMap<EnumFacing, IFluidFilter>(
+    private final @Nonnull EnumMap<EnumFacing, FluidFilter> outputFilters = new EnumMap<EnumFacing, FluidFilter>(
             EnumFacing.class);
-    private final @Nonnull EnumMap<EnumFacing, IFluidFilter> inputFilters = new EnumMap<EnumFacing, IFluidFilter>(
+    private final @Nonnull EnumMap<EnumFacing, FluidFilter> inputFilters = new EnumMap<EnumFacing, FluidFilter>(
             EnumFacing.class);
     private final @Nonnull EnumMap<EnumFacing, ItemStack> outputFilterUpgrades = new EnumMap<EnumFacing, ItemStack>(
             EnumFacing.class);
@@ -144,10 +143,10 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
         }
 
         if (ToolUtil.isToolEquipped(player, hand)) {
-            if (!getBundle().getEntity().getWorld().isRemote) {
-                final CollidableComponent component = res.component;
+            if (!getBundle().getTileEntity().getWorld().isRemote) {
+                final CollidableComponent component = res.component();
                 if (component != null) {
-                    EnumFacing faceHit = res.movingObjectPosition.sideHit;
+                    EnumFacing faceHit = res.movingObjectPosition().sideHit;
                     if (component.isCore()) {
                         if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
                             setConnectionMode(faceHit, getNextConnectionMode(faceHit));
@@ -156,7 +155,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
                         // Attempt to join networks
                         return ConduitUtil.connectConduits(this, faceHit);
                     } else {
-                        EnumFacing connDir = component.getDirection();
+                        EnumFacing connDir = component.direction();
                         if (containsExternalConnection(connDir)) {
                             setConnectionMode(connDir, getNextConnectionMode(connDir));
                         } else if (containsConduitConnection(connDir)) {
@@ -171,18 +170,18 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     }
 
     @Override
-    public @Nullable IConduitNetwork<?, ?> getNetwork() {
+    public @Nullable ConduitNetwork<?, ?> getNetwork() {
         return network;
     }
 
-    public IFluidFilter getFilter(@Nonnull EnumFacing dir, boolean isInput) {
+    public FluidFilter getFilter(@Nonnull EnumFacing dir, boolean isInput) {
         if (isInput) {
             return inputFilters.get(dir);
         }
         return outputFilters.get(dir);
     }
 
-    public void setFilter(@Nonnull EnumFacing dir, @Nonnull IFluidFilter filter, boolean isInput) {
+    public void setFilter(@Nonnull EnumFacing dir, @Nonnull FluidFilter filter, boolean isInput) {
         if (isInput) {
             inputFilters.put(dir, filter);
         } else {
@@ -206,7 +205,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
         } else {
             outputFilterUpgrades.put(dir, stack);
         }
-        final IFluidFilter filterForUpgrade = FilterRegistry.<IFluidFilter>getFilterForUpgrade(stack);
+        final FluidFilter filterForUpgrade = FilterRegistry.<FluidFilter>getFilterForUpgrade(stack);
         if (filterForUpgrade != null) {
             setFilter(dir, filterForUpgrade, isInput);
         }
@@ -214,7 +213,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     }
 
     @Override
-    public boolean setNetwork(@Nonnull IConduitNetwork<?, ?> network) {
+    public boolean setNetwork(@Nonnull ConduitNetwork<?, ?> network) {
         if (!(network instanceof EnderLiquidConduitNetwork)) {
             return false;
         }
@@ -239,19 +238,19 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     @SideOnly(Side.CLIENT)
     @Override
     @Nonnull
-    public IConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+    public ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
         if (component.isCore()) {
             return ICON_CORE_KEY;
         }
-        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data)) {
+        if (PowerConduitImpl.COLOR_CONTROLLER_ID.equals(component.data())) {
             return new ConduitTextureWrapper(IconUtil.instance.whiteTexture);
         }
         return ICON_KEY;
     }
 
     @Override
-    public @Nonnull IConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
-        return ItemConduit.ICON_KEY_ENDER;
+    public @Nonnull ConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
+        return ItemConduitImpl.ICON_KEY_ENDER;
     }
 
     @Override
@@ -271,7 +270,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     }
 
     @Override
-    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull IConduit con) {
+    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull Conduit con) {
         if (!super.canConnectToConduit(direction, con)) {
             return false;
         }
@@ -282,15 +281,15 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     }
 
     @Override
-    public void setConnectionMode(@Nonnull EnumFacing dir, @Nonnull ConnectionMode mode) {
-        super.setConnectionMode(dir, mode);
-        refreshConnection(dir);
+    public void setConnectionMode(@Nonnull EnumFacing direction, @Nonnull ConnectionMode mode) {
+        super.setConnectionMode(direction, mode);
+        refreshConnection(direction);
     }
 
     @Override
-    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing dir) {
-        super.setExtractionRedstoneMode(mode, dir);
-        refreshConnection(dir);
+    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing direction) {
+        super.setExtractionRedstoneMode(mode, direction);
+        refreshConnection(direction);
     }
 
     @Override
@@ -340,128 +339,128 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     // Fluid API
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
-        if (network == null || from == null) {
+    public boolean canFill(EnumFacing direction, FluidStack fluid) {
+        if (network == null || direction == null) {
             return false;
         }
-        return getConnectionMode(from).acceptsInput();
+        return getConnectionMode(direction).acceptsInput();
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, FluidStack fluid) {
+    public boolean canDrain(EnumFacing direction, FluidStack fluid) {
         return false;
     }
 
     @Override
-    protected void readTypeSettings(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        super.readTypeSettings(dir, dataRoot);
-        setConnectionMode(dir, EnumReader.get(ConnectionMode.class, dataRoot.getShort("connectionMode")));
-        setExtractionSignalColor(dir, EnumReader.get(DyeColor.class, dataRoot.getShort("extractionSignalColor")));
+    protected void readTypeSettings(@Nonnull EnumFacing direction, @Nonnull NBTTagCompound data) {
+        super.readTypeSettings(direction, data);
+        setConnectionMode(direction, EnumReader.get(ConnectionMode.class, data.getShort("connectionMode")));
+        setExtractionSignalColor(direction, EnumReader.get(DyeColor.class, data.getShort("extractionSignalColor")));
         setExtractionRedstoneMode(
-                EnumReader.get(RedstoneControlMode.class, dataRoot.getShort("extractionRedstoneMode")), dir);
-        setInputColor(dir, EnumReader.get(DyeColor.class, dataRoot.getShort("inputColor")));
-        setOutputColor(dir, EnumReader.get(DyeColor.class, dataRoot.getShort("outputColor")));
-        setSelfFeedEnabled(dir, dataRoot.getBoolean("selfFeed"));
-        setRoundRobinEnabled(dir, dataRoot.getBoolean("roundRobin"));
-        setOutputPriority(dir, dataRoot.getInteger("outputPriority"));
+                EnumReader.get(RedstoneControlMode.class, data.getShort("extractionRedstoneMode")), direction);
+        setInputColor(direction, EnumReader.get(DyeColor.class, data.getShort("inputColor")));
+        setOutputColor(direction, EnumReader.get(DyeColor.class, data.getShort("outputColor")));
+        setSelfFeedEnabled(direction, data.getBoolean("selfFeed"));
+        setRoundRobinEnabled(direction, data.getBoolean("roundRobin"));
+        setOutputPriority(direction, data.getInteger("outputPriority"));
     }
 
     @Override
-    protected void writeTypeSettingsToNbt(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound dataRoot) {
-        super.writeTypeSettingsToNbt(dir, dataRoot);
-        dataRoot.setShort("connectionMode", (short) getConnectionMode(dir).ordinal());
-        dataRoot.setShort("extractionSignalColor", (short) getExtractionSignalColor(dir).ordinal());
-        dataRoot.setShort("extractionRedstoneMode", (short) getExtractionRedstoneMode(dir).ordinal());
-        dataRoot.setShort("inputColor", (short) getInputColor(dir).ordinal());
-        dataRoot.setShort("outputColor", (short) getOutputColor(dir).ordinal());
-        dataRoot.setBoolean("selfFeed", isSelfFeedEnabled(dir));
-        dataRoot.setBoolean("roundRobin", isRoundRobinEnabled(dir));
-        dataRoot.setInteger("outputPriority", getOutputPriority(dir));
+    protected void writeTypeSettingsToNBT(@Nonnull EnumFacing dir, @Nonnull NBTTagCompound data) {
+        super.writeTypeSettingsToNBT(dir, data);
+        data.setShort("connectionMode", (short) getConnectionMode(dir).ordinal());
+        data.setShort("extractionSignalColor", (short) getExtractionSignalColor(dir).ordinal());
+        data.setShort("extractionRedstoneMode", (short) getExtractionRedstoneMode(dir).ordinal());
+        data.setShort("inputColor", (short) getInputColor(dir).ordinal());
+        data.setShort("outputColor", (short) getOutputColor(dir).ordinal());
+        data.setBoolean("selfFeed", isSelfFeedEnabled(dir));
+        data.setBoolean("roundRobin", isRoundRobinEnabled(dir));
+        data.setInteger("outputPriority", getOutputPriority(dir));
     }
 
-    private boolean isDefault(IFluidFilter f) {
-        if (f instanceof FluidFilter) {
-            return ((FluidFilter) f).isDefault();
+    private boolean isDefault(FluidFilter f) {
+        if (f instanceof FluidFilterImpl) {
+            return ((FluidFilterImpl) f).isDefault();
         }
         return false;
     }
 
     @Override
-    public void writeToNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.writeToNBT(nbtRoot);
-        for (Entry<EnumFacing, IFluidFilter> entry : inputFilters.entrySet()) {
+    public void writeToNBT(@Nonnull NBTTagCompound data) {
+        super.writeToNBT(data);
+        for (Entry<EnumFacing, FluidFilter> entry : inputFilters.entrySet()) {
             if (entry.getValue() != null) {
-                IFluidFilter f = entry.getValue();
+                FluidFilter f = entry.getValue();
                 if (!isDefault(f)) {
                     NBTTagCompound itemRoot = new NBTTagCompound();
                     FilterRegistry.writeFilterToNbt(f, itemRoot);
-                    nbtRoot.setTag("inFluidFilts." + entry.getKey().name(), itemRoot);
+                    data.setTag("inFluidFilts." + entry.getKey().name(), itemRoot);
                 }
             }
         }
-        for (Entry<EnumFacing, IFluidFilter> entry : outputFilters.entrySet()) {
+        for (Entry<EnumFacing, FluidFilter> entry : outputFilters.entrySet()) {
             if (entry.getValue() != null) {
-                IFluidFilter f = entry.getValue();
+                FluidFilter f = entry.getValue();
                 if (!isDefault(f)) {
                     NBTTagCompound itemRoot = new NBTTagCompound();
                     FilterRegistry.writeFilterToNbt(f, itemRoot);
-                    nbtRoot.setTag("outFluidFilts." + entry.getKey().name(), itemRoot);
+                    data.setTag("outFluidFilts." + entry.getKey().name(), itemRoot);
                 }
             }
         }
         for (Entry<EnumFacing, ItemStack> entry : inputFilterUpgrades.entrySet()) {
             ItemStack up = entry.getValue();
             if (up != null && Prep.isValid(up)) {
-                IFluidFilter filter = getFilter(entry.getKey(), true);
+                FluidFilter filter = getFilter(entry.getKey(), true);
                 FilterRegistry.writeFilterToStack(filter, up);
 
                 NBTTagCompound itemRoot = new NBTTagCompound();
                 up.writeToNBT(itemRoot);
-                nbtRoot.setTag("inputFluidFilterUpgrades." + entry.getKey().name(), itemRoot);
+                data.setTag("inputFluidFilterUpgrades." + entry.getKey().name(), itemRoot);
             }
         }
 
         for (Entry<EnumFacing, ItemStack> entry : outputFilterUpgrades.entrySet()) {
             ItemStack up = entry.getValue();
             if (up != null && Prep.isValid(up)) {
-                IFluidFilter filter = getFilter(entry.getKey(), false);
+                FluidFilter filter = getFilter(entry.getKey(), false);
                 FilterRegistry.writeFilterToStack(filter, up);
 
                 NBTTagCompound itemRoot = new NBTTagCompound();
                 up.writeToNBT(itemRoot);
-                nbtRoot.setTag("outputFluidFilterUpgrades." + entry.getKey().name(), itemRoot);
+                data.setTag("outputFluidFilterUpgrades." + entry.getKey().name(), itemRoot);
             }
         }
 
         for (Entry<EnumFacing, DyeColor> entry : inputColors.entrySet()) {
             if (entry.getValue() != null) {
                 short ord = (short) entry.getValue().ordinal();
-                nbtRoot.setShort("inSC." + entry.getKey().name(), ord);
+                data.setShort("inSC." + entry.getKey().name(), ord);
             }
         }
 
         for (Entry<EnumFacing, DyeColor> entry : outputColors.entrySet()) {
             if (entry.getValue() != null) {
                 short ord = (short) entry.getValue().ordinal();
-                nbtRoot.setShort("outSC." + entry.getKey().name(), ord);
+                data.setShort("outSC." + entry.getKey().name(), ord);
             }
         }
 
         for (Entry<EnumFacing, Integer> entry : priorities.entrySet()) {
             if (entry.getValue() != null) {
-                nbtRoot.setInteger("priority." + entry.getKey().name(), entry.getValue());
+                data.setInteger("priority." + entry.getKey().name(), entry.getValue());
             }
         }
 
         for (Entry<EnumFacing, Boolean> entry : roundRobin.entrySet()) {
             if (entry.getValue() != null) {
-                nbtRoot.setBoolean("roundRobin." + entry.getKey().name(), entry.getValue());
+                data.setBoolean("roundRobin." + entry.getKey().name(), entry.getValue());
             }
         }
 
         for (Entry<EnumFacing, Boolean> entry : selfFeed.entrySet()) {
             if (entry.getValue() != null) {
-                nbtRoot.setBoolean("selfFeed." + entry.getKey().name(), entry.getValue());
+                data.setBoolean("selfFeed." + entry.getKey().name(), entry.getValue());
             }
         }
 
@@ -470,82 +469,82 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
             if (up != null && Prep.isValid(up)) {
                 NBTTagCompound itemRoot = new NBTTagCompound();
                 up.writeToNBT(itemRoot);
-                nbtRoot.setTag("functionUpgrades." + entry.getKey().name(), itemRoot);
+                data.setTag("functionUpgrades." + entry.getKey().name(), itemRoot);
             }
         }
     }
 
     @Override
-    public void readFromNBT(@Nonnull NBTTagCompound nbtRoot) {
-        super.readFromNBT(nbtRoot);
+    public void readFromNBT(@Nonnull NBTTagCompound data) {
+        super.readFromNBT(data);
         for (EnumFacing dir : EnumFacing.VALUES) {
             String key = "inFluidFilts." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound filterTag = (NBTTagCompound) nbtRoot.getTag(key);
-                IFluidFilter filter = (IFluidFilter) FilterRegistry.loadFilterFromNbt(filterTag);
+            if (data.hasKey(key)) {
+                NBTTagCompound filterTag = (NBTTagCompound) data.getTag(key);
+                FluidFilter filter = (FluidFilter) FilterRegistry.loadFilterFromNbt(filterTag);
                 inputFilters.put(dir, filter);
             }
 
             key = "inputFluidFilterUpgrades." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound upTag = (NBTTagCompound) nbtRoot.getTag(key);
+            if (data.hasKey(key)) {
+                NBTTagCompound upTag = (NBTTagCompound) data.getTag(key);
                 ItemStack ups = new ItemStack(upTag);
                 inputFilterUpgrades.put(dir, ups);
             }
 
             key = "outputFluidFilterUpgrades." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound upTag = (NBTTagCompound) nbtRoot.getTag(key);
+            if (data.hasKey(key)) {
+                NBTTagCompound upTag = (NBTTagCompound) data.getTag(key);
                 ItemStack ups = new ItemStack(upTag);
                 outputFilterUpgrades.put(dir, ups);
             }
 
             key = "outFluidFilts." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound filterTag = (NBTTagCompound) nbtRoot.getTag(key);
-                IFluidFilter filter = (IFluidFilter) FilterRegistry.loadFilterFromNbt(filterTag);
+            if (data.hasKey(key)) {
+                NBTTagCompound filterTag = (NBTTagCompound) data.getTag(key);
+                FluidFilter filter = (FluidFilter) FilterRegistry.loadFilterFromNbt(filterTag);
                 outputFilters.put(dir, filter);
             }
 
             key = "inSC." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                short ord = nbtRoot.getShort(key);
+            if (data.hasKey(key)) {
+                short ord = data.getShort(key);
                 if (ord >= 0 && ord < DyeColor.values().length) {
                     inputColors.put(dir, DyeColor.values()[ord]);
                 }
             }
 
             key = "outSC." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                short ord = nbtRoot.getShort(key);
+            if (data.hasKey(key)) {
+                short ord = data.getShort(key);
                 if (ord >= 0 && ord < DyeColor.values().length) {
                     outputColors.put(dir, DyeColor.values()[ord]);
                 }
             }
 
             key = "priority." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                int val = nbtRoot.getInteger(key);
+            if (data.hasKey(key)) {
+                int val = data.getInteger(key);
                 priorities.put(dir, val);
             }
 
             key = "roundRobin." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                boolean val = nbtRoot.getBoolean(key);
+            if (data.hasKey(key)) {
+                boolean val = data.getBoolean(key);
                 roundRobin.put(dir, val);
             } else {
                 roundRobin.remove(dir);
             }
 
             key = "selfFeed." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                boolean val = nbtRoot.getBoolean(key);
+            if (data.hasKey(key)) {
+                boolean val = data.getBoolean(key);
                 selfFeed.put(dir, val);
             }
 
             key = "functionUpgrades." + dir.name();
-            if (nbtRoot.hasKey(key)) {
-                NBTTagCompound upTag = (NBTTagCompound) nbtRoot.getTag(key);
+            if (data.hasKey(key)) {
+                NBTTagCompound upTag = (NBTTagCompound) data.getTag(key);
                 ItemStack ups = new ItemStack(upTag);
                 functionUpgrades.put(dir, ups);
             }
@@ -585,7 +584,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     }
 
     @Override
-    public IFluidFilter getFilter(int filterIndex, int param1) {
+    public FluidFilter getFilter(int filterIndex, int param1) {
         if (filterIndex == FilterGuiUtil.INDEX_INPUT_FLUID) {
             return getFilter(EnumFacing.byIndex(param1), true);
         } else if (filterIndex == FilterGuiUtil.INDEX_OUTPUT_FLUID) {
@@ -595,7 +594,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     }
 
     @Override
-    public void setFilter(int filterIndex, EnumFacing side, @Nonnull IFluidFilter filter) {
+    public void setFilter(int filterIndex, EnumFacing side, @Nonnull FluidFilter filter) {
         if (filterIndex == FilterGuiUtil.INDEX_INPUT_FLUID) {
             setFilter(side, filter, true);
         } else if (filterIndex == FilterGuiUtil.INDEX_OUTPUT_FLUID) {
@@ -624,7 +623,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
 
     @Override
     public boolean isFilterUpgradeAccepted(@Nonnull ItemStack stack, boolean isInput) {
-        return stack.getItem() instanceof IItemFilterFluidUpgrade;
+        return stack.getItem() instanceof ItemFilterFluidUpgrade;
     }
 
     // ------------------------------------------------
@@ -662,17 +661,17 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     }
 
     @Override
-    public void setClientDirty() {
+    public void markDirty() {
         setClientStateDirty();
         collidablesDirty = true;
     }
 
     @Override
-    public void refreshConnection(@Nonnull EnumFacing dir) {
+    public void refreshConnection(@Nonnull EnumFacing direction) {
         if (network == null) {
             return;
         }
-        network.connectionChanged(this, dir);
+        network.connectionChanged(this, direction);
     }
 
     // -------------------------------
@@ -704,7 +703,7 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     public int getUpgradeSlotLimit(@Nonnull ItemStack stack) {
         return stack.getItem() instanceof ItemFunctionUpgrade ?
                 ((ItemFunctionUpgrade) stack.getItem()).getUpgradeSlotLimit() :
-                IUpgradeHolder.super.getUpgradeSlotLimit(stack);
+                UpgradeHolder.super.getUpgradeSlotLimit(stack);
     }
 
     @Override
@@ -775,14 +774,14 @@ public class EnderLiquidConduit extends AbstractLiquidConduit
     @Nonnull
     public Collection<CollidableComponent> createCollidables(@Nonnull CacheKey key) {
         Collection<CollidableComponent> baseCollidables = super.createCollidables(key);
-        final EnumFacing keydir = key.dir;
+        final EnumFacing keydir = key.direction;
         if (keydir == null) {
             return baseCollidables;
         }
 
-        BoundingBox bb = ConduitGeometryUtil.getInstance().createBoundsForConnectionController(keydir, key.offset);
-        CollidableComponent cc = new CollidableComponent(ILiquidConduit.class, bb, keydir,
-                IPowerConduit.COLOR_CONTROLLER_ID);
+        BoundingBox bb = ConduitGeometryUtil.getINSTANCE().createBoundsForConnectionController(keydir, key.offset);
+        CollidableComponent cc = new CollidableComponent(LiquidConduit.class, bb, keydir,
+                PowerConduit.COLOR_CONTROLLER_ID);
 
         List<CollidableComponent> result = new ArrayList<CollidableComponent>();
         result.addAll(baseCollidables);

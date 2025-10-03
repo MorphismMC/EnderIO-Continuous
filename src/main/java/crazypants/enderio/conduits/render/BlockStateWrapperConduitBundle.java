@@ -27,7 +27,7 @@ import crazypants.enderio.base.render.IRenderMapper.IBlockRenderMapper;
 import crazypants.enderio.base.render.pipeline.BlockStateWrapperBase;
 import crazypants.enderio.base.render.util.QuadCollector;
 import crazypants.enderio.conduits.EnderIOConduits;
-import crazypants.enderio.conduits.conduit.IConduitComponent;
+import crazypants.enderio.conduits.conduit.ConduitComponent;
 
 @EventBusSubscriber(modid = EnderIOConduits.MODID, value = Side.CLIENT)
 public class BlockStateWrapperConduitBundle extends BlockStateWrapperBase {
@@ -81,10 +81,10 @@ public class BlockStateWrapperConduitBundle extends BlockStateWrapperBase {
     @Override
     protected void addCacheKeyInternal(@Nonnull Object addlCacheKey) {
         super.addCacheKeyInternal(addlCacheKey);
-        if (addlCacheKey instanceof IConduitComponent.IConduitComponentProvider) {
-            ((IConduitComponent.IConduitComponentProvider) addlCacheKey).hashCodeForModelCaching(this, cachekey);
-        } else if (addlCacheKey instanceof IConduitComponent) {
-            ((IConduitComponent) addlCacheKey).hashCodeForModelCaching(cachekey);
+        if (addlCacheKey instanceof ConduitComponent.ConduitComponentProvider) {
+            ((ConduitComponent.ConduitComponentProvider) addlCacheKey).hashCodeForModelCaching(this, cachekey);
+        } else if (addlCacheKey instanceof ConduitComponent) {
+            ((ConduitComponent) addlCacheKey).hashCodeForModelCaching(cachekey);
         } else if (addlCacheKey instanceof IBlockState) {
             cachekey.add(Block.BLOCK_STATE_IDS.get((IBlockState) addlCacheKey));
         } else {

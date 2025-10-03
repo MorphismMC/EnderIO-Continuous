@@ -16,13 +16,12 @@ import com.enderio.core.common.util.Log;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitNetwork;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.network.PacketHandler;
 import crazypants.enderio.base.render.registry.TextureRegistry;
-import crazypants.enderio.conduits.render.ConduitTexture;
 import crazypants.enderio.conduit.gas.GasConduitsConstants;
 import crazypants.enderio.conduit.gas.common.conduit.AbstractGasTankConduit;
 import crazypants.enderio.conduit.gas.common.conduit.AbstractGasTankConduitNetwork;
@@ -40,19 +39,19 @@ public class GasConduit extends AbstractGasTankConduit {
 
     static final int VOLUME_PER_CONNECTION = GasConduitsConstants.GAS_VOLUME / 4;
 
-    public static final IConduitTexture ICON_KEY = new ConduitTexture(
-            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit", false), ConduitTexture.arm(0));
-    public static final IConduitTexture ICON_KEY_LOCKED = new ConduitTexture(
+    public static final ConduitTexture ICON_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit", false), crazypants.enderio.conduits.render.ConduitTexture.arm(0));
+    public static final ConduitTexture ICON_KEY_LOCKED = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit_locked", false));
-    public static final IConduitTexture ICON_CORE_KEY = new ConduitTexture(
-            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit_core", false), ConduitTexture.core(0));
-    public static final IConduitTexture ICON_EXTRACT_KEY = new ConduitTexture(
+    public static final ConduitTexture ICON_CORE_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit_core", false), crazypants.enderio.conduits.render.ConduitTexture.core(0));
+    public static final ConduitTexture ICON_EXTRACT_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit_extract", false));
-    public static final IConduitTexture ICON_EMPTY_EXTRACT_KEY = new ConduitTexture(
+    public static final ConduitTexture ICON_EMPTY_EXTRACT_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("gasconduits:blocks/empty_gas_conduit_extract", false));
-    public static final IConduitTexture ICON_INSERT_KEY = new ConduitTexture(
+    public static final ConduitTexture ICON_INSERT_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit_insert", false));
-    public static final IConduitTexture ICON_EMPTY_INSERT_KEY = new ConduitTexture(
+    public static final ConduitTexture ICON_EMPTY_INSERT_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
             TextureRegistry.registerTexture("gasconduits:blocks/empty_gas_conduit_insert", false));
 
     private GasConduitNetwork network;
@@ -224,7 +223,7 @@ public class GasConduit extends AbstractGasTankConduit {
     }
 
     private IGasConduit getGasConduit(@Nonnull EnumFacing dir) {
-        TileEntity ent = getBundle().getEntity();
+        TileEntity ent = getBundle().getTileEntity();
         return ConduitUtil.getConduit(ent.getWorld(), ent, dir, IGasConduit.class);
     }
 
@@ -256,12 +255,12 @@ public class GasConduit extends AbstractGasTankConduit {
 
     @Override
     @Nonnull
-    public IConduitNetwork<?, ?> getNetwork() {
+    public ConduitNetwork<?, ?> getNetwork() {
         return network;
     }
 
     @Override
-    public boolean setNetwork(@Nonnull IConduitNetwork<?, ?> network) {
+    public boolean setNetwork(@Nonnull ConduitNetwork<?, ?> network) {
         if (!(network instanceof AbstractGasTankConduitNetwork)) {
             return false;
         }
@@ -284,7 +283,7 @@ public class GasConduit extends AbstractGasTankConduit {
     }
 
     @Override
-    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull IConduit con) {
+    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull Conduit con) {
         if (!super.canConnectToConduit(direction, con) || !(con instanceof GasConduit)) {
             return false;
         }
@@ -294,11 +293,11 @@ public class GasConduit extends AbstractGasTankConduit {
     @SideOnly(Side.CLIENT)
     @Override
     @Nonnull
-    public IConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+    public ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
         if (component.isCore()) {
             return ICON_CORE_KEY;
         }
-        EnumFacing componentDirection = component.getDirection();
+        EnumFacing componentDirection = component.direction();
         if (getConnectionMode(componentDirection) == ConnectionMode.INPUT) {
             return getGasType() == null ? ICON_EMPTY_EXTRACT_KEY : ICON_EXTRACT_KEY;
         }
@@ -363,7 +362,7 @@ public class GasConduit extends AbstractGasTankConduit {
 
     @Override
     @Nonnull
-    public Class<? extends IConduit> getCollidableType() {
+    public Class<? extends Conduit> getCollidableType() {
         return GasConduit.class;
     }
 }

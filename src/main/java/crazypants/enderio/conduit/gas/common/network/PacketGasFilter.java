@@ -14,19 +14,19 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import crazypants.enderio.conduits.network.AbstractConduitPacket;
 import crazypants.enderio.conduit.gas.common.conduit.IGasConduit;
 import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduit;
+import crazypants.enderio.conduit.gas.common.filter.GasFilterImpl;
 import crazypants.enderio.conduit.gas.common.filter.GasFilter;
-import crazypants.enderio.conduit.gas.common.filter.IGasFilter;
 import io.netty.buffer.ByteBuf;
 
 public class PacketGasFilter extends AbstractConduitPacket.Sided<IGasConduit> {
 
     private boolean isInput;
     @Nonnull
-    private IGasFilter filter = new GasFilter();
+    private GasFilter filter = new GasFilterImpl();
 
     public PacketGasFilter() {}
 
-    public PacketGasFilter(EnderGasConduit eConduit, @Nonnull EnumFacing dir, @Nonnull IGasFilter filter,
+    public PacketGasFilter(EnderGasConduit eConduit, @Nonnull EnumFacing dir, @Nonnull GasFilter filter,
                            boolean isInput) {
         super(eConduit, dir);
         this.filter = filter;

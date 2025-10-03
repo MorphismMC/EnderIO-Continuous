@@ -1,7 +1,7 @@
 package com.morphismmc.eioadditions.common.teleport;
 
 import crazypants.enderio.api.teleport.ITravelSource;
-import crazypants.enderio.base.sound.IModSound;
+import crazypants.enderio.base.sound.ModSound;
 import crazypants.enderio.base.sound.SoundRegistry;
 import com.morphismmc.eioadditions.AdditionsConstants;
 import com.morphismmc.eioadditions.common.config.AdditionsTeleportConfig;
@@ -25,15 +25,15 @@ public enum AdditionsTravelSource implements ITravelSource {
     };
 
     private final ResourceLocation registryName;
-    public final IModSound sound;
+    public final ModSound sound;
 
-    AdditionsTravelSource(IModSound sound) {
+    AdditionsTravelSource(ModSound sound) {
         this.registryName = new ResourceLocation(AdditionsConstants.MOD_ID, name().toLowerCase());
         this.sound = sound;
     }
 
     @Override
-    public IModSound getSound() {
+    public ModSound getSound() {
         return sound;
     }
 

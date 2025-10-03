@@ -34,12 +34,12 @@ import com.enderio.core.client.render.RenderUtil;
 import com.enderio.core.common.util.NNList;
 import com.enderio.core.common.util.NullHelper;
 
-import crazypants.enderio.api.ILocalizable;
+import crazypants.enderio.api.Localizable;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.config.config.IntegrationConfig;
 import crazypants.enderio.base.config.config.PersonalConfig;
 import crazypants.enderio.base.integration.jei.JeiAccessor;
-import crazypants.enderio.base.machine.interfaces.INotifier;
+import crazypants.enderio.base.machine.interfaces.Notifiable;
 import crazypants.enderio.base.network.IRemoteExec;
 import crazypants.enderio.base.scheduler.Celeb;
 import crazypants.enderio.base.sound.SoundHelper;
@@ -388,10 +388,10 @@ public abstract class GuiContainerBaseEIO<O> extends GuiContainerBase implements
             GlStateManager.disableBlend();
         }
 
-        if (getOwner() instanceof INotifier) {
+        if (getOwner() instanceof Notifiable) {
             int x = width / 2;
             int y = 4;
-            for (ILocalizable notification : ((INotifier) getOwner()).getNotification()) {
+            for (Localizable notification : ((Notifiable) getOwner()).getNotification()) {
                 String s = EnderIO.lang.localizeExact(notification.getUnlocalizedName());
                 int stringWidth = fontRenderer.getStringWidth(s);
                 int xPos = x - stringWidth / 2;

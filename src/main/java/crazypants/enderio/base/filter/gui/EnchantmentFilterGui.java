@@ -22,7 +22,7 @@ import com.enderio.core.common.util.NNList;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.filter.item.EnchantmentFilter;
 import crazypants.enderio.base.filter.item.EnchantmentFilter.EnchantmentFilterGhostSlot;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.lang.Lang;
 
@@ -40,13 +40,13 @@ public class EnchantmentFilterGui extends AbstractFilterGui {
     private int yOffset;
 
     public EnchantmentFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer,
-                                TileEntity te, @Nonnull IItemFilter filter) {
+                                TileEntity te, @Nonnull ItemFilter filter) {
         this(playerInv, filterContainer, 13, 34, te, filter);
     }
 
     public EnchantmentFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer,
                                 int xOffset, int yOffset, TileEntity te,
-                                @Nonnull IItemFilter filterIn) {
+                                @Nonnull ItemFilter filterIn) {
         super(playerInv, filterContainer, te, filterIn, "soul_filter_normal", "soul_filter_big");
         this.xOffset = xOffset;
         this.yOffset = yOffset;

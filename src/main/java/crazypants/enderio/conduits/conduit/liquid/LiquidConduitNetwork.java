@@ -15,13 +15,13 @@ import net.minecraftforge.fluids.FluidStack;
 import com.enderio.core.common.fluid.IFluidWrapper;
 
 import crazypants.enderio.base.conduit.ConduitUtil;
-import crazypants.enderio.base.conduit.ConduitUtil.UnloadedBlockException;
+import crazypants.enderio.base.conduit.UnloadedBlockException;
 import crazypants.enderio.base.diagnostics.Prof;
 
-public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidConduit> {
+public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidConduitImpl> {
 
     public LiquidConduitNetwork() {
-        super(LiquidConduit.class);
+        super(LiquidConduitImpl.class);
     }
 
     private int ticksEmpty = 0;
@@ -47,7 +47,7 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
 
     @Override
     public void tickEnd(@Nullable Profiler profiler) {
-        List<LiquidConduit> cons = getConduits();
+        List<LiquidConduitImpl> cons = getConduits();
         if (cons.isEmpty()) {
             return;
         }
@@ -64,7 +64,7 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
         }
 
         ticksEmpty = 0;
-        long curTime = cons.get(0).getBundle().getEntity().getWorld().getTotalWorldTime();
+        long curTime = cons.get(0).getBundle().getTileEntity().getWorld().getTotalWorldTime();
 
         // 1000 water, 6000 lava
         if (liquidType != null && liquidType.getFluid() != null && !isEmpty()) {
@@ -104,8 +104,8 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
         boolean result = !actions.isEmpty();
 
         // Flush any tanks with a tiny bit left
-        List<LiquidConduit> toEmpty = new ArrayList<LiquidConduit>();
-        for (LiquidConduit con : getConduits()) {
+        List<LiquidConduitImpl> toEmpty = new ArrayList<LiquidConduitImpl>();
+        for (LiquidConduitImpl con : getConduits()) {
             if (con != null && con.getTank().getFluidAmount() < 10) {
                 toEmpty.add(con);
             } else {
@@ -134,7 +134,7 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
             return result;
         }
 
-        for (LiquidConduit con : toEmpty) {
+        for (LiquidConduitImpl con : toEmpty) {
             drainConduitToNearestExternal(con, externals);
         }
 
@@ -150,7 +150,7 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
     }
 
     private boolean isEmpty() {
-        for (LiquidConduit con : getConduits()) {
+        for (LiquidConduitImpl con : getConduits()) {
             if (con.tank.getFluidAmount() > 0) {
                 return false;
             }
@@ -158,7 +158,7 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
         return true;
     }
 
-    private void drainConduitToNearestExternal(@Nonnull LiquidConduit con, List<LocatedFluidHandler> externals) {
+    private void drainConduitToNearestExternal(@Nonnull LiquidConduitImpl con, List<LocatedFluidHandler> externals) {
         BlockPos conPos = con.getBundle().getLocation();
         FluidStack toDrain = con.getTank().getFluid();
         if (toDrain == null) {
@@ -183,7 +183,7 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
         }
     }
 
-    private void flowFrom(@Nonnull LiquidConduit con, List<FlowAction> actions, int pushPoken) {
+    private void flowFrom(@Nonnull LiquidConduitImpl con, List<FlowAction> actions, int pushPoken) {
         ConduitTank tank = con.getTank();
         int totalAmount = tank.getFluidAmount();
         if (totalAmount <= 0) {
@@ -195,10 +195,10 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
         // First flow all we can down, then balance the rest
         if (con.getConduitConnections().contains(EnumFacing.DOWN)) {
             BlockPos pos = con.getBundle().getLocation().offset(EnumFacing.DOWN);
-            ILiquidConduit dc = ConduitUtil.getConduit(con.getBundle().getEntity().getWorld(), pos,
-                    ILiquidConduit.class);
-            if (dc instanceof LiquidConduit && getConduits().contains(dc)) {
-                LiquidConduit downCon = (LiquidConduit) dc;
+            LiquidConduit dc = ConduitUtil.getConduit(con.getBundle().getTileEntity().getWorld(), pos,
+                    LiquidConduit.class);
+            if (dc instanceof LiquidConduitImpl && getConduits().contains(dc)) {
+                LiquidConduitImpl downCon = (LiquidConduitImpl) dc;
                 int filled = downCon.fill(EnumFacing.UP, tank.getFluid().copy(), false, false, pushPoken);
                 int actual = filled;
                 actual = Math.min(actual, tank.getFluidAmount());
@@ -257,11 +257,10 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
 
         try {
             BlockPos pos = con.getBundle().getLocation();
-            Collection<ILiquidConduit> connections = ConduitUtil.getConnectedConduits(
-                    con.getBundle().getEntity().getWorld(), pos.getX(), pos.getY(), pos.getZ(),
-                    ILiquidConduit.class);
-            for (ILiquidConduit n : connections) {
-                LiquidConduit neighbour = (LiquidConduit) n;
+            Collection<LiquidConduit> connections = ConduitUtil.getConnectedConduits(con.getBundle().getTileEntity().getWorld(), pos,
+                    LiquidConduit.class);
+            for (LiquidConduit n : connections) {
+                LiquidConduitImpl neighbour = (LiquidConduitImpl) n;
                 if (canFlowTo(con, neighbour)) { // can only flow within same network
                     totalAmount += neighbour.getTank().getFluidAmount();
                     totalCapacity += neighbour.getTank().getCapacity();
@@ -276,8 +275,8 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
                 return; // dont bother with transfers of less than a thousands of a bucket
             }
 
-            for (ILiquidConduit n : connections) {
-                LiquidConduit neigbour = (LiquidConduit) n;
+            for (LiquidConduit n : connections) {
+                LiquidConduitImpl neigbour = (LiquidConduitImpl) n;
                 if (canFlowTo(con, neigbour)) { // can only flow within same network
                     flowVolume = (int) Math.floor(
                             (targetRatio - neigbour.getTank().getFilledRatio()) * neigbour.getTank().getCapacity());
@@ -291,7 +290,7 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
         }
     }
 
-    private boolean canFlowTo(LiquidConduit con, LiquidConduit neighbour) {
+    private boolean canFlowTo(LiquidConduitImpl con, LiquidConduitImpl neighbour) {
         if (con == null || neighbour == null) {
             return false;
         }
@@ -310,11 +309,11 @@ public class LiquidConduitNetwork extends AbstractTankConduitNetwork<LiquidCondu
 
     static class FlowAction {
 
-        final LiquidConduit from;
-        final LiquidConduit to;
+        final LiquidConduitImpl from;
+        final LiquidConduitImpl to;
         final int amount;
 
-        FlowAction(LiquidConduit fromIn, LiquidConduit toIn, int amountIn) {
+        FlowAction(LiquidConduitImpl fromIn, LiquidConduitImpl toIn, int amountIn) {
             if (amountIn < 0) {
                 to = fromIn;
                 from = toIn;

@@ -30,7 +30,7 @@ import crazypants.enderio.base.config.config.PersonalConfig;
 import crazypants.enderio.base.init.ModObject;
 import crazypants.enderio.base.machine.baselegacy.AbstractPoweredTaskEntity;
 import crazypants.enderio.base.machine.baselegacy.SlotDefinition;
-import crazypants.enderio.base.machine.interfaces.INotifier;
+import crazypants.enderio.base.machine.interfaces.Notifiable;
 import crazypants.enderio.base.machine.interfaces.IPoweredTask;
 import crazypants.enderio.base.machine.modes.EntityAction;
 import crazypants.enderio.base.machine.task.PoweredTask;
@@ -53,7 +53,7 @@ import info.loenwind.autosave.util.NBTAction;
 @Storable
 public class TilePoweredSpawner extends AbstractPoweredTaskEntity
                                 implements IPaintable.IPaintableTileEntity, IRanged, EntityAction.Implementer,
-                                INotifier, ISpawnerCallback {
+        Notifiable, ISpawnerCallback {
 
     @Store({ NBTAction.CLIENT, NBTAction.SAVE })
     private CapturedMob capturedMob = null;

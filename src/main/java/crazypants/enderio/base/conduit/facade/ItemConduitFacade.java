@@ -31,7 +31,7 @@ import com.enderio.core.common.util.NullHelper;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIOTab;
 import crazypants.enderio.base.conduit.ConduitUtil;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.base.paint.PaintUtil;
 import crazypants.enderio.base.recipe.MachineRecipeRegistry;
 import crazypants.enderio.base.recipe.painter.FacadePainterRecipe;
@@ -85,7 +85,7 @@ public class ItemConduitFacade extends Item
             if (player.canPlayerEdit(placeAt, side, stack) && PaintUtil.getSourceBlock(stack) != null) {
                 if (world.isAirBlock(placeAt)) {
                     world.setBlockState(placeAt, conduitBlock.getDefaultState());
-                    IConduitBundle bundle = NullHelper.notnullM((IConduitBundle) world.getTileEntity(placeAt),
+                    ConduitBundle bundle = NullHelper.notnullM((ConduitBundle) world.getTileEntity(placeAt),
                             "placing block yielded no tileentity");
                     IBlockState bs = PaintUtil.getSourceBlock(stack);
                     bundle.setFacadeType(EnumFacadeType.getTypeFromMeta(stack.getItemDamage()));
@@ -97,8 +97,8 @@ public class ItemConduitFacade extends Item
                     return EnumActionResult.SUCCESS;
                 } else {
                     TileEntity tileEntity = world.getTileEntity(placeAt);
-                    if (tileEntity instanceof IConduitBundle) {
-                        if (((IConduitBundle) tileEntity).handleFacadeClick(world, placeAt, player, side.getOpposite(),
+                    if (tileEntity instanceof ConduitBundle) {
+                        if (((ConduitBundle) tileEntity).handleFacadeClick(world, placeAt, player, side.getOpposite(),
                                 stack, hand, hitX, hitY, hitZ)) {
                             return EnumActionResult.SUCCESS;
                         }

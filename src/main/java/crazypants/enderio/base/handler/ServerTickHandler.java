@@ -24,6 +24,12 @@ import crazypants.enderio.base.config.config.DiagnosticsConfig;
 import crazypants.enderio.base.diagnostics.Prof;
 import crazypants.enderio.base.events.EnderIOLifecycleEvent;
 
+/**
+ * TODO: Redo related part when we do globally rework via Morphism Lib.
+ *
+ * @deprecated Used Morphism Lib {@code TickCounter}.
+ */
+@Deprecated
 @EventBusSubscriber(modid = EnderIO.MODID)
 public class ServerTickHandler {
 

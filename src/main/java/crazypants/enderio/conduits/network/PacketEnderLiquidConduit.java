@@ -10,10 +10,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.enderio.core.common.util.DyeColor;
 
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.filter.IFilter;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.filter.Filter;
 import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
-import crazypants.enderio.base.filter.capability.IFilterHolder;
+import crazypants.enderio.base.filter.capability.FilterHolder;
 import crazypants.enderio.conduits.conduit.liquid.EnderLiquidConduit;
 import crazypants.enderio.util.EnumReader;
 import io.netty.buffer.ByteBuf;
@@ -68,11 +68,11 @@ public class PacketEnderLiquidConduit extends PacketConduitFilter<EnderLiquidCon
                 conduit.setOutputPriority(message.dir, message.priority);
                 conduit.setRoundRobinEnabled(message.dir, message.roundRobin);
                 conduit.setSelfFeedEnabled(message.dir, message.selfFeed);
-                final IFilter inputFilter = message.inputFilter;
+                final Filter inputFilter = message.inputFilter;
                 if (inputFilter != null) {
                     applyFilter(message.dir, conduit, inputFilter, true);
                 }
-                final IFilter outputFilter = message.outputFilter;
+                final Filter outputFilter = message.outputFilter;
                 if (outputFilter != null) {
                     applyFilter(message.dir, conduit, outputFilter, false);
                 }
@@ -83,10 +83,10 @@ public class PacketEnderLiquidConduit extends PacketConduitFilter<EnderLiquidCon
             return null;
         }
 
-        private void applyFilter(@Nonnull EnumFacing dir, @Nonnull IConduit conduit, @Nonnull IFilter filter,
+        private void applyFilter(@Nonnull EnumFacing dir, @Nonnull Conduit conduit, @Nonnull Filter filter,
                                  boolean isInput) {
             if (conduit.hasInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, dir)) {
-                IFilterHolder<IFilter> filterHolder = conduit
+                FilterHolder<Filter> filterHolder = conduit
                         .getInternalCapability(CapabilityFilterHolder.FILTER_HOLDER_CAPABILITY, dir);
                 if (filterHolder != null) {
                     if (isInput) {

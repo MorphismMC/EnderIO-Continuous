@@ -34,11 +34,11 @@ import com.raoulvdberge.refinedstorage.api.util.IComparer;
 import crazypants.enderio.base.capability.ItemTools;
 import crazypants.enderio.base.conduit.item.FunctionUpgrade;
 import crazypants.enderio.base.conduit.item.ItemFunctionUpgrade;
-import crazypants.enderio.base.filter.IFilter;
-import crazypants.enderio.base.filter.fluid.IFluidFilter;
+import crazypants.enderio.base.filter.Filter;
+import crazypants.enderio.base.filter.fluid.FluidFilter;
 import crazypants.enderio.base.filter.gui.DamageMode;
-import crazypants.enderio.base.filter.item.IItemFilter;
 import crazypants.enderio.base.filter.item.ItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilterImpl;
 import crazypants.enderio.conduit.refinedstorage.RSHelper;
 import crazypants.enderio.conduit.refinedstorage.init.ConduitRefinedStorageObject;
 import crazypants.enderio.util.FuncUtil;
@@ -55,7 +55,7 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
     protected INetwork rsNetwork;
     protected final @Nonnull World world;
     protected final @Nonnull BlockPos pos;
-    protected final @Nonnull IRefinedStorageConduit con;
+    protected final @Nonnull RefinedStorageConduit con;
 
     private final @Nonnull NNIterator<EnumFacing> dirsToCheck = new EndlessNNIterator<>(NNList.FACING);
 
@@ -72,7 +72,7 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
 
     private final @Nonnull SidedNNObject<UUID> craftingTask = new SidedNNObject<>(UUID.randomUUID());
 
-    public ConduitRefinedStorageNode(@Nonnull IRefinedStorageConduit con) {
+    public ConduitRefinedStorageNode(@Nonnull RefinedStorageConduit con) {
         this.con = con;
         this.world = con.getBundle().getBundleworld();
         this.pos = con.getBundle().getLocation();
@@ -115,15 +115,15 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
         if (canUpdate()) {
             EnumFacing dir = dirsToCheck.next();
             if (con.isActiveExternalConnection(dir)) {
-                IFilter outputFilter = con.getOutputFilter(dir);
-                IFilter inputFilter = con.getInputFilter(dir);
+                Filter outputFilter = con.getOutputFilter(dir);
+                Filter inputFilter = con.getInputFilter(dir);
                 if (outputFilter != null || inputFilter != null) {
                     TileEntity te = BlockEnder.getAnyTileEntitySafe(world, pos.offset(dir));
                     if (te != null && !(te instanceof IStorageProvider)) {
-                        if (outputFilter instanceof IItemFilter || inputFilter instanceof IItemFilter) {
+                        if (outputFilter instanceof ItemFilter || inputFilter instanceof ItemFilter) {
                             updateDirItems(dir, outputFilter, inputFilter, te);
                         }
-                        if (outputFilter instanceof IFluidFilter || inputFilter instanceof IFluidFilter) {
+                        if (outputFilter instanceof FluidFilter || inputFilter instanceof FluidFilter) {
                             updateDirFluids(dir, outputFilter, inputFilter, te);
                         }
                     }
@@ -132,7 +132,7 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
         }
     }
 
-    private void updateDirFluids(@Nonnull EnumFacing dir, IFilter outputFilter, IFilter inputFilter,
+    private void updateDirFluids(@Nonnull EnumFacing dir, Filter outputFilter, Filter inputFilter,
                                  @Nonnull TileEntity te) {
         final INetwork network = rsNetwork;
         IFluidHandler handler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
@@ -140,9 +140,9 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
         if (network != null && handler != null) {
 
             // Export
-            if (outputFilter instanceof IFluidFilter) {
+            if (outputFilter instanceof FluidFilter) {
 
-                IFluidFilter exportFilter = (IFluidFilter) outputFilter;
+                FluidFilter exportFilter = (FluidFilter) outputFilter;
 
                 FluidStack stack = null;
 
@@ -194,9 +194,9 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
             }
 
             // Importing
-            if (inputFilter instanceof IFluidFilter) {
+            if (inputFilter instanceof FluidFilter) {
 
-                IFluidFilter importFilter = (IFluidFilter) inputFilter;
+                FluidFilter importFilter = (FluidFilter) inputFilter;
 
                 boolean all = importFilter.isEmpty();
 
@@ -232,7 +232,7 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
         }
     }
 
-    private int getInsertLimit(@Nonnull IItemFilter filter, @Nonnull IItemHandler inventory, @Nonnull ItemStack item,
+    private int getInsertLimit(@Nonnull ItemFilter filter, @Nonnull IItemHandler inventory, @Nonnull ItemStack item,
                                int limit) {
         if (filter.isLimited()) {
             final int count = filter.getMaxCountThatPassesFilter(inventory, item);
@@ -253,7 +253,7 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
     }
 
     // note: existing needs to be the slot from the inventory with its real count
-    private int getExtractLimit(@Nonnull IItemFilter filter, @Nonnull IItemHandler inventory,
+    private int getExtractLimit(@Nonnull ItemFilter filter, @Nonnull IItemHandler inventory,
                                 @Nonnull ItemStack existing, int limit) {
         if (filter.isLimited()) {
             final int count = filter.getMaxCountThatPassesFilter(inventory, existing);
@@ -268,7 +268,7 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
         return Math.min(limit, existing.getCount());
     }
 
-    private void updateDirItems(@Nonnull EnumFacing dir, IFilter outputFilter, IFilter inputFilter,
+    private void updateDirItems(@Nonnull EnumFacing dir, Filter outputFilter, Filter inputFilter,
                                 @Nonnull TileEntity te) {
         INetwork network = rsNetwork;
         IItemHandler handler = ItemTools.getExternalInventory(te, dir.getOpposite());
@@ -276,20 +276,20 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
         if (network != null && handler != null && handler.getSlots() > 0) {
 
             // Exporting
-            if (outputFilter instanceof IItemFilter) {
-                IItemFilter exportFilter = (IItemFilter) outputFilter;
+            if (outputFilter instanceof ItemFilter) {
+                ItemFilter exportFilter = (ItemFilter) outputFilter;
                 if (!exportFilter.isEmpty()) {
                     ItemStack prototype = exportFilter
                             .getInventorySlotContents(exportFilterSlot.set(dir,
                                     MathUtil.cycle(exportFilterSlot.get(dir), 0, exportFilter.getSlotCount() - 1)));
                     int compare = IComparer.COMPARE_DAMAGE;
-                    if (exportFilter instanceof ItemFilter) {
+                    if (exportFilter instanceof ItemFilterImpl) {
                         // Note: damage mode cannot be handled by RS, so ask it to export ignoring damage and let our
                         // filter handle it. Yes, this most likely will lead to
                         // stalled exports, but that's better than wrong ones, isn't it?
-                        boolean matchMeta = ((ItemFilter) exportFilter).isMatchMeta() &&
-                                ((ItemFilter) exportFilter).getDamageMode() == DamageMode.DISABLED;
-                        boolean matchNBT = ((ItemFilter) exportFilter).isMatchNBT();
+                        boolean matchMeta = ((ItemFilterImpl) exportFilter).isMatchMeta() &&
+                                ((ItemFilterImpl) exportFilter).getDamageMode() == DamageMode.DISABLED;
+                        boolean matchNBT = ((ItemFilterImpl) exportFilter).isMatchNBT();
                         compare = (matchMeta ? IComparer.COMPARE_DAMAGE : 0) | (matchNBT ? IComparer.COMPARE_NBT : 0);
                     }
                     if (!prototype.isEmpty()) {
@@ -338,8 +338,8 @@ public class ConduitRefinedStorageNode implements INetworkNode, INetworkNodeVisi
             }
 
             // Importing
-            if (inputFilter instanceof IItemFilter) {
-                IItemFilter importFilter = (IItemFilter) inputFilter;
+            if (inputFilter instanceof ItemFilter) {
+                ItemFilter importFilter = (ItemFilter) inputFilter;
                 currentImportSlot.set(dir, MathUtil.cycle(currentImportSlot.get(dir), 0, handler.getSlots() - 1));
                 ItemStack existing = handler.getStackInSlot(currentImportSlot.get(dir));
                 if (Prep.isValid(existing)) {

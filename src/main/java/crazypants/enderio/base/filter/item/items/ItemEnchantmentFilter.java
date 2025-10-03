@@ -30,16 +30,16 @@ import com.enderio.core.common.TileEntityBase;
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIOTab;
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.IFilterContainer;
+import crazypants.enderio.base.filter.FilterContainer;
 import crazypants.enderio.base.filter.gui.ContainerFilter;
 import crazypants.enderio.base.filter.gui.EnchantmentFilterGui;
 import crazypants.enderio.base.filter.item.EnchantmentFilter;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.init.ModObjectRegistry;
 import crazypants.enderio.base.lang.Lang;
 import crazypants.enderio.util.NbtValue;
 
-public class ItemEnchantmentFilter extends Item implements IItemFilterItemUpgrade, IResourceTooltipProvider {
+public class ItemEnchantmentFilter extends Item implements ItemFilterItemUpgrade, IResourceTooltipProvider {
 
     private final int size;
 
@@ -61,7 +61,7 @@ public class ItemEnchantmentFilter extends Item implements IItemFilterItemUpgrad
     }
 
     @Override
-    public IItemFilter createFilterFromStack(@Nonnull ItemStack stack) {
+    public ItemFilter createFilterFromStack(@Nonnull ItemStack stack) {
         EnchantmentFilter filter = new EnchantmentFilter();
         filter.setSlotCount(size);
         NBTTagCompound tag = NbtValue.FILTER.getTag(stack);
@@ -108,10 +108,10 @@ public class ItemEnchantmentFilter extends Item implements IItemFilterItemUpgrad
     public GuiScreen getClientGuiElement(@Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos,
                                          @Nullable EnumFacing facing, int param1) {
         Container container = player.openContainer;
-        if (container instanceof IFilterContainer) {
+        if (container instanceof FilterContainer) {
             return new EnchantmentFilterGui(player.inventory,
                     new ContainerFilter(player, (TileEntityBase) world.getTileEntity(pos), facing, param1),
-                    world.getTileEntity(pos), ((IFilterContainer<IItemFilter>) container).getFilter(param1));
+                    world.getTileEntity(pos), ((FilterContainer<ItemFilter>) container).getFilter(param1));
         } else {
             return new EnchantmentFilterGui(player.inventory, new ContainerFilter(player, null, facing, param1), null,
                     FilterRegistry.getFilterForUpgrade(player.getHeldItem(EnumHand.values()[param1])));

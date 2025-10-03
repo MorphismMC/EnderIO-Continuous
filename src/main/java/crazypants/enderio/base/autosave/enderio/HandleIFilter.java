@@ -9,22 +9,22 @@ import javax.annotation.Nullable;
 import net.minecraft.nbt.NBTTagCompound;
 
 import crazypants.enderio.base.filter.FilterRegistry;
-import crazypants.enderio.base.filter.IFilter;
+import crazypants.enderio.base.filter.Filter;
 import info.loenwind.autosave.Registry;
 import info.loenwind.autosave.exceptions.NoHandlerFoundException;
 import info.loenwind.autosave.handlers.IHandler;
 import info.loenwind.autosave.util.NBTAction;
 
-public class HandleIFilter implements IHandler<IFilter> {
+public class HandleIFilter implements IHandler<Filter> {
 
     @Override
     public @Nonnull Class<?> getRootType() {
-        return IFilter.class;
+        return Filter.class;
     }
 
     @Override
     public boolean store(@Nonnull Registry registry, @Nonnull Set<NBTAction> phase, @Nonnull NBTTagCompound nbt,
-                         @Nonnull Type type, @Nonnull String name, @Nonnull IFilter object)
+                         @Nonnull Type type, @Nonnull String name, @Nonnull Filter object)
                                                                                             throws IllegalArgumentException,
                                                                                             IllegalAccessException,
                                                                                             InstantiationException,
@@ -37,9 +37,9 @@ public class HandleIFilter implements IHandler<IFilter> {
 
     @Override
     @Nullable
-    public IFilter read(@Nonnull Registry registry, @Nonnull Set<NBTAction> phase, @Nonnull NBTTagCompound nbt,
-                        @Nonnull Type type, @Nonnull String name,
-                        @Nullable IFilter object) throws IllegalArgumentException, IllegalAccessException,
+    public Filter read(@Nonnull Registry registry, @Nonnull Set<NBTAction> phase, @Nonnull NBTTagCompound nbt,
+                       @Nonnull Type type, @Nonnull String name,
+                       @Nullable Filter object) throws IllegalArgumentException, IllegalAccessException,
                                                   InstantiationException, NoHandlerFoundException {
         if (object == null && !nbt.hasKey(name)) {
             // Note: This will be called with no nbt when a fresh itemstack is placed---output should be null!

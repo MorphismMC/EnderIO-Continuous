@@ -19,7 +19,7 @@ import com.enderio.core.common.util.RoundRobinIterator;
 
 import crazypants.enderio.base.Log;
 import crazypants.enderio.base.capability.ItemTools;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.conduits.config.ConduitConfig;
 import crazypants.enderio.util.Prep;
 
@@ -28,7 +28,7 @@ public class NetworkedInventory {
     private static final boolean SIMULATE = true;
     private static final boolean EXECUTE = false;
 
-    private final @Nonnull IItemConduit con;
+    private final @Nonnull ItemConduit con;
     private final @Nonnull EnumFacing conDir;
     private final @Nonnull BlockPos location;
     private final @Nonnull EnumFacing inventorySide;
@@ -43,7 +43,7 @@ public class NetworkedInventory {
     private final @Nonnull World world;
     private final @Nonnull ItemConduitNetwork network;
 
-    NetworkedInventory(@Nonnull ItemConduitNetwork network, @Nonnull IItemConduit con, @Nonnull EnumFacing conDir,
+    NetworkedInventory(@Nonnull ItemConduitNetwork network, @Nonnull ItemConduit con, @Nonnull EnumFacing conDir,
                        @Nonnull IItemHandler inv,
                        @Nonnull BlockPos location) {
         this.network = network;
@@ -58,7 +58,7 @@ public class NetworkedInventory {
         return location;
     }
 
-    public @Nonnull IItemConduit getCon() {
+    public @Nonnull ItemConduit getCon() {
         return con;
     }
 
@@ -70,7 +70,7 @@ public class NetworkedInventory {
         return sendPriority;
     }
 
-    public boolean hasTarget(@Nonnull IItemConduit conduit, @Nonnull EnumFacing dir) {
+    public boolean hasTarget(@Nonnull ItemConduit conduit, @Nonnull EnumFacing dir) {
         for (Target t : sendPriority) {
             if (t.inv.getCon() == conduit && t.inv.getConDir() == dir) {
                 return true;
@@ -88,7 +88,7 @@ public class NetworkedInventory {
     }
 
     private boolean isSticky() {
-        final IItemFilter outputFilter = valid(con.getOutputFilter(conDir));
+        final ItemFilter outputFilter = valid(con.getOutputFilter(conDir));
         return outputFilter != null && outputFilter.isSticky();
     }
 
@@ -146,7 +146,7 @@ public class NetworkedInventory {
         }
 
         final int maxExtracted = con.getMaximumExtracted(conDir);
-        final IItemFilter filter = valid(con.getInputFilter(conDir));
+        final ItemFilter filter = valid(con.getInputFilter(conDir));
 
         int slotChecksPerTick = ConduitConfig.maxSlotCheckPerTick.get();
         for (int i = 0; i < numSlots && i < slotChecksPerTick; i++) {
@@ -232,7 +232,7 @@ public class NetworkedInventory {
         boolean matchedStickyOutput = false;
 
         for (Target target : getTargetIterator()) {
-            final IItemFilter filter = valid(target.inv.getCon().getOutputFilter(target.inv.getConDir()));
+            final ItemFilter filter = valid(target.inv.getCon().getOutputFilter(target.inv.getConDir()));
             if (target.stickyInput && !matchedStickyOutput && filter != null) {
                 matchedStickyOutput = filter.doesItemPassFilter(target.inv.getInventory(), toInsert);
             }
@@ -252,7 +252,7 @@ public class NetworkedInventory {
         return totalToInsert - toInsert.getCount();
     }
 
-    private static final IItemFilter valid(IItemFilter filter) {
+    private static final ItemFilter valid(ItemFilter filter) {
         return filter != null && filter.isValid() ? filter : null;
     }
 
@@ -267,7 +267,7 @@ public class NetworkedInventory {
         return sendPriority;
     }
 
-    private int insertItem(@Nonnull ItemStack item, IItemFilter filter) {
+    private int insertItem(@Nonnull ItemStack item, ItemFilter filter) {
         if (!canInsert() || Prep.isInvalid(item)) {
             return 0;
         }
@@ -339,7 +339,7 @@ public class NetworkedInventory {
 
         ArrayList<BlockPos> nextSteps = new ArrayList<BlockPos>();
         for (BlockPos pos : steps) {
-            IItemConduit con1 = network.getConMap().get(pos);
+            ItemConduit con1 = network.getConMap().get(pos);
             if (con1 != null) {
                 for (EnumFacing dir : con1.getExternalConnections()) {
                     if (dir != null) {
@@ -370,7 +370,7 @@ public class NetworkedInventory {
         calculateDistances(targets, visited, nextSteps, distance + 1);
     }
 
-    private Target getTarget(@Nonnull List<Target> targets, @Nonnull IItemConduit con1, @Nonnull EnumFacing dir) {
+    private Target getTarget(@Nonnull List<Target> targets, @Nonnull ItemConduit con1, @Nonnull EnumFacing dir) {
         for (Target target : targets) {
             if (target != null && target.inv != null) {
                 if (target.inv.getConDir() == dir &&

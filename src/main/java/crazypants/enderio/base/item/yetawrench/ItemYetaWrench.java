@@ -41,7 +41,7 @@ import com.enderio.core.common.vecmath.Vector4d;
 import buildcraft.api.tools.IToolWrench;
 import cofh.api.item.IToolHammer;
 import crazypants.enderio.api.IModObject;
-import crazypants.enderio.api.tool.IConduitControl;
+import crazypants.enderio.api.tool.ConduitControllable;
 import crazypants.enderio.api.tool.ITool;
 import crazypants.enderio.base.BlockEio;
 import crazypants.enderio.base.EnderIOTab;
@@ -57,7 +57,7 @@ import crazypants.enderio.base.render.registry.ItemModelRegistry;
 
 @Optional.InterfaceList({ @Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraftAPI|core"),
         @Interface(iface = "cofh.api.item.IToolHammer", modid = "cofhcore") })
-public class ItemYetaWrench extends Item implements ITool, IConduitControl, IAdvancedTooltipProvider, IToolWrench,
+public class ItemYetaWrench extends Item implements ITool, ConduitControllable, IAdvancedTooltipProvider, IToolWrench,
                             IToolHammer, IHaveRenderers {
 
     public static ItemYetaWrench create(@Nonnull IModObject modObject, @Nullable Block block) {

@@ -16,28 +16,28 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.IItemHandler;
 
 import crazypants.enderio.base.diagnostics.Prof;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
 import crazypants.enderio.conduits.conduit.item.NetworkedInventory.Target;
 
-public class ItemConduitNetwork extends AbstractConduitNetwork<IItemConduit, IItemConduit> {
+public class ItemConduitNetwork extends AbstractConduitNetwork<ItemConduit, ItemConduit> {
 
     private final @Nonnull List<NetworkedInventory> inventories = new ArrayList<NetworkedInventory>();
     private final @Nonnull Map<BlockPos, List<NetworkedInventory>> invMap = new HashMap<BlockPos, List<NetworkedInventory>>();
-    private final @Nonnull Map<BlockPos, IItemConduit> conMap = new HashMap<BlockPos, IItemConduit>();
+    private final @Nonnull Map<BlockPos, ItemConduit> conMap = new HashMap<BlockPos, ItemConduit>();
 
     private boolean requiresSort = true;
 
     public ItemConduitNetwork() {
-        super(IItemConduit.class, IItemConduit.class);
+        super(ItemConduit.class, ItemConduit.class);
     }
 
     @Override
-    public void addConduit(@Nonnull IItemConduit con) {
+    public void addConduit(@Nonnull ItemConduit con) {
         super.addConduit(con);
         conMap.put(con.getBundle().getLocation(), con);
 
-        TileEntity te = con.getBundle().getEntity();
+        TileEntity te = con.getBundle().getTileEntity();
         for (EnumFacing direction : con.getExternalConnections()) {
             if (direction != null) {
                 IItemHandler extCon = con.getExternalInventory(direction);
@@ -49,7 +49,7 @@ public class ItemConduitNetwork extends AbstractConduitNetwork<IItemConduit, IIt
         }
     }
 
-    public void inventoryAdded(@Nonnull IItemConduit itemConduit, @Nonnull EnumFacing direction, @Nonnull BlockPos pos,
+    public void inventoryAdded(@Nonnull ItemConduit itemConduit, @Nonnull EnumFacing direction, @Nonnull BlockPos pos,
                                @Nonnull IItemHandler externalInventory) {
         NetworkedInventory inv = new NetworkedInventory(this, itemConduit, direction, externalInventory, pos);
         inventories.add(inv);
@@ -57,7 +57,7 @@ public class ItemConduitNetwork extends AbstractConduitNetwork<IItemConduit, IIt
         requiresSort = true;
     }
 
-    public @Nullable NetworkedInventory getInventory(@Nonnull IItemConduit conduit, @Nonnull EnumFacing dir) {
+    public @Nullable NetworkedInventory getInventory(@Nonnull ItemConduit conduit, @Nonnull EnumFacing dir) {
         for (NetworkedInventory inv : inventories) {
             if (inv.getCon() == conduit && inv.getConDir() == dir) {
                 return inv;
@@ -75,7 +75,7 @@ public class ItemConduitNetwork extends AbstractConduitNetwork<IItemConduit, IIt
         return res;
     }
 
-    public void inventoryRemoved(@Nonnull ItemConduit itemConduit, @Nonnull BlockPos pos) {
+    public void inventoryRemoved(@Nonnull ItemConduitImpl itemConduit, @Nonnull BlockPos pos) {
         List<NetworkedInventory> invs = getOrCreate(pos);
         NetworkedInventory remove = null;
         for (NetworkedInventory ni : invs) {
@@ -102,7 +102,7 @@ public class ItemConduitNetwork extends AbstractConduitNetwork<IItemConduit, IIt
         return null;
     }
 
-    public @Nonnull List<String> getTargetsForExtraction(@Nonnull BlockPos extractFrom, @Nonnull IItemConduit con,
+    public @Nonnull List<String> getTargetsForExtraction(@Nonnull BlockPos extractFrom, @Nonnull ItemConduit con,
                                                          @Nonnull ItemStack input) {
         List<String> result = new ArrayList<String>();
 
@@ -112,7 +112,7 @@ public class ItemConduitNetwork extends AbstractConduitNetwork<IItemConduit, IIt
             if (source.getCon().getBundle().getLocation().equals(con.getBundle().getLocation())) {
                 List<Target> sendPriority = source.getSendPriority();
                 for (Target t : sendPriority) {
-                    IItemFilter f = t.inv.getCon().getOutputFilter(t.inv.getConDir());
+                    ItemFilter f = t.inv.getCon().getOutputFilter(t.inv.getConDir());
                     if (input.isEmpty() || f == null || f.doesItemPassFilter(getTargetInventory(t), input)) {
                         String s = t.inv.getLocalizedInventoryName() + " " + t.inv.getLocation().toString() +
                                 " Distance [" + t.distance + "] ";
@@ -125,12 +125,12 @@ public class ItemConduitNetwork extends AbstractConduitNetwork<IItemConduit, IIt
         return result;
     }
 
-    public @Nonnull List<String> getInputSourcesFor(@Nonnull IItemConduit con, @Nonnull EnumFacing dir,
+    public @Nonnull List<String> getInputSourcesFor(@Nonnull ItemConduit con, @Nonnull EnumFacing dir,
                                                     @Nonnull ItemStack input) {
         List<String> result = new ArrayList<String>();
         for (NetworkedInventory inv : inventories) {
             if (inv.hasTarget(con, dir)) {
-                IItemFilter f = inv.getCon().getInputFilter(inv.getConDir());
+                ItemFilter f = inv.getCon().getInputFilter(inv.getConDir());
                 if (input.isEmpty() || f == null || f.doesItemPassFilter(inv.getInventory(), input)) {
                     result.add(inv.getLocalizedInventoryName() + " " + inv.getLocation().toString());
                 }
@@ -158,7 +158,7 @@ public class ItemConduitNetwork extends AbstractConduitNetwork<IItemConduit, IIt
         }
     }
 
-    public @Nonnull Map<BlockPos, IItemConduit> getConMap() {
+    public @Nonnull Map<BlockPos, ItemConduit> getConMap() {
         return conMap;
     }
 

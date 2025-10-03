@@ -10,26 +10,25 @@ import com.enderio.core.client.gui.button.ColorButton;
 import com.enderio.core.client.render.ColorUtil;
 import com.enderio.core.common.util.DyeColor;
 
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IGuiExternalConnection;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.GuiExternalConnection;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.conduit.oc.conduit.IOCConduit;
 import crazypants.enderio.conduit.oc.init.ConduitOpenComputersObject;
 import crazypants.enderio.conduit.oc.network.PacketHandler;
 import crazypants.enderio.conduit.oc.network.PacketOCConduitSignalColor;
 import crazypants.enderio.conduits.gui.BaseSettingsPanel;
-import crazypants.enderio.conduits.gui.GuiExternalConnection;
 import crazypants.enderio.conduits.lang.Lang;
 
 public class OCSettings extends BaseSettingsPanel {
 
-    private static final int ID_COLOR_BUTTON = GuiExternalConnection.nextButtonId();
+    private static final int ID_COLOR_BUTTON = crazypants.enderio.conduits.gui.GuiExternalConnection.nextButtonId();
     private @Nonnull ColorButton cb;
 
     private @Nonnull String signalColorStr = Lang.GUI_SIGNAL_COLOR.get();
     private final @Nonnull IOCConduit occon;
 
-    public OCSettings(@Nonnull IGuiExternalConnection gui, @Nonnull IClientConduit con) {
+    public OCSettings(@Nonnull GuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_OC, ConduitOpenComputersObject.item_opencomputers_conduit.getUnlocalisedName(),
                 gui, con, "simple_settings");
         occon = (IOCConduit) con;

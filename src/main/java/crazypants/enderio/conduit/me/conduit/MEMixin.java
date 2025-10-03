@@ -7,11 +7,11 @@ import appeng.api.networking.IGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IConduitBundle;
+import crazypants.enderio.base.conduit.ConduitBundle;
 import crazypants.enderio.conduits.conduit.TileConduitBundle;
 
 @SimpleMixin(value = TileConduitBundle.class, dependencies = "appliedenergistics2|API")
-public interface MEMixin extends IConduitBundle, IGridHost {
+public interface MEMixin extends ConduitBundle, IGridHost {
 
     @Override
     public default IGridNode getGridNode(AEPartLocation loc) {

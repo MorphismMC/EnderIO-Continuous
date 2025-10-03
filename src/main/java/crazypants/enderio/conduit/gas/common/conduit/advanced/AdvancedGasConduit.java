@@ -18,9 +18,9 @@ import com.enderio.core.client.render.BoundingBox;
 import com.enderio.core.client.render.IconUtil;
 
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitNetwork;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableCache.CacheKey;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.conduit.geom.ConduitGeometryUtil;
@@ -28,10 +28,9 @@ import crazypants.enderio.base.machine.modes.RedstoneControlMode;
 import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.render.registry.TextureRegistry.TextureSupplier;
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduitImpl;
 import crazypants.enderio.conduits.render.BlockStateWrapperConduitBundle;
-import crazypants.enderio.conduits.render.ConduitTexture;
 import crazypants.enderio.conduits.render.ConduitTextureWrapper;
 import crazypants.enderio.conduit.gas.GasConduitsConstants;
 import crazypants.enderio.conduit.gas.common.conduit.AbstractGasTankConduit;
@@ -48,12 +47,12 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
 
     public static final int CONDUIT_VOLUME = GasConduitsConstants.GAS_VOLUME;
 
-    public static final IConduitTexture ICON_KEY = new ConduitTexture(
-            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit", false), ConduitTexture.arm(1));
-    public static final IConduitTexture ICON_KEY_LOCKED = new ConduitTexture(
-            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit", false), ConduitTexture.arm(2));
-    public static final IConduitTexture ICON_CORE_KEY = new ConduitTexture(
-            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit_core", false), ConduitTexture.core(1));
+    public static final ConduitTexture ICON_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit", false), crazypants.enderio.conduits.render.ConduitTexture.arm(1));
+    public static final ConduitTexture ICON_KEY_LOCKED = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit", false), crazypants.enderio.conduits.render.ConduitTexture.arm(2));
+    public static final ConduitTexture ICON_CORE_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("gasconduits:blocks/gas_conduit_core", false), crazypants.enderio.conduits.render.ConduitTexture.core(1));
 
     public static final TextureSupplier ICON_EMPTY_EDGE = TextureRegistry
             .registerTexture("gasconduits:blocks/gas_conduit_advanced_edge", false);
@@ -122,7 +121,7 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
     }
 
     @Override
-    public boolean setNetwork(@Nonnull IConduitNetwork<?, ?> network) {
+    public boolean setNetwork(@Nonnull ConduitNetwork<?, ?> network) {
         if (!(network instanceof AdvancedGasConduitNetwork)) {
             return false;
         }
@@ -145,7 +144,7 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
     }
 
     @Override
-    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull IConduit con) {
+    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull Conduit con) {
         if (!super.canConnectToConduit(direction, con) || !(con instanceof AdvancedGasConduit)) {
             return false;
         }
@@ -153,15 +152,15 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
     }
 
     @Override
-    public void setConnectionMode(@Nonnull EnumFacing dir, @Nonnull ConnectionMode mode) {
-        super.setConnectionMode(dir, mode);
-        refreshInputs(dir);
+    public void setConnectionMode(@Nonnull EnumFacing direction, @Nonnull ConnectionMode mode) {
+        super.setConnectionMode(direction, mode);
+        refreshInputs(direction);
     }
 
     @Override
-    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing dir) {
-        super.setExtractionRedstoneMode(mode, dir);
-        refreshInputs(dir);
+    public void setExtractionRedstoneMode(@Nonnull RedstoneControlMode mode, @Nonnull EnumFacing direction) {
+        super.setExtractionRedstoneMode(mode, direction);
+        refreshInputs(direction);
     }
 
     private void refreshInputs(@Nonnull EnumFacing dir) {
@@ -193,11 +192,11 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
     @SideOnly(Side.CLIENT)
     @Override
     @Nonnull
-    public IConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+    public ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
         if (component.isCore()) {
             return ICON_CORE_KEY;
         }
-        if (PowerConduit.COLOR_CONTROLLER_ID.equals(component.data)) {
+        if (PowerConduitImpl.COLOR_CONTROLLER_ID.equals(component.data())) {
             return new ConduitTextureWrapper(IconUtil.instance.whiteTexture);
         }
         return gasTypeLocked ? ICON_KEY_LOCKED : ICON_KEY;
@@ -262,14 +261,14 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
     @Nonnull
     public Collection<CollidableComponent> createCollidables(@Nonnull CacheKey key) {
         Collection<CollidableComponent> baseCollidables = super.createCollidables(key);
-        EnumFacing keyDir = key.dir;
+        EnumFacing keyDir = key.direction;
         if (keyDir == null) {
             return baseCollidables;
         }
 
-        BoundingBox bb = ConduitGeometryUtil.getInstance().createBoundsForConnectionController(keyDir, key.offset);
+        BoundingBox bb = ConduitGeometryUtil.getINSTANCE().createBoundsForConnectionController(keyDir, key.offset);
         CollidableComponent cc = new CollidableComponent(IGasConduit.class, bb, keyDir,
-                IPowerConduit.COLOR_CONTROLLER_ID);
+                PowerConduit.COLOR_CONTROLLER_ID);
 
         List<CollidableComponent> result = new ArrayList<>(baseCollidables);
         result.add(cc);

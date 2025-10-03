@@ -24,7 +24,7 @@ import com.enderio.core.client.handlers.ClientHandler;
 import com.enderio.core.client.render.RenderUtil;
 import com.enderio.core.common.vecmath.Vector4f;
 
-import crazypants.enderio.api.tool.IConduitControl;
+import crazypants.enderio.api.tool.ConduitControllable;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.conduit.ConduitDisplayMode;
 import crazypants.enderio.base.config.config.PersonalConfig;
@@ -50,8 +50,8 @@ public class YetaWrenchOverlayRenderer {
     private static @Nonnull ItemStack getEquippedWrench() {
         EntityPlayer player = Minecraft.getMinecraft().player;
         ItemStack equipped = player.getHeldItemMainhand();
-        if (equipped.getItem() instanceof IConduitControl &&
-                ((IConduitControl) equipped.getItem()).showOverlay(equipped, player)) {
+        if (equipped.getItem() instanceof ConduitControllable &&
+                ((ConduitControllable) equipped.getItem()).showOverlay(equipped, player)) {
             return equipped;
         }
         return Prep.getEmpty();

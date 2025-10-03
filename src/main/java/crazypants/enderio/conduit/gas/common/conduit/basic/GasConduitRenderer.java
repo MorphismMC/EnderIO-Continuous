@@ -25,9 +25,9 @@ import com.enderio.core.common.vecmath.Vector3d;
 import com.enderio.core.common.vecmath.Vector4f;
 import com.enderio.core.common.vecmath.Vertex;
 
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.base.conduit.geom.ConduitGeometryUtil;
 import crazypants.enderio.conduits.render.DefaultConduitRenderer;
@@ -49,21 +49,21 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
     }
 
     @Override
-    public boolean isRendererForConduit(@Nonnull IConduit conduit) {
+    public boolean isRendererForConduit(@Nonnull Conduit conduit) {
         return conduit instanceof GasConduit;
     }
 
     @Override
-    protected void addTransmissionQuads(@Nonnull IConduitTexture tex, Vector4f color, @Nonnull BlockRenderLayer layer,
-                                        @Nonnull IConduit conduit,
-                                        @Nonnull CollidableComponent component, float selfIllum,
+    protected void addTransmissionQuads(@Nonnull ConduitTexture texture, Vector4f color, @Nonnull BlockRenderLayer layer,
+                                        @Nonnull Conduit conduit,
+                                        @Nonnull CollidableComponent component, float brightness,
                                         @Nonnull List<BakedQuad> quads) {
         // Handled in dynamic render
     }
 
     @Override
-    protected void renderConduitDynamic(@Nonnull IConduitTexture tex,
-                                        @Nonnull IClientConduit.WithDefaultRendering conduit,
+    protected void renderConduitDynamic(@Nonnull ConduitTexture texture,
+                                        @Nonnull ConduitClient.WithDefaultRendering conduit,
                                         @Nonnull CollidableComponent component, float brightness) {
         if (component.isDirectional()) {
             GasConduit lc = (GasConduit) conduit;
@@ -75,35 +75,35 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
     }
 
     @Override
-    protected void renderTransmissionDynamic(@Nonnull IConduit conduit, @Nonnull IConduitTexture tex,
+    protected void renderTransmissionDynamic(@Nonnull Conduit conduit, @Nonnull ConduitTexture texture,
                                              @Nullable Vector4f color, @Nonnull CollidableComponent component,
-                                             float selfIllum) {
+                                             float brightness) {
         float filledRatio = ((GasConduit) conduit).getTank().getFilledRatio();
         if (filledRatio <= 0 || !component.isDirectional()) {
             return;
         }
 
-        TextureAtlasSprite sprite = tex.getSprite();
-        BoundingBox[] cubes = toCubes(component.bound);
+        TextureAtlasSprite sprite = texture.getSprite();
+        BoundingBox[] cubes = toCubes(component.bound());
         for (BoundingBox cube : cubes) {
             if (cube != null) {
                 float shrink = 1 / 128f;
-                EnumFacing componentDirection = component.getDirection();
+                EnumFacing componentDirection = component.direction();
                 float xLen = Math.abs(componentDirection.getXOffset()) == 1 ? 0 : shrink;
                 float yLen = Math.abs(componentDirection.getYOffset()) == 1 ? 0 : shrink;
                 float zLen = Math.abs(componentDirection.getZOffset()) == 1 ? 0 : shrink;
 
                 BoundingBox bb = cube.expand(-xLen, -yLen, -zLen);
-                drawDynamicSection(bb, sprite.getInterpolatedU(tex.getUv().x * 16),
-                        sprite.getInterpolatedU(tex.getUv().z * 16),
-                        sprite.getInterpolatedV(tex.getUv().y * 16), sprite.getInterpolatedV(tex.getUv().w * 16), color,
+                drawDynamicSection(bb, sprite.getInterpolatedU(texture.getUv().x * 16),
+                        sprite.getInterpolatedU(texture.getUv().z * 16),
+                        sprite.getInterpolatedV(texture.getUv().y * 16), sprite.getInterpolatedV(texture.getUv().w * 16), color,
                         componentDirection, true);
             }
         }
     }
 
     public static void renderGasOutline(@Nonnull CollidableComponent component, @Nonnull GasStack gas) {
-        renderGasOutline(component, gas, 1 - ConduitGeometryUtil.getInstance().getHeight(), 1f / 16f);
+        renderGasOutline(component, gas, 1 - ConduitGeometryUtil.getINSTANCE().getHeight(), 1f / 16f);
     }
 
     public static void renderGasOutline(@Nonnull CollidableComponent component, @Nonnull GasStack gasStack,
@@ -140,7 +140,7 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
         BoundingBox bbb;
 
         scaleFactor = scaleFactor - 0.05;
-        EnumFacing componentDirection = component.getDirection();
+        EnumFacing componentDirection = component.direction();
         double xScale = Math.abs(componentDirection.getXOffset()) == 1 ? width : scaleFactor;
         double yScale = Math.abs(componentDirection.getYOffset()) == 1 ? width : scaleFactor;
         double zScale = Math.abs(componentDirection.getZOffset()) == 1 ? width : scaleFactor;
@@ -150,7 +150,7 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
         double yOff = componentDirection.getYOffset() * offSize;
         double zOff = componentDirection.getZOffset() * offSize;
 
-        bbb = component.bound.scale(xScale, yScale, zScale);
+        bbb = component.bound().scale(xScale, yScale, zScale);
         bbb = bbb.translate(new Vector3d(xOff, yOff, zOff));
 
         for (NNIterator<EnumFacing> itr = NNList.FACING.fastIterator(); itr.hasNext();) {
@@ -199,11 +199,11 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
     }
 
     @Override
-    protected void setVerticesForTransmission(@Nonnull BoundingBox bound, @Nonnull EnumFacing id) {
+    protected void setVerticesForTransmission(@Nonnull BoundingBox bound, @Nonnull EnumFacing direction) {
         float scale = 0.7f;
-        float xs = id.getXOffset() == 0 ? scale : 1;
-        float ys = id.getYOffset() == 0 ? scale : 1;
-        float zs = id.getZOffset() == 0 ? scale : 1;
+        float xs = direction.getXOffset() == 0 ? scale : 1;
+        float ys = direction.getYOffset() == 0 ? scale : 1;
+        float zs = direction.getZOffset() == 0 ? scale : 1;
 
         double sizeY = bound.sizeY();
         bound = bound.scale(xs, ys, zs);

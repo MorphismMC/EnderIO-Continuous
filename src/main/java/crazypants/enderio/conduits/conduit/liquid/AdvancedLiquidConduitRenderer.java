@@ -20,11 +20,11 @@ import com.enderio.core.common.vecmath.Vector3d;
 import com.enderio.core.common.vecmath.Vertex;
 
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.base.conduit.IClientConduit;
-import crazypants.enderio.base.conduit.IClientConduit.WithDefaultRendering;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IConduitBundle;
-import crazypants.enderio.base.conduit.IConduitTexture;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.ConduitClient.WithDefaultRendering;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
+import crazypants.enderio.base.conduit.ConduitTexture;
 import crazypants.enderio.base.conduit.geom.CollidableComponent;
 import crazypants.enderio.conduits.render.BakedQuadBuilder;
 import crazypants.enderio.conduits.render.ConduitBundleRenderManager;
@@ -34,7 +34,7 @@ import crazypants.enderio.conduits.render.DefaultConduitRenderer;
 public class AdvancedLiquidConduitRenderer extends DefaultConduitRenderer {
 
     @Override
-    public boolean isRendererForConduit(@Nonnull IConduit conduit) {
+    public boolean isRendererForConduit(@Nonnull Conduit conduit) {
         return conduit instanceof AdvancedLiquidConduit;
     }
 
@@ -49,19 +49,19 @@ public class AdvancedLiquidConduitRenderer extends DefaultConduitRenderer {
     }
 
     @Override
-    public boolean canRenderInLayer(@Nonnull WithDefaultRendering con, @Nonnull BlockRenderLayer layer) {
-        return super.canRenderInLayer(con, layer) || layer == BlockRenderLayer.CUTOUT;
+    public boolean canRenderInLayer(@Nonnull WithDefaultRendering conduit, @Nonnull BlockRenderLayer layer) {
+        return super.canRenderInLayer(conduit, layer) || layer == BlockRenderLayer.CUTOUT;
     }
 
     @Override
-    protected void addConduitQuads(@Nonnull IConduitBundle bundle, @Nonnull IClientConduit conduit,
-                                   @Nonnull IConduitTexture tex,
-                                   @Nonnull CollidableComponent component, float selfIllum, BlockRenderLayer layer,
+    protected void addConduitQuads(@Nonnull ConduitBundle bundle, @Nonnull ConduitClient conduit,
+                                   @Nonnull ConduitTexture tex,
+                                   @Nonnull CollidableComponent component, float brightness, BlockRenderLayer layer,
                                    @Nonnull List<BakedQuad> quads) {
-        super.addConduitQuads(bundle, conduit, tex, component, selfIllum, layer, quads);
+        super.addConduitQuads(bundle, conduit, tex, component, brightness, layer, quads);
         ConduitInOutRenderer.renderIO(bundle, conduit, component, layer, quads, DyeColor.RED, DyeColor.RED);
 
-        if (component.isCore() || component.data != null) {
+        if (component.isCore() || component.data() != null) {
             return;
         }
 
@@ -74,12 +74,12 @@ public class AdvancedLiquidConduitRenderer extends DefaultConduitRenderer {
 
             // FIXME this logic is duplicated from DefaultConduitRenderer
             float shrink = 1 / 32f;
-            final EnumFacing componentDirection = component.getDirection();
+            final EnumFacing componentDirection = component.direction();
             float xLen = Math.abs(componentDirection.getXOffset()) == 1 ? 0 : shrink;
             float yLen = Math.abs(componentDirection.getYOffset()) == 1 ? 0 : shrink;
             float zLen = Math.abs(componentDirection.getZOffset()) == 1 ? 0 : shrink;
 
-            BoundingBox cube = component.bound;
+            BoundingBox cube = component.bound();
             BoundingBox bb = cube.expand(-xLen, -yLen, -zLen);
 
             List<Vertex> vertices = new ArrayList<Vertex>();
@@ -124,9 +124,9 @@ public class AdvancedLiquidConduitRenderer extends DefaultConduitRenderer {
         }
 
         if (layer == BlockRenderLayer.TRANSLUCENT &&
-                conduit.getConnectionMode(component.getDirection()) == ConnectionMode.DISABLED) {
-            TextureAtlasSprite tex2 = ConduitBundleRenderManager.instance.getConnectorIcon(component.data);
-            List<Vertex> corners = component.bound.getCornersWithUvForFace(component.getDirection(), tex2.getMinU(),
+                conduit.getConnectionMode(component.direction()) == ConnectionMode.DISABLED) {
+            TextureAtlasSprite tex2 = ConduitBundleRenderManager.instance.getConnectorIcon(component.data());
+            List<Vertex> corners = component.bound().getCornersWithUvForFace(component.direction(), tex2.getMinU(),
                     tex2.getMaxU(), tex2.getMinV(), tex2.getMaxV());
             List<Vertex> vertices = new ArrayList<>();
             for (Vertex c : corners) {

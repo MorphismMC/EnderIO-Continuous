@@ -15,15 +15,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import crazypants.enderio.api.IModObject;
 import crazypants.enderio.base.EnderIO;
-import crazypants.enderio.base.conduit.IConduit;
-import crazypants.enderio.base.conduit.IServerConduit;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitServer;
 import crazypants.enderio.base.lang.LangPower;
-import crazypants.enderio.conduits.conduit.AbstractItemConduit;
-import crazypants.enderio.conduits.conduit.power.IPowerConduit;
-import crazypants.enderio.conduits.conduit.power.IPowerConduitData;
+import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
+import crazypants.enderio.conduits.conduit.power.PowerConduitData;
+import crazypants.enderio.conduits.conduit.power.PowerConduitImpl;
 
-public class ItemEndergyConduit extends AbstractItemConduit {
+public class ItemEndergyConduit extends AbstractConduitItem {
 
     public static ItemEndergyConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
         return new ItemEndergyConduit(modObject);
@@ -34,14 +34,14 @@ public class ItemEndergyConduit extends AbstractItemConduit {
     }
 
     @Override
-    public @Nonnull Class<? extends IConduit> getBaseConduitType() {
-        return IPowerConduit.class;
+    public @Nonnull Class<? extends Conduit> getBaseConduitType() {
+        return PowerConduit.class;
     }
 
     @Override
-    public IServerConduit createConduit(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
-        return new PowerConduit(
-                IPowerConduitData.Registry.fromID(EndergyPowerConduitData.damage2id(stack.getItemDamage())));
+    public ConduitServer createConduit(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
+        return new PowerConduitImpl(
+                PowerConduitData.Registry.fromID(EndergyPowerConduitData.damage2id(stack.getItemDamage())));
     }
 
     @Override
@@ -49,8 +49,8 @@ public class ItemEndergyConduit extends AbstractItemConduit {
     public void addInformation(@Nonnull ItemStack itemStack, @Nullable World world, @Nonnull List<String> list,
                                @Nonnull ITooltipFlag flag) {
         super.addInformation(itemStack, world, list, flag);
-        int cap = PowerConduit.getMaxEnergyIO(
-                IPowerConduitData.Registry.fromID(EndergyPowerConduitData.damage2id(itemStack.getItemDamage())));
+        int cap = PowerConduitImpl.getMaxEnergyIO(
+                PowerConduitData.Registry.fromID(EndergyPowerConduitData.damage2id(itemStack.getItemDamage())));
         String prefix = EnderIO.lang.localize("power.max_output") + " ";
         list.add(prefix + LangPower.RFt(cap));
     }

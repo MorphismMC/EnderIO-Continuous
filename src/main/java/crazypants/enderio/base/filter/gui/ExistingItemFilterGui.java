@@ -23,7 +23,7 @@ import com.enderio.core.common.util.NNList;
 import com.enderio.core.common.vecmath.Vector4f;
 
 import crazypants.enderio.base.filter.item.ExistingItemFilter;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.filter.network.PacketExistingItemFilterSnapshot;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.lang.Lang;
@@ -58,7 +58,7 @@ public class ExistingItemFilterGui extends AbstractFilterGui {
     private @Nonnull ExistingItemFilter filter;
 
     public ExistingItemFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer,
-                                 TileEntity te, @Nonnull IItemFilter filterIn) {
+                                 TileEntity te, @Nonnull ItemFilter filterIn) {
         super(playerInv, filterContainer, te, filterIn);
 
         filter = (ExistingItemFilter) filterIn;

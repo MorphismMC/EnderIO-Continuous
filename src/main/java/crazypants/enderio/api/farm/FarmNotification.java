@@ -2,9 +2,9 @@ package crazypants.enderio.api.farm;
 
 import javax.annotation.Nonnull;
 
-import crazypants.enderio.api.ILocalizable;
+import crazypants.enderio.api.Localizable;
 
-public enum FarmNotification implements ILocalizable {
+public enum FarmNotification implements Localizable {
 
     OUTPUT_FULL("outputFull"),
     NO_SEEDS("noSeeds", true),

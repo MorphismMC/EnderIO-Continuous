@@ -1,7 +1,5 @@
 package crazypants.enderio.base.conduit;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -13,22 +11,24 @@ import com.enderio.core.common.network.MessageTileEntity;
 
 import crazypants.enderio.base.conduit.registry.ConduitRegistry;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
 
 public class PacketOpenConduitUI extends MessageTileEntity<TileEntity> {
 
-    private @Nonnull EnumFacing dir = EnumFacing.DOWN;
+    @NotNull
+    private EnumFacing direction = EnumFacing.DOWN;
 
     public PacketOpenConduitUI() {}
 
-    public PacketOpenConduitUI(@Nonnull TileEntity tile, @Nonnull EnumFacing dir) {
-        super(tile);
-        this.dir = dir;
+    public PacketOpenConduitUI(@NotNull TileEntity tileEntity, @NotNull EnumFacing direction) {
+        super(tileEntity);
+        this.direction = direction;
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
         super.toBytes(buf);
-        buf.writeShort(dir.ordinal());
+        buf.writeShort(direction.ordinal());
     }
 
     @SuppressWarnings("null")
@@ -37,7 +37,7 @@ public class PacketOpenConduitUI extends MessageTileEntity<TileEntity> {
         super.fromBytes(buf);
         short ord = buf.readShort();
         if (ord >= 0 && ord < EnumFacing.values().length) {
-            dir = EnumFacing.values()[ord];
+            direction = EnumFacing.values()[ord];
         }
     }
 
@@ -46,9 +46,11 @@ public class PacketOpenConduitUI extends MessageTileEntity<TileEntity> {
         @Override
         public IMessage onMessage(PacketOpenConduitUI message, MessageContext ctx) {
             EntityPlayer player = ctx.getServerHandler().player;
-            ConduitRegistry.getConduitModObjectNN().openGui(player.world, message.getPos(), player, message.dir,
-                    message.dir.ordinal());
+            ConduitRegistry.getConduitModObjectNN().openGui(player.world, message.getPos(), player, message.direction,
+                    message.direction.ordinal());
             return null;
         }
+
     }
+
 }

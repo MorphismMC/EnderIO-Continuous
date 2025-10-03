@@ -11,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import com.enderio.core.client.gui.button.ToggleButton;
 import com.enderio.core.client.gui.button.TooltipButton;
 
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import crazypants.enderio.base.filter.item.PowerItemFilter;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.lang.Lang;
@@ -31,7 +31,7 @@ public class PowerItemFilterGui extends AbstractFilterGui {
     private final @Nonnull PowerItemFilter filter;
 
     public PowerItemFilterGui(@Nonnull InventoryPlayer playerInv, @Nonnull ContainerFilter filterContainer,
-                              TileEntity te, @Nonnull IItemFilter filterIn) {
+                              TileEntity te, @Nonnull ItemFilter filterIn) {
         super(playerInv, filterContainer, te, filterIn);
 
         filter = (PowerItemFilter) filterIn;

@@ -45,7 +45,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 
-import crazypants.enderio.api.ILocalizable;
+import crazypants.enderio.api.Localizable;
 import crazypants.enderio.api.teleport.ITelePad;
 import crazypants.enderio.api.teleport.TravelSource;
 import crazypants.enderio.base.EnderIO;
@@ -54,7 +54,7 @@ import crazypants.enderio.base.init.ModObject;
 import crazypants.enderio.base.item.coordselector.TelepadTarget;
 import crazypants.enderio.base.machine.base.te.EnergyLogic;
 import crazypants.enderio.base.machine.base.te.ICap;
-import crazypants.enderio.base.machine.interfaces.INotifier;
+import crazypants.enderio.base.machine.interfaces.Notifiable;
 import crazypants.enderio.base.machine.sound.MachineSound;
 import crazypants.enderio.base.teleport.TeleportUtil;
 import crazypants.enderio.machines.capacitor.CapacitorKey;
@@ -70,7 +70,7 @@ import crazypants.enderio.machines.network.PacketHandler;
 import info.loenwind.autosave.annotations.Store;
 
 public class TileTelePad extends TileTravelAnchor
-                         implements ITelePad, IProgressTile, ITankAccess.IExtendedTankAccess, INotifier {
+                         implements ITelePad, IProgressTile, ITankAccess.IExtendedTankAccess, Notifiable {
 
     public static final @Nonnull Predicate<ItemStack> LOCATION_PRINTOUTS = new PredicateItemStack() {
 
@@ -724,8 +724,8 @@ public class TileTelePad extends TileTravelAnchor
 
     @Override
     @Nonnull
-    public Set<? extends ILocalizable> getNotification() {
-        return inNetwork() ? Collections.emptySet() : Collections.singleton(new ILocalizable() {
+    public Set<? extends Localizable> getNotification() {
+        return inNetwork() ? Collections.emptySet() : Collections.singleton(new Localizable() {
 
             @Override
             @Nonnull

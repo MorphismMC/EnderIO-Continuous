@@ -29,7 +29,7 @@ import info.loenwind.autosave.annotations.Store;
 import io.netty.buffer.ByteBuf;
 
 @Storable
-public class EnchantmentFilter implements IItemFilter.WithGhostSlots {
+public class EnchantmentFilter implements ItemFilter.WithGhostSlots {
 
     public static final int GUI_ROWS = 5;
 

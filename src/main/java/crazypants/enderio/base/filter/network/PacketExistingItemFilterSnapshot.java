@@ -11,10 +11,10 @@ import net.minecraftforge.items.IItemHandler;
 
 import com.enderio.core.common.util.NNList;
 
-import crazypants.enderio.base.filter.IFilter;
-import crazypants.enderio.base.filter.ITileFilterContainer;
+import crazypants.enderio.base.filter.Filter;
+import crazypants.enderio.base.filter.TileFilterContainer;
 import crazypants.enderio.base.filter.item.ExistingItemFilter;
-import crazypants.enderio.base.filter.item.IItemFilter;
+import crazypants.enderio.base.filter.item.ItemFilter;
 import io.netty.buffer.ByteBuf;
 
 public class PacketExistingItemFilterSnapshot extends PacketFilterUpdate {
@@ -29,7 +29,7 @@ public class PacketExistingItemFilterSnapshot extends PacketFilterUpdate {
 
     public PacketExistingItemFilterSnapshot() {}
 
-    public PacketExistingItemFilterSnapshot(@Nonnull TileEntity te, @Nonnull IItemFilter filter, int filterId,
+    public PacketExistingItemFilterSnapshot(@Nonnull TileEntity te, @Nonnull ItemFilter filter, int filterId,
                                             int param1, @Nonnull Opcode opcode) {
         super(te, filter, filterId, param1);
         this.opcode = opcode;
@@ -52,11 +52,11 @@ public class PacketExistingItemFilterSnapshot extends PacketFilterUpdate {
         @Override
         public PacketExistingItemFilterSnapshot onMessage(PacketExistingItemFilterSnapshot message,
                                                           MessageContext ctx) {
-            ITileFilterContainer filterContainer = message.getFilterContainer(ctx);
+            TileFilterContainer filterContainer = message.getFilterContainer(ctx);
             if (filterContainer == null) {
                 return null;
             }
-            final IFilter filter = filterContainer.getFilter(message.filterId, message.param1);
+            final Filter filter = filterContainer.getFilter(message.filterId, message.param1);
             if (!(filter instanceof ExistingItemFilter)) {
                 return null;
             }

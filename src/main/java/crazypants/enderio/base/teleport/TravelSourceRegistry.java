@@ -3,7 +3,7 @@ package crazypants.enderio.base.teleport;
 import crazypants.enderio.api.teleport.ITravelSource;
 import crazypants.enderio.api.teleport.TravelSource;
 import crazypants.enderio.base.EnderIO;
-import crazypants.enderio.base.sound.IModSound;
+import crazypants.enderio.base.sound.ModSound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
@@ -62,7 +62,7 @@ public class TravelSourceRegistry {
                 ENUM_LOOKUP.put(obj, travelSource);
             } else {
                 ENUM_LOOKUP.put(obj, EnumHelper.addEnum(TravelSource.class, Objects.requireNonNull(obj.getRegistryName()).toString(),
-                        new Class[]{IModSound.class, IntSupplier.class, DoubleSupplier.class},
+                        new Class[]{ModSound.class, IntSupplier.class, DoubleSupplier.class},
                         obj.getSound(),
                         (IntSupplier) obj::getMaxDistanceTravelled,
                         (DoubleSupplier) obj::getPowerCostPerBlockTraveledRF));
