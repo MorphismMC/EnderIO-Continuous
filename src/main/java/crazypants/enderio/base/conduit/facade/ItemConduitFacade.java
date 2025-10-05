@@ -62,7 +62,7 @@ public class ItemConduitFacade extends Item
 
     @Override
     public @Nonnull String getTranslationKey(@Nonnull ItemStack stack) {
-        return EnumFacadeType.getTypeFromMeta(stack.getMetadata()).getUnlocName(this);
+        return EnumFacadeType.getTypeFromMeta(stack.getMetadata()).getUnlocalizedName(this);
     }
 
     @SuppressWarnings("deprecation")

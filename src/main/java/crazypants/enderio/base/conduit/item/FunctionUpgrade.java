@@ -3,11 +3,12 @@ package crazypants.enderio.base.conduit.item;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import crazypants.enderio.base.EnderIO;
+import lombok.Getter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public enum FunctionUpgrade {
 
@@ -57,24 +58,35 @@ public enum FunctionUpgrade {
 
     public static final int BASE_MAX_EXTRACTED = 4;
 
-    public final @Nonnull String baseName;
-    public final @Nonnull String iconName;
-    public final @Nonnull String unlocName;
+    @NotNull
+    public final String baseName;
+    @NotNull
+    public final String iconName;
+    @NotNull
+    public final String unlocalizedName;
+
+    /**
+     * -- GETTER --
+     *
+     * @return Maximum stack size allowed in the upgrade slot. Has no effect on the stack size in normal inventories.
+     */
+    @SuppressWarnings("JavadocDeclaration")
+    @Getter
     private final int maxStackSize;
 
+    FunctionUpgrade(@NotNull String name, @NotNull String unlocalizedName, int maxStackSize) {
+        this.baseName = name;
+        this.iconName = EnderIO.MODID + ":" + name;
+        this.unlocalizedName = unlocalizedName;
+        this.maxStackSize = maxStackSize;
+    }
+
     public static List<ResourceLocation> resources() {
-        List<ResourceLocation> res = new ArrayList<ResourceLocation>(values().length);
+        List<ResourceLocation> res = new ArrayList<>(values().length);
         for (FunctionUpgrade c : values()) {
             res.add(new ResourceLocation(c.iconName));
         }
         return res;
-    }
-
-    private FunctionUpgrade(@Nonnull String name, @Nonnull String unlocName, int maxStackSize) {
-        this.baseName = name;
-        this.iconName = "enderio:" + name;
-        this.unlocName = unlocName;
-        this.maxStackSize = maxStackSize;
     }
 
     public int getMaximumExtracted(int stackSize) {
@@ -85,16 +97,9 @@ public enum FunctionUpgrade {
         return upgrade == null ? BASE_MAX_EXTRACTED : upgrade.getMaximumExtracted(stackSize);
     }
 
-    public static int getMaximumExtracted(@Nonnull ItemStack upgradeStack) {
+    public static int getMaximumExtracted(@NotNull ItemStack upgradeStack) {
         FunctionUpgrade upgrade = ItemFunctionUpgrade.getFunctionUpgrade(upgradeStack);
         return upgrade == null ? BASE_MAX_EXTRACTED : upgrade.getMaximumExtracted(upgradeStack.getCount());
-    }
-
-    /**
-     * @return Maximum stack size allowed in the upgrade slot. Has no effect on the stack size in normal inventories.
-     */
-    public int getMaxStackSize() {
-        return maxStackSize;
     }
 
     /**
@@ -105,4 +110,5 @@ public enum FunctionUpgrade {
     public float getFluidSpeedMultiplier(int stackSize) {
         return 0;
     }
+
 }
