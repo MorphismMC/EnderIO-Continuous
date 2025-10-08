@@ -288,7 +288,7 @@ public class ConduitUtil {
         if (conduit == null) {
             conduitRoot.setString("UUID", UUID.nameUUIDFromBytes("null".getBytes()).toString());
         } else {
-            conduitRoot.setString("UUID", ConduitRegistry.get(conduit).getUUID().toString());
+            conduitRoot.setString("UUID", ConduitRegistry.get(conduit).getConduitUUID().toString());
             conduit.writeToNBT(conduitRoot);
         }
     }

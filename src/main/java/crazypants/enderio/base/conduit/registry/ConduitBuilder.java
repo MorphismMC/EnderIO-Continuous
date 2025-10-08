@@ -2,8 +2,7 @@ package crazypants.enderio.base.conduit.registry;
 
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-
+import lombok.AllArgsConstructor;
 import net.minecraft.util.ResourceLocation;
 
 import com.enderio.core.common.util.NNList;
@@ -16,37 +15,50 @@ import org.jetbrains.annotations.NotNull;
 
 public final class ConduitBuilder {
 
-    @NotNull
-    private State state = State.EMPTY;
-
-    private ConduitBuilder() {}
-
-    public static ConduitBuilder start() {
-        return new ConduitBuilder();
-    }
+    // region Network Data
 
     ConduitTypeDefinition network;
 
-    // network data
-
     private UUID networkUUID;
-    private final @Nonnull NNList<UUID> networkAliases = new NNList<>();
+    @NotNull
+    private final NNList<UUID> networkAliases = new NNList<>();
     private Class<? extends Conduit> baseType;
     private Offset none = Offset.NONE, x = Offset.NONE, y = Offset.NONE, z = Offset.NONE;
     private boolean canConnectToAnything;
 
-    // conduit data
+    // endregion
+
+    // region Conduit Data
+
+    @NotNull
+    private State state = State.EMPTY;
 
     private UUID conduitUUID;
-    private final @Nonnull NNList<UUID> conduitAliases = new NNList<>();
+    @NotNull
+    private final NNList<UUID> conduitAliases = new NNList<>();
     private Class<? extends ConduitServer> serverClass;
     private Class<? extends ConduitClient> clientClass;
 
-    // END data
+    // endregion
 
-    // UUID
+    // region Constructors
 
-    public ConduitBuilder setUUID(@Nonnull UUID uuid) {
+    private ConduitBuilder() {}
+
+    public static ConduitBuilder builder() {
+        return new ConduitBuilder();
+    }
+
+    // endregion
+
+    // region UUID
+
+    /**
+     * Set the UUID info of the conduit with a UUID.
+     *
+     * @param uuid The UUID to set for the conduit.
+     */
+    public ConduitBuilder id(@NotNull UUID uuid) {
         checkState(state.acceptNetworkData || state.acceptConduitData);
         if (state.acceptNetworkData) {
             networkUUID = uuid;
@@ -58,21 +70,45 @@ public final class ConduitBuilder {
         return this;
     }
 
-    public ConduitBuilder setUUID(@Nonnull String uuid) {
-        return setUUID(UUID.nameUUIDFromBytes(uuid.getBytes()));
+    /**
+     * Set the UUID info of the conduit with an existed name.
+     *
+     * @param name The name of the conduit.
+     */
+    public ConduitBuilder id(@NotNull String name) {
+        return id(UUID.nameUUIDFromBytes(name.getBytes()));
     }
 
-    public ConduitBuilder setUUID(@Nonnull Class<? extends Conduit> uuid) {
-        return setUUID(uuid.getName());
+    /**
+     * Set the UUID info of the conduit with conduit container class.
+     * <p>
+     * If this conduit container class should not import at there, please used {@link #id(String)}.
+     *
+     * @param container The container class of the conduit.
+     */
+    public ConduitBuilder id(@NotNull Class<? extends Conduit> container) {
+        return id(container.getName());
     }
 
-    public ConduitBuilder setUUID(@Nonnull ResourceLocation uuid) {
-        return setUUID(uuid.toString());
+    /**
+     * Set the UUID info of the conduit with an existed {@link ResourceLocation}.
+     *
+     * @param location The {@link ResourceLocation} of the conduit in.
+     */
+    public ConduitBuilder id(@NotNull ResourceLocation location) {
+        return id(location.toString());
     }
 
-    // ALIAS
+    // endregion
 
-    public ConduitBuilder addAlias(@Nonnull UUID uuid) {
+    // region Alias
+
+    /**
+     * Set the alias UUID info of the conduit with a UUID.
+     *
+     * @param uuid The UUID to set for the conduit.
+     */
+    public ConduitBuilder alias(@NotNull UUID uuid) {
         checkState(state.acceptNetworkData || state.acceptConduitData);
         if (state.acceptNetworkData) {
             networkAliases.add(uuid);
@@ -84,41 +120,67 @@ public final class ConduitBuilder {
         return this;
     }
 
-    public ConduitBuilder addAlias(@Nonnull String uuid) {
-        return addAlias(UUID.nameUUIDFromBytes(uuid.getBytes()));
+    /**
+     * Set the alias UUID info of the conduit with an existed name.
+     *
+     * @param name The name of the conduit.
+     */
+    public ConduitBuilder alias(@NotNull String name) {
+        return alias(UUID.nameUUIDFromBytes(name.getBytes()));
     }
 
-    public ConduitBuilder addAlias(@Nonnull Class<? extends Conduit> uuid) {
-        return addAlias(uuid.getName());
+    /**
+     * Set the alias UUID info of the conduit with conduit container class.
+     * <p>
+     * If this conduit container class should not import at there, please used {@link #alias(String)}.
+     *
+     * @param container The container class of the conduit.
+     */
+    public ConduitBuilder alias(@NotNull Class<? extends Conduit> container) {
+        return alias(container.getName());
     }
 
-    public ConduitBuilder addAlias(@Nonnull ResourceLocation uuid) {
-        return addAlias(uuid.toString());
+    /**
+     * Set the alias UUID info of the conduit with an existed {@link ResourceLocation}.
+     *
+     * @param location The {@link ResourceLocation} of the conduit in.
+     */
+    public ConduitBuilder alias(@NotNull ResourceLocation location) {
+        return alias(location.toString());
     }
 
-    // CLASSES
+    // endregion
 
+    // region Conduit Type
+
+    /**
+     * Set the base conduit type of the conduit.
+     *
+     * @param container The conduit container to represent its base type.
+     */
     @SuppressWarnings("unchecked")
-    public ConduitBuilder setClass(@Nonnull Class<? extends Conduit> clazz) {
+    public ConduitBuilder baseType(@NotNull Class<? extends Conduit> container) {
         checkState(state.acceptNetworkData || state.acceptConduitData);
         if (state.acceptNetworkData) {
-            baseType = clazz;
+            baseType = container;
             state = State.NETWORK;
         } else {
-            if (ConduitServer.class.isAssignableFrom(clazz)) {
-                serverClass = (Class<? extends ConduitServer>) clazz;
+            if (ConduitServer.class.isAssignableFrom(container)) {
+                serverClass = (Class<? extends ConduitServer>) container;
             }
-            if (ConduitClient.class.isAssignableFrom(clazz)) {
-                clientClass = (Class<? extends ConduitClient>) clazz;
+            if (ConduitClient.class.isAssignableFrom(container)) {
+                clientClass = (Class<? extends ConduitClient>) container;
             }
             state = State.CONDUIT;
         }
         return this;
     }
 
-    // OFFSETS
+    // endregion
 
-    public ConduitBuilder setOffsets(@Nonnull Offset none, @Nonnull Offset x, @Nonnull Offset y, @Nonnull Offset z) {
+    // region Offsets
+
+    public ConduitBuilder offsets(@NotNull Offset none, @NotNull Offset x, @NotNull Offset y, @NotNull Offset z) {
         checkState(state.acceptNetworkData);
         this.none = none;
         this.x = x;
@@ -128,35 +190,43 @@ public final class ConduitBuilder {
         return this;
     }
 
-    // ANYTHING
+    // endregion
 
-    public ConduitBuilder setCanConnectToAnything() {
+    // region Connection Configurations
+
+    /**
+     * Marked the conduit can connect to anything without storage handler check.
+     * <p>
+     * It is useful for some specific type conduit like redstone signal.
+     */
+    public ConduitBuilder canConnectToAnything() {
         checkState(state.acceptNetworkData);
         this.canConnectToAnything = true;
         state = State.NETWORK;
         return this;
     }
 
-    // BUILD NETWORK
+    // endregion
 
-    @SuppressWarnings("unused")
+    // region Network Building
+
     public ConduitBuilder build() {
         checkState(state.acceptNetworkBuild || state.acceptConduitBuild);
         if (state.acceptNetworkBuild) {
-            final UUID networkUUID2 = networkUUID;
-            if (networkUUID2 != null) {
-                final Class<? extends Conduit> baseType2 = baseType;
-                if (baseType2 != null) {
-                    final Offset none2 = none;
-                    if (none2 != null) {
-                        final Offset x2 = x;
-                        if (x2 != null) {
-                            final Offset y2 = y;
-                            if (y2 != null) {
-                                final Offset z2 = z;
-                                if (z2 != null) {
-                                    network = new ConduitTypeDefinition(networkUUID2, baseType2, none2, x2, y2, z2,
-                                            canConnectToAnything);
+            final UUID networkId = networkUUID;
+            if (networkId != null) {
+                final Class<? extends Conduit> conduitBaseType = baseType;
+                if (conduitBaseType != null) {
+                    final Offset noneOffset = none;
+                    if (noneOffset != null) {
+                        final Offset xOffset = x;
+                        if (xOffset != null) {
+                            final Offset yOffset = y;
+                            if (yOffset != null) {
+                                final Offset zOffset = z;
+                                if (zOffset != null) {
+                                    network = new ConduitTypeDefinition(networkId, conduitBaseType,
+                                            noneOffset, xOffset, yOffset, zOffset, canConnectToAnything);
                                     network.getAliases().addAll(networkAliases);
                                     state = State.PRE_CONDUIT;
                                     return this;
@@ -167,16 +237,16 @@ public final class ConduitBuilder {
                 }
             }
         } else {
-            final ConduitTypeDefinition network2 = network;
-            if (network2 != null) {
-                final UUID conduitUUID2 = conduitUUID;
-                if (conduitUUID2 != null) {
-                    final Class<? extends ConduitServer> serverClass2 = serverClass;
-                    if (serverClass2 != null) {
-                        final Class<? extends ConduitClient> clientClass2 = clientClass;
-                        if (clientClass2 != null) {
-                            new ConduitDefinition(network2, conduitUUID2, serverClass2, clientClass2).getAliases()
-                                    .addAll(conduitAliases);
+            final ConduitTypeDefinition networkDefinition = network;
+            if (networkDefinition != null) {
+                final UUID conduitId = conduitUUID;
+                if (conduitId != null) {
+                    final Class<? extends ConduitServer> conduitServer = serverClass;
+                    if (conduitServer != null) {
+                        final Class<? extends ConduitClient> conduitClient = clientClass;
+                        if (conduitClient != null) {
+                            new ConduitDefinition(networkDefinition, conduitId, conduitServer, conduitClient)
+                                    .getAliases().addAll(conduitAliases);
                             conduitUUID = null;
                             conduitAliases.clear();
                             serverClass = null;
@@ -191,45 +261,35 @@ public final class ConduitBuilder {
         throw new RuntimeException("State error in Conduit Builder---data missing");
     }
 
-    public @Nonnull ConduitTypeDefinition finish() {
+    @NotNull
+    public ConduitTypeDefinition finish() {
         checkState(state.acceptFinalize);
-        final ConduitTypeDefinition network2 = network;
-        if (network2 != null) {
-            return network2;
+        final ConduitTypeDefinition networkDefinition = network;
+        if (networkDefinition != null) {
+            return networkDefinition;
         } else {
             throw new RuntimeException("State error in Conduit Builder---data missing");
         }
     }
 
-    // tools
-
-    private void checkState(boolean ok) {
-        if (!ok) {
+    // endregion
+    
+    private void checkState(boolean isReady) {
+        if (!isReady) {
             throw new RuntimeException("State error in Conduit Builder (" + state + ")");
         }
     }
 
+    @AllArgsConstructor
     private enum State {
 
         EMPTY(true, false, false, false, false),
         NETWORK(true, true, false, false, false),
         PRE_CONDUIT(false, false, true, false, false),
         CONDUIT(false, false, true, true, false),
-        POST_CONDUIT(false, false, true, false, true),
+        POST_CONDUIT(false, false, true, false, true);
 
-        ;
-
-        private final boolean acceptNetworkData, acceptNetworkBuild, acceptConduitData, acceptConduitBuild,
-                acceptFinalize;
-
-        State(boolean acceptNetworkData, boolean acceptNetworkBuild, boolean acceptConduitData,
-              boolean acceptConduitBuild, boolean acceptFinalize) {
-            this.acceptNetworkData = acceptNetworkData;
-            this.acceptNetworkBuild = acceptNetworkBuild;
-            this.acceptConduitData = acceptConduitData;
-            this.acceptConduitBuild = acceptConduitBuild;
-            this.acceptFinalize = acceptFinalize;
-        }
+        private final boolean acceptNetworkData, acceptNetworkBuild, acceptConduitData, acceptConduitBuild, acceptFinalize;
     }
 
 }

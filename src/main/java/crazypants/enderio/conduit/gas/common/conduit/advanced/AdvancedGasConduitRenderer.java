@@ -36,7 +36,7 @@ public class AdvancedGasConduitRenderer extends DefaultConduitRenderer {
 
     @Override
     public boolean isRendererForConduit(@Nonnull Conduit conduit) {
-        return conduit instanceof AdvancedGasConduit;
+        return conduit instanceof AdvancedGasConduitImpl;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class AdvancedGasConduitRenderer extends DefaultConduitRenderer {
         if (component.isCore() || component.data() != null) {
             return;
         }
-        AdvancedGasConduit lc = (AdvancedGasConduit) conduit;
+        AdvancedGasConduitImpl lc = (AdvancedGasConduitImpl) conduit;
         GasStack gas = lc.getGasType();
         @Nonnull
         TextureAtlasSprite texture = gas != null && gas.getGas() != null && gas.amount > 0 ?

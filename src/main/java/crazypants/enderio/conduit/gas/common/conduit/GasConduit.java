@@ -10,7 +10,7 @@ import crazypants.enderio.base.conduit.ConduitExtractor;
 import crazypants.enderio.base.conduit.ConduitServer;
 import mekanism.api.gas.IGasHandler;
 
-public interface IGasConduit extends IGasHandler, ConduitExtractor, ConduitServer, ConduitClient {
+public interface GasConduit extends IGasHandler, ConduitExtractor, ConduitServer, ConduitClient {
 
     boolean canOutputToDir(@Nonnull EnumFacing dir);
 

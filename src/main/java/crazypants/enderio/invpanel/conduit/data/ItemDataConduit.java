@@ -28,11 +28,11 @@ public class ItemDataConduit extends AbstractConduitItem {
 
     public ItemDataConduit(@Nonnull IModObject modObj) {
         super(modObj, new ItemConduitSubtype(modObj.getUnlocalisedName(), modObj.getRegistryName().toString()));
-        ConduitRegistry.register(ConduitBuilder.start().setUUID(new ResourceLocation(EnderIO.DOMAIN, "data"))
-                .setClass(getBaseConduitType())
-                .setOffsets(Offset.NONE, Offset.NONE, Offset.NONE, Offset.NONE).build()
-                .setUUID(new ResourceLocation(EnderIO.DOMAIN, "data_conduit"))
-                .setClass(DataConduit.class).build().finish());
+        ConduitRegistry.register(ConduitBuilder.builder().id(new ResourceLocation(EnderIO.DOMAIN, "data"))
+                .baseType(getBaseConduitType())
+                .offsets(Offset.NONE, Offset.NONE, Offset.NONE, Offset.NONE).build()
+                .id(new ResourceLocation(EnderIO.DOMAIN, "data_conduit"))
+                .baseType(DataConduit.class).build().finish());
         ConduitDisplayMode.registerDisplayMode(new ConduitDisplayMode(getBaseConduitType(), IconEIO.WRENCH_OVERLAY_DATA,
                 IconEIO.WRENCH_OVERLAY_DATA_OFF));
     }

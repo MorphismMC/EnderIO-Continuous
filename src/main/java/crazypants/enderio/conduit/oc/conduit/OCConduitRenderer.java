@@ -22,7 +22,7 @@ public class OCConduitRenderer extends DefaultConduitRenderer {
 
     @Override
     public boolean isRendererForConduit(@Nonnull Conduit conduit) {
-        return conduit instanceof IOCConduit;
+        return conduit instanceof OCConduit;
     }
 
     /*
@@ -36,9 +36,9 @@ public class OCConduitRenderer extends DefaultConduitRenderer {
                                    @Nonnull ConduitTexture texture,
                                    @Nonnull CollidableComponent component, float brightness, BlockRenderLayer layer,
                                    @Nonnull List<BakedQuad> quads) {
-        if (IOCConduit.COLOR_CONTROLLER_ID.equals(component.data())) {
+        if (OCConduit.COLOR_CONTROLLER_ID.equals(component.data())) {
             if (conduit.containsExternalConnection(component.direction())) {
-                int c = ((IOCConduit) conduit).getSignalColor(component.direction()).getColor();
+                int c = ((OCConduit) conduit).getSignalColor(component.direction()).getColor();
                 BakedQuadBuilder.addBakedQuads(quads, component.bound(), White.INSTANCE, ColorUtil.toFloat4(c));
             }
         } else {

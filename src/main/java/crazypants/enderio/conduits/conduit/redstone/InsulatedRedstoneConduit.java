@@ -61,7 +61,7 @@ import crazypants.enderio.powertools.lang.Lang;
 import crazypants.enderio.util.*;
 
 public class InsulatedRedstoneConduit extends AbstractConduit
-                                      implements IRedstoneConduit, FilterHolder<IRedstoneSignalFilter> {
+                                      implements RedstoneConduit, FilterHolder<IRedstoneSignalFilter> {
 
     static final Map<String, ConduitTexture> ICONS = new HashMap<>();
 
@@ -127,7 +127,7 @@ public class InsulatedRedstoneConduit extends AbstractConduit
     @Override
     @Nonnull
     public Class<? extends Conduit> getBaseConduitType() {
-        return IRedstoneConduit.class;
+        return RedstoneConduit.class;
     }
 
     @Override
@@ -206,7 +206,7 @@ public class InsulatedRedstoneConduit extends AbstractConduit
                     BlockPos pos = getBundle().getLocation().offset(faceHit);
                     Block id = world.getBlockState(pos).getBlock();
                     if (id == ConduitRegistry.getConduitModObjectNN().getBlock()) {
-                        IRedstoneConduit neighbour = ConduitUtil.getConduit(world, pos, IRedstoneConduit.class);
+                        RedstoneConduit neighbour = ConduitUtil.getConduit(world, pos, RedstoneConduit.class);
                         if (neighbour != null &&
                                 neighbour.getConnectionMode(faceHit.getOpposite()) == ConnectionMode.DISABLED) {
                             neighbour.setConnectionMode(faceHit.getOpposite(), ConnectionMode.NOT_SET);
@@ -229,7 +229,7 @@ public class InsulatedRedstoneConduit extends AbstractConduit
 
                     } else if (containsConduitConnection(connDir)) {
                         BlockPos pos = getBundle().getLocation().offset(connDir);
-                        IRedstoneConduit neighbour = ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(), pos, IRedstoneConduit.class);
+                        RedstoneConduit neighbour = ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(), pos, RedstoneConduit.class);
                         if (neighbour != null) {
                             if (network != null) {
                                 network.destroyNetwork();
@@ -528,7 +528,7 @@ public class InsulatedRedstoneConduit extends AbstractConduit
             return false;
         }
         BlockPos loc = getBundle().getLocation().offset(dir);
-        return ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(), loc, IRedstoneConduit.class) == null;
+        return ConduitUtil.getConduit(getBundle().getTileEntity().getWorld(), loc, RedstoneConduit.class) == null;
     }
 
     // ---------------------

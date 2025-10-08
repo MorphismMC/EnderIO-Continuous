@@ -14,7 +14,7 @@ import crazypants.enderio.base.conduit.redstone.signals.CombinedSignal;
 import crazypants.enderio.base.conduit.redstone.signals.Signal;
 import crazypants.enderio.base.filter.redstone.IRedstoneSignalFilter;
 
-public interface IRedstoneConduit extends ConduitServer, ConduitClient {
+public interface RedstoneConduit extends ConduitServer, ConduitClient {
 
     public static final @Nonnull String KEY_CONDUIT_ICON = "c";
     public static final @Nonnull String KEY_TRANSMISSION_ICON = "b";

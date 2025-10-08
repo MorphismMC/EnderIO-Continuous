@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import crazypants.enderio.api.EIOTags;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -24,6 +25,7 @@ import crazypants.enderio.conduit.gas.common.conduit.GasConduitObject;
 import crazypants.enderio.conduit.gas.common.config.Config;
 import crazypants.enderio.conduit.gas.common.network.PacketHandler;
 import info.loenwind.autoconfig.ConfigHandler;
+import org.jetbrains.annotations.NotNull;
 
 @Mod(modid = EnderIOConduitsMekanism.MOD_ID,
      name = EnderIOConduitsMekanism.MOD_NAME,
@@ -88,4 +90,16 @@ public class EnderIOConduitsMekanism implements IEnderIOAddon {
     public static boolean isLoaded() {
         return Loader.isModLoaded("mekanism");
     }
+
+    /**
+     * Get the {@link ResourceLocation} with its {@code path} at the mod namespace.
+     *
+     * @param path The path in the mod domain.
+     * @return     Returns the {@link ResourceLocation} of the mod.
+     */
+    @NotNull
+    public static ResourceLocation id(@NotNull String path) {
+        return new ResourceLocation(MOD_ID, path);
+    }
+
 }

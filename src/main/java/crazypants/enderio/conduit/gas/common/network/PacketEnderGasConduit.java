@@ -16,10 +16,10 @@ import crazypants.enderio.base.filter.capability.CapabilityFilterHolder;
 import crazypants.enderio.base.filter.capability.FilterHolder;
 import crazypants.enderio.conduits.network.PacketConduitFilter;
 import crazypants.enderio.util.EnumReader;
-import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduitImpl;
 import io.netty.buffer.ByteBuf;
 
-public class PacketEnderGasConduit extends PacketConduitFilter<EnderGasConduit> {
+public class PacketEnderGasConduit extends PacketConduitFilter<EnderGasConduitImpl> {
 
     private DyeColor colIn;
     private DyeColor colOut;
@@ -29,7 +29,7 @@ public class PacketEnderGasConduit extends PacketConduitFilter<EnderGasConduit> 
 
     public PacketEnderGasConduit() {}
 
-    public PacketEnderGasConduit(@Nonnull EnderGasConduit con, @Nonnull EnumFacing dir) {
+    public PacketEnderGasConduit(@Nonnull EnderGasConduitImpl con, @Nonnull EnumFacing dir) {
         super(con, dir);
         colIn = con.getInputColor(dir);
         colOut = con.getOutputColor(dir);
@@ -62,7 +62,7 @@ public class PacketEnderGasConduit extends PacketConduitFilter<EnderGasConduit> 
 
         @Override
         public IMessage onMessage(PacketEnderGasConduit message, MessageContext ctx) {
-            EnderGasConduit conduit = message.getConduit(ctx);
+            EnderGasConduitImpl conduit = message.getConduit(ctx);
             if (conduit != null) {
                 conduit.setInputColor(message.dir, message.colIn);
                 conduit.setOutputColor(message.dir, message.colOut);

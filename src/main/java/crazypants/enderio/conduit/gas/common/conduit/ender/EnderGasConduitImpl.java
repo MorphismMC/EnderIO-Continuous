@@ -61,7 +61,7 @@ import crazypants.enderio.conduit.gas.GasConduitsConstants;
 import crazypants.enderio.conduit.gas.client.utils.GasFilterGuiUtil;
 import crazypants.enderio.conduit.gas.common.conduit.AbstractGasConduit;
 import crazypants.enderio.conduit.gas.common.conduit.GasConduitObject;
-import crazypants.enderio.conduit.gas.common.conduit.IGasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.GasConduit;
 import crazypants.enderio.conduit.gas.common.config.GasConduitConfig;
 import crazypants.enderio.conduit.gas.common.filter.GasFilterImpl;
 import crazypants.enderio.conduit.gas.common.filter.GasFilter;
@@ -70,7 +70,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 
-public class EnderGasConduit extends AbstractGasConduit
+public class EnderGasConduitImpl extends AbstractGasConduit
                              implements FilterHolder<GasFilter>, UpgradeHolder, ConduitEnder {
 
     public static final ConduitTexture ICON_KEY = new crazypants.enderio.conduits.render.ConduitTexture(
@@ -107,7 +107,7 @@ public class EnderGasConduit extends AbstractGasConduit
     @Nonnull
     protected final EnumMap<EnumFacing, ItemStack> functionUpgrades = new EnumMap<>(EnumFacing.class);
 
-    public EnderGasConduit() {
+    public EnderGasConduitImpl() {
         super();
         for (NNIterator<EnumFacing> itr = NNList.FACING.fastIterator(); itr.hasNext();) {
             EnumFacing dir = itr.next();
@@ -260,7 +260,7 @@ public class EnderGasConduit extends AbstractGasConduit
 
     @Override
     public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull Conduit con) {
-        return super.canConnectToConduit(direction, con) && con instanceof EnderGasConduit;
+        return super.canConnectToConduit(direction, con) && con instanceof EnderGasConduitImpl;
     }
 
     @Override
@@ -730,13 +730,13 @@ public class EnderGasConduit extends AbstractGasConduit
         @Override
         public int receiveGas(EnumFacing facing, GasStack resource, boolean doFill) {
             return canReceiveGas(facing, resource.getGas()) ?
-                    network == null ? 0 : network.fillFrom(EnderGasConduit.this, facing, resource, doFill) : 0;
+                    network == null ? 0 : network.fillFrom(EnderGasConduitImpl.this, facing, resource, doFill) : 0;
         }
 
         @Override
         @Nonnull
         public GasTankInfo[] getTankInfo() {
-            return network == null ? new GasTankInfo[0] : network.getTankProperties(EnderGasConduit.this, side);
+            return network == null ? new GasTankInfo[0] : network.getTankProperties(EnderGasConduitImpl.this, side);
         }
     }
 
@@ -750,7 +750,7 @@ public class EnderGasConduit extends AbstractGasConduit
         }
 
         BoundingBox bb = ConduitGeometryUtil.getINSTANCE().createBoundsForConnectionController(keydir, key.offset);
-        CollidableComponent cc = new CollidableComponent(IGasConduit.class, bb, keydir,
+        CollidableComponent cc = new CollidableComponent(GasConduit.class, bb, keydir,
                 PowerConduit.COLOR_CONTROLLER_ID);
 
         List<CollidableComponent> result = new ArrayList<>(baseCollidables);

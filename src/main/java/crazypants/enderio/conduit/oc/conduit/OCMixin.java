@@ -20,7 +20,7 @@ public interface OCMixin extends ConduitBundle, Environment, SidedEnvironment {
 
     @Override
     default Node node() {
-        IOCConduit cond = getConduit(IOCConduit.class);
+        OCConduit cond = getConduit(OCConduit.class);
         if (cond != null) {
             return cond.node();
         } else {
@@ -30,7 +30,7 @@ public interface OCMixin extends ConduitBundle, Environment, SidedEnvironment {
 
     @Override
     default void onConnect(Node node) {
-        IOCConduit cond = getConduit(IOCConduit.class);
+        OCConduit cond = getConduit(OCConduit.class);
         if (cond != null) {
             cond.onConnect(node);
         }
@@ -38,7 +38,7 @@ public interface OCMixin extends ConduitBundle, Environment, SidedEnvironment {
 
     @Override
     default void onDisconnect(Node node) {
-        IOCConduit cond = getConduit(IOCConduit.class);
+        OCConduit cond = getConduit(OCConduit.class);
         if (cond != null) {
             cond.onDisconnect(node);
         }
@@ -46,7 +46,7 @@ public interface OCMixin extends ConduitBundle, Environment, SidedEnvironment {
 
     @Override
     default void onMessage(Message message) {
-        IOCConduit cond = getConduit(IOCConduit.class);
+        OCConduit cond = getConduit(OCConduit.class);
         if (cond != null) {
             cond.onMessage(message);
         }
@@ -56,7 +56,7 @@ public interface OCMixin extends ConduitBundle, Environment, SidedEnvironment {
 
     @Override
     default Node sidedNode(EnumFacing side) {
-        IOCConduit cond = getConduit(IOCConduit.class);
+        OCConduit cond = getConduit(OCConduit.class);
         if (cond != null) {
             return cond.sidedNode(side);
         } else {
@@ -67,7 +67,7 @@ public interface OCMixin extends ConduitBundle, Environment, SidedEnvironment {
     @Override
     @SideOnly(Side.CLIENT)
     default boolean canConnect(EnumFacing side) {
-        IOCConduit cond = getConduit(IOCConduit.class);
+        OCConduit cond = getConduit(OCConduit.class);
         if (cond != null) {
             return cond.canConnect(side);
         } else {

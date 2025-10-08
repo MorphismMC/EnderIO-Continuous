@@ -66,7 +66,7 @@ import crazypants.enderio.base.render.IBlockStateWrapper;
 import crazypants.enderio.conduits.autosave.ConduitHandler;
 import crazypants.enderio.conduits.capability.CapabilityUpgradeHolder;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
-import crazypants.enderio.conduits.conduit.redstone.IRedstoneConduit;
+import crazypants.enderio.conduits.conduit.redstone.RedstoneConduit;
 import crazypants.enderio.conduits.config.ConduitConfig;
 import crazypants.enderio.conduits.render.BlockStateWrapperConduitBundle;
 import crazypants.enderio.conduits.render.BlockStateWrapperConduitBundle.ConduitCacheKey;
@@ -152,7 +152,7 @@ public class TileConduitBundle extends TileEntityEio implements ConduitBundle,
 
     @Override
     public int getInternalRedstoneSignalForColor(@Nonnull DyeColor color, @Nonnull EnumFacing direction) {
-        return FuncUtil.runIfOr(getConduit(IRedstoneConduit.class), con -> con.isProvidingWeakPower(direction.getOpposite()),
+        return FuncUtil.runIfOr(getConduit(RedstoneConduit.class), con -> con.isProvidingWeakPower(direction.getOpposite()),
                 0);
     }
 

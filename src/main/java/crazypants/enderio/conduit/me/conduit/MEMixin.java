@@ -15,7 +15,7 @@ public interface MEMixin extends ConduitBundle, IGridHost {
 
     @Override
     public default IGridNode getGridNode(AEPartLocation loc) {
-        IMEConduit cond = getConduit(IMEConduit.class);
+        MEConduit cond = getConduit(MEConduit.class);
         if (cond != null) {
             if (loc == null || loc == AEPartLocation.INTERNAL ||
                     cond.getConnectionMode(loc.getOpposite().getFacing()) == ConnectionMode.IN_OUT) {
@@ -27,7 +27,7 @@ public interface MEMixin extends ConduitBundle, IGridHost {
 
     @Override
     public default AECableType getCableConnectionType(AEPartLocation loc) {
-        IMEConduit cond = getConduit(IMEConduit.class);
+        MEConduit cond = getConduit(MEConduit.class);
         if (cond == null || loc == AEPartLocation.INTERNAL) {
             return AECableType.NONE;
         } else {

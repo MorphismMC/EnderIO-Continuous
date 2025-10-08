@@ -23,7 +23,7 @@ import crazypants.enderio.conduit.gas.common.utils.GasWrapper;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 
-public class AdvancedGasConduitNetwork extends AbstractGasTankConduitNetwork<AdvancedGasConduit> {
+public class AdvancedGasConduitNetwork extends AbstractGasTankConduitNetwork<AdvancedGasConduitImpl> {
 
     private final ConduitGasTank tank = new ConduitGasTank(0);
     private final Set<GasOutput> outputs = new HashSet<>();
@@ -34,12 +34,12 @@ public class AdvancedGasConduitNetwork extends AbstractGasTankConduitNetwork<Adv
     private int ticksEmpty;
 
     public AdvancedGasConduitNetwork() {
-        super(AdvancedGasConduit.class);
+        super(AdvancedGasConduitImpl.class);
     }
 
     @Override
-    public void addConduit(@Nonnull AdvancedGasConduit con) {
-        tank.setMaxGas(tank.getMaxGas() + AdvancedGasConduit.CONDUIT_VOLUME);
+    public void addConduit(@Nonnull AdvancedGasConduitImpl con) {
+        tank.setMaxGas(tank.getMaxGas() + AdvancedGasConduitImpl.CONDUIT_VOLUME);
         if (con.getTank().containsValidGas()) {
             tank.addAmount(con.getTank().getStored());
         }
@@ -84,7 +84,7 @@ public class AdvancedGasConduitNetwork extends AbstractGasTankConduitNetwork<Adv
             int leftOvers = gasPerConduit.amount % numCons;
             gasPerConduit.amount = gasPerConduit.amount / numCons;
 
-            for (AdvancedGasConduit con : getConduits()) {
+            for (AdvancedGasConduitImpl con : getConduits()) {
                 GasStack g = gasPerConduit.copy();
                 if (leftOvers > 0) {
                     g.amount += 1;
@@ -189,7 +189,7 @@ public class AdvancedGasConduitNetwork extends AbstractGasTankConduitNetwork<Adv
         return result;
     }
 
-    public boolean extractFrom(@Nonnull AdvancedGasConduit advancedGasConduit, @Nonnull EnumFacing dir,
+    public boolean extractFrom(@Nonnull AdvancedGasConduitImpl advancedGasConduit, @Nonnull EnumFacing dir,
                                int maxExtractPerTick) {
         if (tank.isFull()) {
             return false;
@@ -227,7 +227,7 @@ public class AdvancedGasConduitNetwork extends AbstractGasTankConduitNetwork<Adv
         return GasWrapper.getGasHandler(getWorld(), output.getLocation(), output.getDir());
     }
 
-    public IGasHandler getTankContainer(@Nonnull AdvancedGasConduit con, @Nonnull EnumFacing dir) {
+    public IGasHandler getTankContainer(@Nonnull AdvancedGasConduitImpl con, @Nonnull EnumFacing dir) {
         return GasWrapper.getGasHandler(getWorld(), con.getBundle().getLocation().offset(dir), dir.getOpposite());
     }
 

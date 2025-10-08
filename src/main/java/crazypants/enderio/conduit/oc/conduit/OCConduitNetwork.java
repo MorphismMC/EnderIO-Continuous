@@ -14,12 +14,12 @@ import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 
 @Interface(iface = "li.cil.oc.api.network.ManagedEnvironment", modid = "opencomputersapi|network")
-public class OCConduitNetwork extends AbstractConduitNetwork<IOCConduit, IOCConduit> implements ManagedEnvironment {
+public class OCConduitNetwork extends AbstractConduitNetwork<OCConduit, OCConduit> implements ManagedEnvironment {
 
     private Node[] node = new Node[DyeColor.values().length];
 
     public OCConduitNetwork() {
-        super(IOCConduit.class, IOCConduit.class);
+        super(OCConduit.class, OCConduit.class);
         for (DyeColor dyeColor : DyeColor.values()) {
             node[dyeColor.ordinal()] = Network.newNode(this, Visibility.Network).create();
             Network.joinNewNetwork(node[dyeColor.ordinal()]);
@@ -39,7 +39,7 @@ public class OCConduitNetwork extends AbstractConduitNetwork<IOCConduit, IOCCond
     @Override
     @Method(modid = "opencomputersapi|network")
     public void onConnect(Node nodeIn) {
-        for (IOCConduit conduit : getConduits()) {
+        for (OCConduit conduit : getConduits()) {
             conduit.onConnect(nodeIn);
         }
     }
@@ -47,7 +47,7 @@ public class OCConduitNetwork extends AbstractConduitNetwork<IOCConduit, IOCCond
     @Override
     @Method(modid = "opencomputersapi|network")
     public void onDisconnect(Node nodeIn) {
-        for (IOCConduit conduit : getConduits()) {
+        for (OCConduit conduit : getConduits()) {
             conduit.onDisconnect(nodeIn);
         }
     }

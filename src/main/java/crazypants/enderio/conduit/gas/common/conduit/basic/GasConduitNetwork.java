@@ -19,14 +19,14 @@ import crazypants.enderio.base.diagnostics.Prof;
 import crazypants.enderio.conduit.gas.common.conduit.AbstractGasTankConduit;
 import crazypants.enderio.conduit.gas.common.conduit.AbstractGasTankConduitNetwork;
 import crazypants.enderio.conduit.gas.common.conduit.ConduitGasTank;
-import crazypants.enderio.conduit.gas.common.conduit.IGasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.GasConduit;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 
-public class GasConduitNetwork extends AbstractGasTankConduitNetwork<GasConduit> {
+public class GasConduitNetwork extends AbstractGasTankConduitNetwork<GasConduitImpl> {
 
     public GasConduitNetwork() {
-        super(GasConduit.class);
+        super(GasConduitImpl.class);
     }
 
     private int ticksEmpty = 0;
@@ -50,7 +50,7 @@ public class GasConduitNetwork extends AbstractGasTankConduitNetwork<GasConduit>
 
     @Override
     public void tickEnd(ServerTickEvent event, @Nullable Profiler profiler) {
-        List<GasConduit> cons = getConduits();
+        List<GasConduitImpl> cons = getConduits();
         if (cons.isEmpty()) {
             return;
         }
@@ -101,8 +101,8 @@ public class GasConduitNetwork extends AbstractGasTankConduitNetwork<GasConduit>
         boolean result = !actions.isEmpty();
 
         // Flush any tanks with a tiny bit left
-        List<GasConduit> toEmpty = new ArrayList<>();
-        for (GasConduit con : getConduits()) {
+        List<GasConduitImpl> toEmpty = new ArrayList<>();
+        for (GasConduitImpl con : getConduits()) {
             if (con != null && con.getTank().getStored() < 10) {
                 toEmpty.add(con);
             } else {
@@ -146,7 +146,7 @@ public class GasConduitNetwork extends AbstractGasTankConduitNetwork<GasConduit>
         return getConduits().stream().noneMatch(con -> con.getTank().getStored() > 0);
     }
 
-    private void drainConduitToNearestExternal(@Nonnull GasConduit con, List<LocatedGasHandler> externals) {
+    private void drainConduitToNearestExternal(@Nonnull GasConduitImpl con, List<LocatedGasHandler> externals) {
         BlockPos conPos = con.getBundle().getLocation();
         GasStack toDrain = con.getTank().getGas();
         if (toDrain == null) {
@@ -171,7 +171,7 @@ public class GasConduitNetwork extends AbstractGasTankConduitNetwork<GasConduit>
         }
     }
 
-    private void flowFrom(@Nonnull GasConduit con, List<FlowAction> actions, int pushPoken) {
+    private void flowFrom(@Nonnull GasConduitImpl con, List<FlowAction> actions, int pushPoken) {
         ConduitGasTank tank = con.getTank();
         int totalAmount = tank.getStored();
         if (totalAmount <= 0) {
@@ -228,9 +228,9 @@ public class GasConduitNetwork extends AbstractGasTankConduitNetwork<GasConduit>
 
         try {
             BlockPos pos = con.getBundle().getLocation();
-            Collection<IGasConduit> connections = ConduitUtil.getConnectedConduits(con.getBundle().getTileEntity().getWorld(), pos, IGasConduit.class);
-            for (IGasConduit n : connections) {
-                GasConduit neighbour = (GasConduit) n;
+            Collection<GasConduit> connections = ConduitUtil.getConnectedConduits(con.getBundle().getTileEntity().getWorld(), pos, GasConduit.class);
+            for (GasConduit n : connections) {
+                GasConduitImpl neighbour = (GasConduitImpl) n;
                 if (canFlowTo(con, neighbour)) { // can only flow within same network
                     totalAmount += neighbour.getTank().getStored();
                     totalCapacity += neighbour.getTank().getMaxGas();
@@ -245,8 +245,8 @@ public class GasConduitNetwork extends AbstractGasTankConduitNetwork<GasConduit>
                 return; // dont bother with transfers of less than a thousands of a bucket
             }
 
-            for (IGasConduit n : connections) {
-                GasConduit neighbour = (GasConduit) n;
+            for (GasConduit n : connections) {
+                GasConduitImpl neighbour = (GasConduitImpl) n;
                 if (canFlowTo(con, neighbour)) { // can only flow within same network
                     flowVolume = (int) Math.floor(
                             (targetRatio - neighbour.getTank().getFilledRatio()) * neighbour.getTank().getMaxGas());
@@ -260,7 +260,7 @@ public class GasConduitNetwork extends AbstractGasTankConduitNetwork<GasConduit>
         }
     }
 
-    private boolean canFlowTo(GasConduit con, GasConduit neighbour) {
+    private boolean canFlowTo(GasConduitImpl con, GasConduitImpl neighbour) {
         if (con == null || neighbour == null) {
             return false;
         }
@@ -272,11 +272,11 @@ public class GasConduitNetwork extends AbstractGasTankConduitNetwork<GasConduit>
 
     private static class FlowAction {
 
-        private final GasConduit from;
-        private final GasConduit to;
+        private final GasConduitImpl from;
+        private final GasConduitImpl to;
         private final int amount;
 
-        private FlowAction(GasConduit fromIn, GasConduit toIn, int amountIn) {
+        private FlowAction(GasConduitImpl fromIn, GasConduitImpl toIn, int amountIn) {
             if (amountIn < 0) {
                 to = fromIn;
                 from = toIn;

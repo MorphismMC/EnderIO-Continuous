@@ -1,12 +1,8 @@
 package crazypants.enderio.conduit.me.conduit;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
 import appeng.api.AEApi;
 import crazypants.enderio.api.IModObject;
@@ -21,44 +17,55 @@ import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.conduit.me.MEUtil;
 import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemMEConduit extends AbstractConduitItem {
 
-    public static ItemMEConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
+    public static ItemMEConduit create(@NotNull IModObject modObject, @Nullable Block block) {
         if (MEUtil.isMEEnabled()) {
             return new ItemMEConduit(modObject);
         }
         return null;
     }
 
-    protected ItemMEConduit(@Nonnull IModObject modObject) {
+    protected ItemMEConduit(@NotNull IModObject modObject) {
         super(modObject, new ItemConduitSubtype(modObject.getUnlocalisedName(), modObject.getRegistryName().toString()),
                 new ItemConduitSubtype(modObject.getUnlocalisedName() + "_dense",
-                        modObject.getRegistryName().toString() + "_dense"));
+                        modObject.getRegistryName() + "_dense"));
 
-        ConduitRegistry.register(ConduitBuilder.start()
-                .setUUID(new ResourceLocation(EnderIO.DOMAIN, "appliedenergistics")).setClass(getBaseConduitType())
-                .setOffsets(Offset.EAST_UP, Offset.SOUTH_UP, Offset.NORTH_EAST, Offset.EAST_UP).build()
-                .setUUID(new ResourceLocation(EnderIO.DOMAIN, "appliedenergistics_conduit")).setClass(MEConduit.class)
-                .build().finish());
+        var definition = ConduitBuilder.builder()
+                .id(EnderIO.id("appliedenergistics"))
+                .baseType(getBaseConduitType())
+                .offsets(Offset.EAST_UP, Offset.SOUTH_UP, Offset.NORTH_EAST, Offset.EAST_UP)
+                .build();
+
+        ConduitRegistry.register(definition
+                .id(EnderIO.id("appliedenergistics_conduit"))
+                .baseType(MEConduitImpl.class)
+                .build()
+                .finish());
+
         ConduitDisplayMode.registerDisplayMode(
                 new ConduitDisplayMode(getBaseConduitType(), IconEIO.WRENCH_OVERLAY_ME, IconEIO.WRENCH_OVERLAY_ME_OFF));
     }
 
+    @NotNull
     @Override
-    public @Nonnull Class<? extends Conduit> getBaseConduitType() {
-        return IMEConduit.class;
+    public Class<? extends Conduit> getBaseConduitType() {
+        return MEConduit.class;
     }
 
     @Override
-    public ConduitServer createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
-        MEConduit con = new MEConduit(item.getItemDamage());
-        con.setPlayerID(AEApi.instance().registries().players().getID(player));
-        return con;
+    public ConduitServer createConduit(@NotNull ItemStack item, @NotNull EntityPlayer player) {
+        MEConduitImpl conduit = new MEConduitImpl(item.getItemDamage());
+        conduit.setPlayerID(AEApi.instance().registries().players().getID(player));
+        return conduit;
     }
 
     @Override
-    public boolean shouldHideFacades(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
+    public boolean shouldHideFacades(@NotNull ItemStack stack, @NotNull EntityPlayer player) {
         return true;
     }
+
 }

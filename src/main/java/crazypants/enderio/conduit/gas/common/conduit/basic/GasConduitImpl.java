@@ -26,7 +26,7 @@ import crazypants.enderio.conduit.gas.GasConduitsConstants;
 import crazypants.enderio.conduit.gas.common.conduit.AbstractGasTankConduit;
 import crazypants.enderio.conduit.gas.common.conduit.AbstractGasTankConduitNetwork;
 import crazypants.enderio.conduit.gas.common.conduit.GasConduitObject;
-import crazypants.enderio.conduit.gas.common.conduit.IGasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.GasConduit;
 import crazypants.enderio.conduit.gas.common.config.GasConduitConfig;
 import crazypants.enderio.conduit.gas.common.network.PacketConduitGasLevel;
 import crazypants.enderio.conduit.gas.common.utils.GasUtil;
@@ -35,7 +35,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 
-public class GasConduit extends AbstractGasTankConduit {
+public class GasConduitImpl extends AbstractGasTankConduit {
 
     static final int VOLUME_PER_CONNECTION = GasConduitsConstants.GAS_VOLUME / 4;
 
@@ -199,9 +199,9 @@ public class GasConduit extends AbstractGasTankConduit {
         do {
             if (dir != from && canOutputToDir(dir) && !autoExtractForDir(dir)) {
                 if (containsConduitConnection(dir)) {
-                    IGasConduit conduitCon = getGasConduit(dir);
+                    GasConduit conduitCon = getGasConduit(dir);
                     if (conduitCon != null) {
-                        int toCon = ((GasConduit) conduitCon).pushGas(dir.getOpposite(), toPush, doPush, token);
+                        int toCon = ((GasConduitImpl) conduitCon).pushGas(dir.getOpposite(), toPush, doPush, token);
                         toPush.amount -= toCon;
                         pushed += toCon;
                     }
@@ -222,9 +222,9 @@ public class GasConduit extends AbstractGasTankConduit {
         return pushed;
     }
 
-    private IGasConduit getGasConduit(@Nonnull EnumFacing dir) {
+    private GasConduit getGasConduit(@Nonnull EnumFacing dir) {
         TileEntity ent = getBundle().getTileEntity();
-        return ConduitUtil.getConduit(ent.getWorld(), ent, dir, IGasConduit.class);
+        return ConduitUtil.getConduit(ent.getWorld(), ent, dir, GasConduit.class);
     }
 
     @Override
@@ -284,10 +284,10 @@ public class GasConduit extends AbstractGasTankConduit {
 
     @Override
     public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull Conduit con) {
-        if (!super.canConnectToConduit(direction, con) || !(con instanceof GasConduit)) {
+        if (!super.canConnectToConduit(direction, con) || !(con instanceof GasConduitImpl)) {
             return false;
         }
-        return GasConduitNetwork.areGasesCompatible(getGasType(), ((GasConduit) con).getGasType());
+        return GasConduitNetwork.areGasesCompatible(getGasType(), ((GasConduitImpl) con).getGasType());
     }
 
     @SideOnly(Side.CLIENT)
@@ -314,8 +314,8 @@ public class GasConduit extends AbstractGasTankConduit {
     }
 
     @Override
-    protected boolean canJoinNeighbour(IGasConduit n) {
-        return n instanceof GasConduit;
+    protected boolean canJoinNeighbour(GasConduit n) {
+        return n instanceof GasConduitImpl;
     }
 
     @Override
@@ -344,7 +344,7 @@ public class GasConduit extends AbstractGasTankConduit {
         public int receiveGas(EnumFacing side, GasStack resource, boolean doFill) {
             if (canReceiveGas(side, resource.getGas()) && network != null && network.lockNetworkForFill()) {
                 try {
-                    int res = GasConduit.this.receiveGas(side, resource, doFill, true,
+                    int res = GasConduitImpl.this.receiveGas(side, resource, doFill, true,
                             network == null ? -1 : network.getNextPushToken());
                     if (doFill && externalConnections.contains(side) && network != null) {
                         network.addedFromExternal(res);
@@ -363,6 +363,6 @@ public class GasConduit extends AbstractGasTankConduit {
     @Override
     @Nonnull
     public Class<? extends Conduit> getCollidableType() {
-        return GasConduit.class;
+        return GasConduitImpl.class;
     }
 }

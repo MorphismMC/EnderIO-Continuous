@@ -2,29 +2,34 @@ package crazypants.enderio.base.conduit.registry;
 
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-
 import com.enderio.core.common.util.NNList;
 
 import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.conduit.geom.Offset;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Use the {@link ConduitBuilder}
- *
- */
-public class ConduitTypeDefinition {
+@Getter
+public final class ConduitTypeDefinition {
 
-    private final @Nonnull UUID networkUUID;
-    private final @Nonnull NNList<UUID> aliases = new NNList<>();
-    private final @Nonnull Class<? extends Conduit> baseType;
-    private final @Nonnull Offset none, x, y, z;
+    @NotNull
+    private final UUID networkUUID;
+
+    @NotNull
+    private final NNList<UUID> aliases = new NNList<>();
+
+    @NotNull
+    private final Class<? extends Conduit> baseType;
+    @NotNull
+    private final Offset none, x, y, z;
     private final boolean canConnectToAnything;
-    private final @Nonnull NNList<ConduitDefinition> members = new NNList<>();
 
-    public ConduitTypeDefinition(@Nonnull UUID networkUUID, @Nonnull Class<? extends Conduit> baseType,
-                                 @Nonnull Offset none, @Nonnull Offset x,
-                                 @Nonnull Offset y, @Nonnull Offset z, boolean canConnectToAnything) {
+    @NotNull
+    private final NNList<ConduitDefinition> members = new NNList<>();
+
+    public ConduitTypeDefinition(@NotNull UUID networkUUID, @NotNull Class<? extends Conduit> baseType,
+                                 @NotNull Offset none, @NotNull Offset x, @NotNull Offset y, @NotNull Offset z,
+                                 boolean canConnectToAnything) {
         this.networkUUID = networkUUID;
         this.baseType = baseType;
         this.none = none;
@@ -32,57 +37,44 @@ public class ConduitTypeDefinition {
         this.y = y;
         this.z = z;
         this.canConnectToAnything = canConnectToAnything;
-        aliases.add(UUID.nameUUIDFromBytes(baseType.getName().getBytes())); // compatibility with early 1.12
+        aliases.add(UUID.nameUUIDFromBytes(baseType.getName().getBytes())); // Compatibility with early 1.12.
     }
 
-    public ConduitTypeDefinition(@Nonnull UUID networkUUID, @Nonnull Class<? extends Conduit> baseType,
-                                 @Nonnull Offset none, @Nonnull Offset x,
-                                 @Nonnull Offset y, @Nonnull Offset z) {
+    public ConduitTypeDefinition(@NotNull UUID networkUUID, @NotNull Class<? extends Conduit> baseType,
+                                 @NotNull Offset none, @NotNull Offset x, @NotNull Offset y, @NotNull Offset z) {
         this(networkUUID, baseType, none, x, y, z, false);
     }
 
-    public ConduitTypeDefinition(@Nonnull UUID networkUUID, @Nonnull Class<? extends Conduit> baseType,
+    public ConduitTypeDefinition(@NotNull UUID networkUUID, @NotNull Class<? extends Conduit> baseType,
                                  boolean canConnectToAnything) {
         this(networkUUID, baseType, Offset.NONE, Offset.NONE, Offset.NONE, Offset.NONE, canConnectToAnything);
     }
 
-    public ConduitTypeDefinition(@Nonnull UUID networkUUID, @Nonnull Class<? extends Conduit> baseType) {
+    public ConduitTypeDefinition(@NotNull UUID networkUUID, @NotNull Class<? extends Conduit> baseType) {
         this(networkUUID, baseType, Offset.NONE, Offset.NONE, Offset.NONE, Offset.NONE, false);
     }
 
-    void addMember(@Nonnull ConduitDefinition member) {
+    void addMember(ConduitDefinition member) {
         members.add(member);
     }
 
-    public @Nonnull NNList<ConduitDefinition> getMembers() {
-        return members;
-    }
-
-    public @Nonnull UUID getUUID() {
-        return networkUUID;
-    }
-
-    public @Nonnull NNList<UUID> getAliases() {
-        return aliases;
-    }
-
-    public @Nonnull Class<? extends Conduit> getBaseType() {
-        return baseType;
-    }
-
-    public @Nonnull Offset getPreferedOffsetForNone() {
+    @NotNull
+    public Offset getPreferredOffsetForNone() {
         return none;
     }
 
-    public @Nonnull Offset getPreferedOffsetForX() {
+    @NotNull
+    public Offset getPreferredOffsetForX() {
         return x;
     }
 
-    public @Nonnull Offset getPreferedOffsetForY() {
+    @NotNull
+    public Offset getPreferredOffsetForY() {
         return y;
     }
 
-    public @Nonnull Offset getPreferedOffsetForZ() {
+    @NotNull
+    public Offset getPreferredOffsetForZ() {
         return z;
     }
 
@@ -96,20 +88,18 @@ public class ConduitTypeDefinition {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if (obj == null) {
+        if (o == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != o.getClass()) {
             return false;
         }
-        ConduitTypeDefinition other = (ConduitTypeDefinition) obj;
-        if (!networkUUID.equals(other.networkUUID)) {
-            return false;
-        }
-        return true;
+        ConduitTypeDefinition other = (ConduitTypeDefinition) o;
+        return networkUUID.equals(other.networkUUID);
     }
+
 }

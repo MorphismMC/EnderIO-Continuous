@@ -20,7 +20,7 @@ public class EnderGasConduitRenderer extends DefaultConduitRenderer {
 
     @Override
     public boolean isRendererForConduit(@Nonnull Conduit conduit) {
-        return conduit instanceof EnderGasConduit;
+        return conduit instanceof EnderGasConduitImpl;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class EnderGasConduitRenderer extends DefaultConduitRenderer {
                                    float brightness, BlockRenderLayer layer, @Nonnull List<BakedQuad> quads) {
         super.addConduitQuads(bundle, conduit, texture, component, brightness, layer, quads);
 
-        EnderGasConduit pc = (EnderGasConduit) conduit;
+        EnderGasConduitImpl pc = (EnderGasConduitImpl) conduit;
         EnumFacing dir = component.direction();
         ConduitInOutRenderer.renderIO(bundle, conduit, component, layer, quads, pc.getInputColor(dir),
                 pc.getOutputColor(dir));

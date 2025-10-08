@@ -34,8 +34,8 @@ import crazypants.enderio.conduits.network.PacketExtractMode;
 import crazypants.enderio.util.EnumReader;
 import crazypants.enderio.conduit.gas.client.utils.GasFilterGuiUtil;
 import crazypants.enderio.conduit.gas.common.conduit.GasConduitObject;
-import crazypants.enderio.conduit.gas.common.conduit.IGasConduit;
-import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.GasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduitImpl;
 import crazypants.enderio.conduit.gas.common.network.PacketEnderGasConduit;
 
 public class GasSettings extends BaseSettingsPanel {
@@ -53,7 +53,7 @@ public class GasSettings extends BaseSettingsPanel {
     private final RedstoneModeButton<?> rsB;
     private final ColorButton colorB;
     private boolean isEnder = false;
-    private EnderGasConduit eCon;
+    private EnderGasConduitImpl eCon;
 
     private ColorButton insertChannelB;
     private ColorButton extractChannelB;
@@ -68,16 +68,16 @@ public class GasSettings extends BaseSettingsPanel {
     private int priWidth = 32;
 
     @Nonnull
-    private final IGasConduit conduit;
+    private final GasConduit conduit;
 
     public GasSettings(@Nonnull final GuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_GAS, GasConduitObject.itemGasConduit.getUnlocalisedName(), gui, con,
                 "in_out_settings");
 
-        conduit = (IGasConduit) con;
-        if (con instanceof EnderGasConduit) {
+        conduit = (GasConduit) con;
+        if (con instanceof EnderGasConduitImpl) {
             isEnder = true;
-            eCon = (EnderGasConduit) con;
+            eCon = (EnderGasConduitImpl) con;
         }
 
         int x = leftColumn;

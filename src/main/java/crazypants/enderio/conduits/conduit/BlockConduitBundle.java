@@ -85,7 +85,7 @@ import crazypants.enderio.base.render.IBlockStateWrapper;
 import crazypants.enderio.base.render.registry.SmartModelAttacher;
 import crazypants.enderio.base.tool.ToolUtil;
 import crazypants.enderio.conduits.EnderIOConduits;
-import crazypants.enderio.conduits.conduit.redstone.IRedstoneConduit;
+import crazypants.enderio.conduits.conduit.redstone.RedstoneConduit;
 import crazypants.enderio.conduits.config.ConduitConfig;
 import crazypants.enderio.conduits.gui.ExternalConnectionContainer;
 import crazypants.enderio.conduits.gui.GuiExternalConnection;
@@ -518,7 +518,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     @Override
     public int getStrongPower(@Nonnull IBlockState bs, @Nonnull IBlockAccess world, @Nonnull BlockPos pos,
                               @Nonnull EnumFacing side) {
-        IRedstoneConduit con = getRedstoneConduit(world, pos);
+        RedstoneConduit con = getRedstoneConduit(world, pos);
         if (con == null) {
             return 0;
         }
@@ -528,7 +528,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     @Override
     public int getWeakPower(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos,
                             @Nonnull EnumFacing side) {
-        IRedstoneConduit con = getRedstoneConduit(world, pos);
+        RedstoneConduit con = getRedstoneConduit(world, pos);
         if (con == null) {
             return 0;
         }
@@ -539,7 +539,7 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
     @Override
     public boolean canConnectRedstone(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos,
                                       @Nullable EnumFacing side) {
-        IRedstoneConduit con = getRedstoneConduit(world, pos);
+        RedstoneConduit con = getRedstoneConduit(world, pos);
         if (con == null) {
             return false;
         }
@@ -1022,12 +1022,12 @@ public class BlockConduitBundle extends BlockEio<TileConduitBundle>
         return hits;
     }
 
-    private IRedstoneConduit getRedstoneConduit(@Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
+    private RedstoneConduit getRedstoneConduit(@Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         ConduitBundle te = getTileEntity(world, pos);
         if (te == null) {
             return null;
         }
-        return te.getConduit(IRedstoneConduit.class);
+        return te.getConduit(RedstoneConduit.class);
     }
 
     // PAINT

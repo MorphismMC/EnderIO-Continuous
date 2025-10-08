@@ -20,7 +20,7 @@ public class InsulatedRedstoneConduitRenderer extends DefaultConduitRenderer {
 
     @Override
     public boolean isRendererForConduit(@Nonnull Conduit conduit) {
-        return conduit instanceof IRedstoneConduit;
+        return conduit instanceof RedstoneConduit;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class InsulatedRedstoneConduitRenderer extends DefaultConduitRenderer {
                                    @Nonnull List<BakedQuad> quads) {
         super.addConduitQuads(bundle, conduit, texture, component, brightness, layer, quads);
 
-        IRedstoneConduit pc = (IRedstoneConduit) conduit;
+        RedstoneConduit pc = (RedstoneConduit) conduit;
         EnumFacing dir = component.direction();
         ConduitInOutRenderer.renderIO(bundle, conduit, component, layer, quads, pc.getInputSignalColor(dir),
                 pc.getOutputSignalColor(dir));

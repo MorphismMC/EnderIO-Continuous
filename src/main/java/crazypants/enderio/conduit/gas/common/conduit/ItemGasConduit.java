@@ -2,14 +2,10 @@ package crazypants.enderio.conduit.gas.common.conduit;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import crazypants.enderio.conduit.gas.EnderIOConduitsMekanism;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,87 +24,97 @@ import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 import crazypants.enderio.conduits.render.ConduitBundleRenderManager;
-import crazypants.enderio.conduit.gas.common.conduit.advanced.AdvancedGasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.advanced.AdvancedGasConduitImpl;
 import crazypants.enderio.conduit.gas.common.conduit.advanced.AdvancedGasConduitRenderer;
-import crazypants.enderio.conduit.gas.common.conduit.basic.GasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.basic.GasConduitImpl;
 import crazypants.enderio.conduit.gas.common.conduit.basic.GasConduitRenderer;
-import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduitImpl;
 import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduitRenderer;
 import crazypants.enderio.conduit.gas.common.config.GasConduitConfig;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemGasConduit extends AbstractConduitItem implements IAdvancedTooltipProvider {
 
-    public static ItemGasConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
+    public static ItemGasConduit create(@NotNull IModObject modObject, @Nullable Block block) {
         return new ItemGasConduit(modObject);
     }
 
-    protected ItemGasConduit(@Nonnull IModObject modObject) {
+    protected ItemGasConduit(@NotNull IModObject modObject) {
         super(modObject, new ItemConduitSubtype(modObject.getUnlocalisedName(), modObject.getRegistryName().toString()),
                 new ItemConduitSubtype(modObject.getUnlocalisedName() + "_advanced",
-                        modObject.getRegistryName().toString() + "_advanced"),
+                        modObject.getRegistryName() + "_advanced"),
                 new ItemConduitSubtype(modObject.getUnlocalisedName() + "_ender",
-                        modObject.getRegistryName().toString() + "_ender"));
-        ConduitRegistry
-                .register(ConduitBuilder.start().setUUID(new ResourceLocation(EnderIOConduitsMekanism.MOD_ID, "gas"))
-                        .setClass(getBaseConduitType())
-                        .setOffsets(Offset.EAST_DOWN, Offset.SOUTH_DOWN, Offset.SOUTH_EAST, Offset.EAST_DOWN).build()
-                        .setUUID(new ResourceLocation(EnderIOConduitsMekanism.MOD_ID, "gas_conduit"))
-                        .setClass(GasConduit.class).build()
-                        .setUUID(new ResourceLocation(EnderIOConduitsMekanism.MOD_ID, "advanced_gas_conduit"))
-                        .setClass(AdvancedGasConduit.class).build()
-                        .setUUID(new ResourceLocation(EnderIOConduitsMekanism.MOD_ID, "ender_gas_conduit"))
-                        .setClass(EnderGasConduit.class).build().finish());
+                        modObject.getRegistryName() + "_ender"));
+
+        var definition = ConduitBuilder.builder()
+                .id(EnderIOConduitsMekanism.id("gas"))
+                .baseType(getBaseConduitType())
+                .offsets(Offset.EAST_DOWN, Offset.SOUTH_DOWN, Offset.SOUTH_EAST, Offset.EAST_DOWN)
+                .build();
+
+        ConduitRegistry.register(definition
+                .id(EnderIOConduitsMekanism.id("gas_conduit"))
+                .baseType(GasConduitImpl.class)
+                .build()
+                .id(EnderIOConduitsMekanism.id("advanced_gas_conduit"))
+                .baseType(AdvancedGasConduitImpl.class)
+                .build()
+                .id(EnderIOConduitsMekanism.id("ender_gas_conduit"))
+                .baseType(EnderGasConduitImpl.class)
+                .build()
+                .finish());
+
         ConduitDisplayMode.registerDisplayMode(new ConduitDisplayMode(getBaseConduitType(), IconEIO.WRENCH_OVERLAY_GAS,
                 IconEIO.WRENCH_OVERLAY_GAS_OFF));
     }
 
-    @Override
     @SideOnly(Side.CLIENT)
-    public void registerRenderers(@Nonnull IModObject modObject) {
+    @Override
+    public void registerRenderers(@NotNull IModObject modObject) {
         super.registerRenderers(modObject);
         ConduitBundleRenderManager.instance.getConduitBundleRenderer().registerRenderer(GasConduitRenderer.create());
-        ConduitBundleRenderManager.instance.getConduitBundleRenderer()
-                .registerRenderer(new AdvancedGasConduitRenderer());
+        ConduitBundleRenderManager.instance.getConduitBundleRenderer().registerRenderer(new AdvancedGasConduitRenderer());
         ConduitBundleRenderManager.instance.getConduitBundleRenderer().registerRenderer(new EnderGasConduitRenderer());
     }
 
+    @NotNull
     @Override
-    @Nonnull
     public Class<? extends Conduit> getBaseConduitType() {
-        return IGasConduit.class;
+        return GasConduit.class;
     }
 
     @Override
-    public ConduitServer createConduit(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
+    public ConduitServer createConduit(@NotNull ItemStack stack, @NotNull EntityPlayer player) {
         if (stack.getItemDamage() == 1) {
-            return new AdvancedGasConduit();
+            return new AdvancedGasConduitImpl();
         } else if (stack.getItemDamage() == 2) {
-            return new EnderGasConduit();
+            return new EnderGasConduitImpl();
         }
-        return new GasConduit();
+        return new GasConduitImpl();
     }
 
-    @Override
     @SideOnly(Side.CLIENT)
-    public void addCommonEntries(@Nonnull ItemStack itemstack, @Nullable EntityPlayer entityplayer,
-                                 @Nonnull List<String> list, boolean flag) {}
+    @Override
+    public void addCommonEntries(@NotNull ItemStack stack, @Nullable EntityPlayer player,
+                                 @NotNull List<String> list, boolean flag) {}
 
-    @Override
     @SideOnly(Side.CLIENT)
-    public void addBasicEntries(@Nonnull ItemStack itemstack, @Nullable EntityPlayer entityplayer,
-                                @Nonnull List<String> list, boolean flag) {}
+    @Override
+    public void addBasicEntries(@NotNull ItemStack stack, @Nullable EntityPlayer player,
+                                @NotNull List<String> list, boolean flag) {}
 
-    @Override
     @SideOnly(Side.CLIENT)
-    public void addDetailedEntries(@Nonnull ItemStack itemstack, @Nullable EntityPlayer entityplayer,
-                                   @Nonnull List<String> list, boolean flag) {
+    @Override
+    public void addDetailedEntries(@NotNull ItemStack stack, @Nullable EntityPlayer player,
+                                   @NotNull List<String> list, boolean flag) {
         int extractRate;
         int maxIo;
 
-        if (itemstack.getItemDamage() == 0) {
+        if (stack.getItemDamage() == 0) {
             extractRate = GasConduitConfig.tier1_extractRate.get();
             maxIo = GasConduitConfig.tier1_maxIO.get();
-        } else if (itemstack.getItemDamage() == 1) {
+        } else if (stack.getItemDamage() == 1) {
             extractRate = GasConduitConfig.tier2_extractRate.get();
             maxIo = GasConduitConfig.tier2_maxIO.get();
         } else {
@@ -122,13 +128,14 @@ public class ItemGasConduit extends AbstractConduitItem implements IAdvancedTool
         list.add(new TextComponentTranslation("gasconduits.item_gas_conduit.tooltip.max_io")
                 .getUnformattedComponentText() + " " + maxIo + mbt);
 
-        if (itemstack.getItemDamage() == 0) {
+        if (stack.getItemDamage() == 0) {
             SpecialTooltipHandler.addDetailedTooltipFromResources(list, "gasconduits.item_gas_conduit");
         }
     }
 
     @Override
-    public boolean shouldHideFacades(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
+    public boolean shouldHideFacades(@NotNull ItemStack stack, @NotNull EntityPlayer player) {
         return true;
     }
+
 }

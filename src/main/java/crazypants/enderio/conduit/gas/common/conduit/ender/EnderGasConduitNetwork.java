@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import com.enderio.core.common.util.RoundRobinIterator;
 
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
-import crazypants.enderio.conduit.gas.common.conduit.IGasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.GasConduit;
 import crazypants.enderio.conduit.gas.common.conduit.NetworkGasTank;
 import crazypants.enderio.conduit.gas.common.config.GasConduitConfig;
 import crazypants.enderio.conduit.gas.common.filter.GasFilter;
@@ -22,7 +22,7 @@ import crazypants.enderio.conduit.gas.common.utils.GasUtil;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 
-public class EnderGasConduitNetwork extends AbstractConduitNetwork<IGasConduit, EnderGasConduit> {
+public class EnderGasConduitNetwork extends AbstractConduitNetwork<GasConduit, EnderGasConduitImpl> {
 
     List<NetworkGasTank> tanks = new ArrayList<>();
     Map<NetworkTankKey, NetworkGasTank> tankMap = new HashMap<>();
@@ -31,10 +31,10 @@ public class EnderGasConduitNetwork extends AbstractConduitNetwork<IGasConduit, 
     boolean filling;
 
     public EnderGasConduitNetwork() {
-        super(EnderGasConduit.class, IGasConduit.class);
+        super(EnderGasConduitImpl.class, GasConduit.class);
     }
 
-    public void connectionChanged(@Nonnull EnderGasConduit con, @Nonnull EnumFacing conDir) {
+    public void connectionChanged(@Nonnull EnderGasConduitImpl con, @Nonnull EnumFacing conDir) {
         NetworkTankKey key = new NetworkTankKey(con, conDir);
         NetworkGasTank tank = new NetworkGasTank(con, conDir);
 
@@ -56,7 +56,7 @@ public class EnderGasConduitNetwork extends AbstractConduitNetwork<IGasConduit, 
         }
     }
 
-    public boolean extractFrom(@Nonnull EnderGasConduit con, @Nonnull EnumFacing conDir) {
+    public boolean extractFrom(@Nonnull EnderGasConduitImpl con, @Nonnull EnumFacing conDir) {
         NetworkGasTank tank = getTank(con, conDir);
         if (!tank.isValid() || tank.getExternalTank() == null) {
             return false;
@@ -81,11 +81,11 @@ public class EnderGasConduitNetwork extends AbstractConduitNetwork<IGasConduit, 
     }
 
     @Nonnull
-    private NetworkGasTank getTank(@Nonnull EnderGasConduit con, @Nonnull EnumFacing conDir) {
+    private NetworkGasTank getTank(@Nonnull EnderGasConduitImpl con, @Nonnull EnumFacing conDir) {
         return tankMap.get(new NetworkTankKey(con, conDir));
     }
 
-    public int fillFrom(@Nonnull EnderGasConduit con, @Nonnull EnumFacing conDir, GasStack resource, boolean doFill) {
+    public int fillFrom(@Nonnull EnderGasConduitImpl con, @Nonnull EnumFacing conDir, GasStack resource, boolean doFill) {
         return fillFrom(getTank(con, conDir), resource, doFill);
     }
 
@@ -139,7 +139,7 @@ public class EnderGasConduitNetwork extends AbstractConduitNetwork<IGasConduit, 
         return tank.con.getExtractSpeedMultiplier(tank.conDir);
     }
 
-    private boolean matchedFilter(GasStack drained, @Nonnull EnderGasConduit con, @Nonnull EnumFacing conDir,
+    private boolean matchedFilter(GasStack drained, @Nonnull EnderGasConduitImpl con, @Nonnull EnumFacing conDir,
                                   boolean isInput) {
         if (drained == null) {
             return false;
@@ -160,7 +160,7 @@ public class EnderGasConduitNetwork extends AbstractConduitNetwork<IGasConduit, 
         return res;
     }
 
-    public GasTankInfo[] getTankProperties(@Nonnull EnderGasConduit con, @Nonnull EnumFacing conDir) {
+    public GasTankInfo[] getTankProperties(@Nonnull EnderGasConduitImpl con, @Nonnull EnumFacing conDir) {
         List<GasTankInfo> res = new ArrayList<>(tanks.size());
         NetworkGasTank tank = getTank(con, conDir);
         for (NetworkGasTank target : tanks) {
@@ -176,7 +176,7 @@ public class EnderGasConduitNetwork extends AbstractConduitNetwork<IGasConduit, 
         EnumFacing conDir;
         BlockPos conduitLoc;
 
-        public NetworkTankKey(@Nonnull EnderGasConduit con, @Nonnull EnumFacing conDir) {
+        public NetworkTankKey(@Nonnull EnderGasConduitImpl con, @Nonnull EnumFacing conDir) {
             this(con.getBundle().getLocation(), conDir);
         }
 

@@ -1,0 +1,399 @@
+package crazypants.enderio.conduit.me.conduit;
+
+import static crazypants.enderio.conduit.me.init.ConduitAppliedEnergisticsObject.item_me_conduit;
+
+import java.util.EnumSet;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.Optional.Method;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import com.enderio.core.api.client.gui.ITabPanel;
+import com.enderio.core.common.vecmath.Vector4f;
+
+import appeng.api.AEApi;
+import appeng.api.networking.IGridConnection;
+import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNode;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
+import appeng.api.util.AEPartLocation;
+import crazypants.enderio.base.conduit.ConduitUtil;
+import crazypants.enderio.base.conduit.ConnectionMode;
+import crazypants.enderio.base.conduit.ConduitClient;
+import crazypants.enderio.base.conduit.Conduit;
+import crazypants.enderio.base.conduit.ConduitBundle;
+import crazypants.enderio.base.conduit.ConduitNetwork;
+import crazypants.enderio.base.conduit.ConduitTexture;
+import crazypants.enderio.base.conduit.GuiExternalConnection;
+import crazypants.enderio.base.conduit.RaytraceResult;
+import crazypants.enderio.base.conduit.geom.CollidableComponent;
+import crazypants.enderio.base.render.registry.TextureRegistry;
+import crazypants.enderio.base.tool.ToolUtil;
+import crazypants.enderio.conduit.me.gui.MESettings;
+import crazypants.enderio.conduits.conduit.AbstractConduit;
+import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
+import crazypants.enderio.conduits.conduit.TileConduitBundle;
+
+public class MEConduitImpl extends AbstractConduit implements MEConduit {
+
+    protected MEConduitNetwork network;
+    protected MEConduitGrid grid;
+
+    public static ConduitTexture coreTextureN = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/me_conduit_core"), crazypants.enderio.conduits.render.ConduitTexture.core());
+    public static ConduitTexture coreTextureD = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/me_conduit_core_dense"), crazypants.enderio.conduits.render.ConduitTexture.core());
+    public static ConduitTexture longTextureN = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/me_conduit"), crazypants.enderio.conduits.render.ConduitTexture.arm(0));
+    public static ConduitTexture longTextureD = new crazypants.enderio.conduits.render.ConduitTexture(
+            TextureRegistry.registerTexture("blocks/me_conduit"), crazypants.enderio.conduits.render.ConduitTexture.arm(1));
+
+    private boolean isDense;
+    private int playerID = -1;
+
+    private IGridNode nodeR;
+
+    public MEConduitImpl() {
+        this(0);
+    }
+
+    public MEConduitImpl(int itemDamage) {
+        isDense = itemDamage == 1;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void initIcons() {}
+
+    public static int getDamageForState(boolean isDense) {
+        return isDense ? 1 : 0;
+    }
+
+    @Override
+    @Nonnull
+    public Class<? extends Conduit> getBaseConduitType() {
+        return MEConduit.class;
+    }
+
+    @Override
+    @Nonnull
+    public ItemStack createItem() {
+        return new ItemStack(item_me_conduit.getItemNN(), 1, getDamageForState(isDense));
+    }
+
+    @Override
+    public AbstractConduitNetwork<?, ?> getNetwork() {
+        return network;
+    }
+
+    @Override
+    public boolean setNetwork(@Nonnull ConduitNetwork<?, ?> network) {
+        this.network = (MEConduitNetwork) network;
+        return super.setNetwork(network);
+    }
+
+    @Override
+    public void writeToNBT(@Nonnull NBTTagCompound data) {
+        super.writeToNBT(data);
+        data.setBoolean("isDense", isDense);
+        data.setInteger("playerID", playerID);
+    }
+
+    @Override
+    public void readFromNBT(@Nonnull NBTTagCompound data) {
+        super.readFromNBT(data);
+        isDense = data.getBoolean("isDense");
+        if (data.hasKey("playerID")) {
+            playerID = data.getInteger("playerID");
+        } else {
+            playerID = -1;
+        }
+    }
+
+    public void setPlayerID(int playerID) {
+        this.playerID = playerID;
+    }
+
+    @Override
+    public int getChannelsInUse() {
+        int channelsInUse = 0;
+        IGridNode node = getNode();
+        if (node != null) {
+            for (IGridConnection gc : node.getConnections()) {
+                channelsInUse = Math.max(channelsInUse, gc.getUsedChannels());
+            }
+        }
+        return channelsInUse;
+    }
+
+    @Override
+    @Method(modid = "appliedenergistics2")
+    public boolean canConnectToExternal(@Nonnull EnumFacing dir, boolean ignoreDisabled) {
+        World world = getBundle().getBundleworld();
+        BlockPos pos = getBundle().getLocation().offset(dir);
+        TileEntity te = world.getTileEntity(pos);
+
+        if (te instanceof TileConduitBundle) {
+            return false;
+        }
+
+        // because the AE2 API doesn't allow an easy query like "which side can connect to an ME cable" it needs this
+        // mess
+        if (te instanceof IPartHost) {
+            IPart part = ((IPartHost) te).getPart(dir.getOpposite());
+            if (part == null) {
+                part = ((IPartHost) te).getPart(AEPartLocation.INTERNAL);
+                return part != null;
+            }
+            if (part.getExternalFacingNode() != null) {
+                return true;
+            }
+            String name = part.getClass().getSimpleName();
+            return "PartP2PTunnelME".equals(name) || "PartQuartzFiber".equals(name) || "PartToggleBus".equals(name) ||
+                    "PartInvertedToggleBus".equals(name);
+        } else if (te instanceof IGridHost) {
+            IGridNode node = ((IGridHost) te).getGridNode(AEPartLocation.fromFacing(dir.getOpposite()));
+            if (node == null) {
+                node = ((IGridHost) te).getGridNode(AEPartLocation.INTERNAL);
+            }
+            if (node != null) {
+                return node.getGridBlock().getConnectableSides().contains(dir.getOpposite());
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public @Nonnull ConduitTexture getTextureForState(@Nonnull CollidableComponent component) {
+        if (component.isCore()) {
+            return (isDense ? coreTextureD : coreTextureN);
+        } else {
+            return (isDense ? longTextureD : longTextureN);
+        }
+    }
+
+    @Override
+    public @Nullable ConduitTexture getTransmitionTextureForState(@Nonnull CollidableComponent component) {
+        return null;
+    }
+
+    @Override
+    public @Nullable Vector4f getTransmitionTextureColorForState(@Nonnull CollidableComponent component) {
+        return null;
+    }
+
+    @Override
+    @Method(modid = "appliedenergistics2")
+    public void updateEntity(@Nonnull World worldObj) {
+        if (grid == null) {
+            grid = new MEConduitGrid(this);
+        }
+
+        if (getNode() == null && !worldObj.isRemote) {
+            IGridNode node = AEApi.instance().grid().createGridNode(grid);
+            if (node != null) {
+                node.setPlayerID(playerID);
+                setGridNode(node);
+                if (getNode() != null) {
+                    getNode().updateState();
+                }
+            }
+        }
+
+        super.updateEntity(worldObj);
+    }
+
+    @Override
+    public @Nonnull ConnectionMode getNextConnectionMode(@Nonnull EnumFacing direction) {
+        ConnectionMode mode = getConnectionMode(direction);
+        mode = mode == ConnectionMode.IN_OUT ? ConnectionMode.DISABLED : ConnectionMode.IN_OUT;
+        return mode;
+    }
+
+    @Override
+    public @Nonnull ConnectionMode getPreviousConnectionMode(@Nonnull EnumFacing direction) {
+        return getNextConnectionMode(direction);
+    }
+
+    @Override
+    public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull Conduit conduit) {
+        if (!super.canConnectToConduit(direction, conduit)) {
+            return false;
+        }
+        return conduit instanceof MEConduit;
+    }
+
+    @Override
+    @Method(modid = "appliedenergistics2")
+    public void connectionsChanged() {
+        super.connectionsChanged();
+        BlockPos pos = getBundle().getLocation();
+        onNodeChanged(pos);
+        IGridNode node = getNode();
+        if (node != null) {
+            node.updateState();
+            World world = node.getWorld();
+            if (!world.isRemote && world instanceof WorldServer)
+                ((WorldServer) world).getPlayerChunkMap().markBlockForUpdate(pos);
+        }
+    }
+
+    @Override
+    public boolean onBlockActivated(@Nonnull EntityPlayer player, @Nonnull EnumHand hand, @Nonnull RaytraceResult res,
+                                    @Nonnull List<RaytraceResult> all) {
+        if (ToolUtil.isToolEquipped(player, hand)) {
+            if (!getBundle().getTileEntity().getWorld().isRemote) {
+                final CollidableComponent component = res.component();
+                if (component != null) {
+                    EnumFacing faceHit = res.movingObjectPosition().sideHit;
+                    if (component.isCore()) {
+                        if (getConnectionMode(faceHit) == ConnectionMode.DISABLED) {
+                            setConnectionMode(faceHit, ConnectionMode.IN_OUT);
+                            return true;
+                        }
+                        return ConduitUtil.connectConduits(this, faceHit);
+                    } else {
+                        EnumFacing connDir = component.direction();
+                        if (externalConnections.contains(connDir)) {
+                            setConnectionMode(connDir, getNextConnectionMode(connDir));
+                        } else if (containsConduitConnection(connDir)) {
+                            ConduitUtil.disconnectConduits(this, connDir);
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Method(modid = "appliedenergistics2")
+    private void onNodeChanged(@Nonnull BlockPos pos) {
+        for (EnumFacing dir : EnumFacing.VALUES) {
+            TileEntity te = getBundle().getTileEntity();
+            if (te instanceof IGridHost && !(te instanceof ConduitBundle)) {
+                IGridNode node = ((IGridHost) te).getGridNode(AEPartLocation.INTERNAL);
+                if (node == null) {
+                    node = ((IGridHost) te).getGridNode(AEPartLocation.fromFacing(dir.getOpposite()));
+                }
+                if (node != null) {
+                    node.updateState();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onAddedToBundle() {
+        for (EnumFacing dir : EnumFacing.VALUES) {
+            TileEntity te = getBundle().getTileEntity();
+            if (te instanceof TileConduitBundle) {
+                MEConduit cond = ((TileConduitBundle) te).getConduit(MEConduit.class);
+                if (cond != null) {
+                    cond.setConnectionMode(dir.getOpposite(), ConnectionMode.IN_OUT);
+                    ConduitUtil.connectConduits(cond, dir.getOpposite());
+                }
+            }
+        }
+    }
+
+    @Override
+    @Method(modid = "appliedenergistics2")
+    public void onAfterRemovedFromBundle() {
+        super.onAfterRemovedFromBundle();
+        if (getNode() != null) {
+            getNode().destroy();
+        }
+        setGridNode(null);
+    }
+
+    @Override
+    @Method(modid = "appliedenergistics2")
+    public void onChunkUnload() {
+        super.onChunkUnload();
+        if (getNode() != null) {
+            getNode().destroy();
+        }
+        setGridNode(null);
+    }
+
+    @Override
+    public MEConduitGrid getGrid() {
+        return grid;
+    }
+
+    @Method(modid = "appliedenergistics2")
+    private IGridNode getNode() {
+        return getGridNode();
+    }
+
+    @Override
+    public EnumSet<EnumFacing> getConnections() {
+        EnumSet<EnumFacing> cons = EnumSet.noneOf(EnumFacing.class);
+        cons.addAll(getConduitConnections());
+        for (EnumFacing dir : getExternalConnections()) {
+            if (dir != null && getConnectionMode(dir) != ConnectionMode.DISABLED) {
+                cons.add(dir);
+            }
+        }
+        return cons;
+    }
+
+    @Override
+    public boolean isDense() {
+        return isDense;
+    }
+
+    @Override
+    public @Nonnull MEConduitNetwork createNetworkForType() {
+        return new MEConduitNetwork();
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    @Nonnull
+    public ITabPanel createGuiPanel(@Nonnull GuiExternalConnection gui, @Nonnull ConduitClient conduit) {
+        return new MESettings(gui, conduit);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public int getGuiPanelTabOrder() {
+        return 6;
+    }
+
+    private void setGridNode(IGridNode node) {
+        this.nodeR = node;
+    }
+
+    @Override
+    public void clearNetwork() {
+        this.network = null;
+    }
+
+    @Override
+    public boolean updateGuiPanel(@Nonnull ITabPanel panel) {
+        if (panel instanceof MESettings) {
+            return ((MESettings) panel).updateConduit(this);
+        }
+        return false;
+    }
+
+    @Override
+    public IGridNode getGridNode() {
+        return this.nodeR;
+    }
+}

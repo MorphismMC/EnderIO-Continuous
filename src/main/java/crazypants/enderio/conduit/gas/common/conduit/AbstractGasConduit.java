@@ -35,7 +35,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.common.capabilities.Capabilities;
 
-public abstract class AbstractGasConduit extends AbstractConduit implements IGasConduit {
+public abstract class AbstractGasConduit extends AbstractConduit implements GasConduit {
 
     protected final EnumMap<EnumFacing, RedstoneControlMode> extractionModes = new EnumMap<>(EnumFacing.class);
     protected final EnumMap<EnumFacing, DyeColor> extractionColors = new EnumMap<>(EnumFacing.class);
@@ -58,7 +58,7 @@ public abstract class AbstractGasConduit extends AbstractConduit implements IGas
     @Override
     @Nonnull
     public Class<? extends Conduit> getBaseConduitType() {
-        return IGasConduit.class;
+        return GasConduit.class;
     }
 
     @Override

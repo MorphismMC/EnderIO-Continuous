@@ -7,16 +7,16 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import crazypants.enderio.conduits.conduit.redstone.IRedstoneConduit;
+import crazypants.enderio.conduits.conduit.redstone.RedstoneConduit;
 import io.netty.buffer.ByteBuf;
 
-public class PacketRedstoneConduitOutputStrength extends AbstractConduitPacket.Sided<IRedstoneConduit> {
+public class PacketRedstoneConduitOutputStrength extends AbstractConduitPacket.Sided<RedstoneConduit> {
 
     private boolean isStrong;
 
     public PacketRedstoneConduitOutputStrength() {}
 
-    public PacketRedstoneConduitOutputStrength(@Nonnull IRedstoneConduit con, @Nonnull EnumFacing dir) {
+    public PacketRedstoneConduitOutputStrength(@Nonnull RedstoneConduit con, @Nonnull EnumFacing dir) {
         super(con, dir);
         isStrong = con.isOutputStrong(dir);
     }
@@ -37,7 +37,7 @@ public class PacketRedstoneConduitOutputStrength extends AbstractConduitPacket.S
 
         @Override
         public IMessage onMessage(PacketRedstoneConduitOutputStrength message, MessageContext ctx) {
-            IRedstoneConduit tile = message.getConduit(ctx);
+            RedstoneConduit tile = message.getConduit(ctx);
             if (tile != null) {
                 tile.setOutputStrength(message.dir, message.isStrong);
                 // message.getWorld(ctx).markBlockForUpdate(message.x, message.y, message.z);

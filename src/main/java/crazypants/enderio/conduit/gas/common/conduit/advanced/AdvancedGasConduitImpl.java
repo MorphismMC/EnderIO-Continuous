@@ -37,13 +37,13 @@ import crazypants.enderio.conduit.gas.common.conduit.AbstractGasTankConduit;
 import crazypants.enderio.conduit.gas.common.conduit.AbstractGasTankConduitNetwork;
 import crazypants.enderio.conduit.gas.common.conduit.GasConduitObject;
 import crazypants.enderio.conduit.gas.common.conduit.GasOutput;
-import crazypants.enderio.conduit.gas.common.conduit.IGasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.GasConduit;
 import crazypants.enderio.conduit.gas.common.conduit.basic.GasConduitNetwork;
 import crazypants.enderio.conduit.gas.common.config.GasConduitConfig;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 
-public class AdvancedGasConduit extends AbstractGasTankConduit {
+public class AdvancedGasConduitImpl extends AbstractGasTankConduit {
 
     public static final int CONDUIT_VOLUME = GasConduitsConstants.GAS_VOLUME;
 
@@ -61,7 +61,7 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
 
     private long ticksSinceFailedExtract = 0;
 
-    public AdvancedGasConduit() {
+    public AdvancedGasConduitImpl() {
         updateTank();
     }
 
@@ -145,10 +145,10 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
 
     @Override
     public boolean canConnectToConduit(@Nonnull EnumFacing direction, @Nonnull Conduit con) {
-        if (!super.canConnectToConduit(direction, con) || !(con instanceof AdvancedGasConduit)) {
+        if (!super.canConnectToConduit(direction, con) || !(con instanceof AdvancedGasConduitImpl)) {
             return false;
         }
-        return GasConduitNetwork.areGasesCompatible(getGasType(), ((AdvancedGasConduit) con).getGasType());
+        return GasConduitNetwork.areGasesCompatible(getGasType(), ((AdvancedGasConduitImpl) con).getGasType());
     }
 
     @Override
@@ -230,8 +230,8 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
     // --------------- End -------------------------
 
     @Override
-    protected boolean canJoinNeighbour(IGasConduit n) {
-        return n instanceof AdvancedGasConduit;
+    protected boolean canJoinNeighbour(GasConduit n) {
+        return n instanceof AdvancedGasConduitImpl;
     }
 
     @Override
@@ -267,7 +267,7 @@ public class AdvancedGasConduit extends AbstractGasTankConduit {
         }
 
         BoundingBox bb = ConduitGeometryUtil.getINSTANCE().createBoundsForConnectionController(keyDir, key.offset);
-        CollidableComponent cc = new CollidableComponent(IGasConduit.class, bb, keyDir,
+        CollidableComponent cc = new CollidableComponent(GasConduit.class, bb, keyDir,
                 PowerConduit.COLOR_CONTROLLER_ID);
 
         List<CollidableComponent> result = new ArrayList<>(baseCollidables);

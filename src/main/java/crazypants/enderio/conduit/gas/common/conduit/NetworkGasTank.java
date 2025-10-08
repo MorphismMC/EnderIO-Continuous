@@ -8,13 +8,13 @@ import net.minecraft.util.math.BlockPos;
 import com.enderio.core.common.util.DyeColor;
 
 import crazypants.enderio.base.conduit.ConnectionMode;
-import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduitImpl;
 import mekanism.api.gas.IGasHandler;
 
 public class NetworkGasTank {
 
     @Nonnull
-    public final EnderGasConduit con;
+    public final EnderGasConduitImpl con;
     @Nonnull
     public final EnumFacing conDir;
     private final IGasHandler externalTank;
@@ -29,7 +29,7 @@ public class NetworkGasTank {
     private final boolean roundRobin;
     private final boolean selfFeed;
 
-    public NetworkGasTank(@Nonnull EnderGasConduit con, @Nonnull EnumFacing conDir) {
+    public NetworkGasTank(@Nonnull EnderGasConduitImpl con, @Nonnull EnumFacing conDir) {
         this.con = con;
         this.conDir = conDir;
         conduitLoc = con.getBundle().getLocation();
@@ -113,7 +113,7 @@ public class NetworkGasTank {
         return conduitLoc;
     }
 
-    public EnderGasConduit getConduit() {
+    public EnderGasConduitImpl getConduit() {
         return con;
     }
 }

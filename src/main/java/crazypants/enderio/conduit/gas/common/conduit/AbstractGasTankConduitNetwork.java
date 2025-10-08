@@ -7,13 +7,13 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 
 public class AbstractGasTankConduitNetwork<T extends AbstractGasTankConduit>
-                                          extends AbstractConduitNetwork<IGasConduit, T> {
+                                          extends AbstractConduitNetwork<GasConduit, T> {
 
     protected GasStack gasType;
     protected boolean gasTypeLocked = false;
 
     protected AbstractGasTankConduitNetwork(@Nonnull Class<T> cl) {
-        super(cl, IGasConduit.class);
+        super(cl, GasConduit.class);
     }
 
     public GasStack getGasType() {

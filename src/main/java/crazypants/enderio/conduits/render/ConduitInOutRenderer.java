@@ -32,7 +32,7 @@ import crazypants.enderio.base.render.registry.TextureRegistry;
 import crazypants.enderio.base.render.registry.TextureRegistry.TextureSupplier;
 import crazypants.enderio.conduits.EnderIOConduits;
 import crazypants.enderio.conduits.conduit.power.PowerConduit;
-import crazypants.enderio.conduits.conduit.redstone.IRedstoneConduit;
+import crazypants.enderio.conduits.conduit.redstone.RedstoneConduit;
 
 @EventBusSubscriber(modid = EnderIOConduits.MODID, value = Side.CLIENT)
 public class ConduitInOutRenderer {
@@ -74,7 +74,7 @@ public class ConduitInOutRenderer {
         }
         addColorBand(conduit, component, quads, dir, mode);
 
-        if (conduit instanceof IRedstoneConduit) {
+        if (conduit instanceof RedstoneConduit) {
             // redstone conduits are backwards...
             if (mode == ConnectionMode.INPUT) {
                 mode = ConnectionMode.OUTPUT;

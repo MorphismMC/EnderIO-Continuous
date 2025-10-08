@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import crazypants.enderio.base.conduit.ConnectionMode;
 import crazypants.enderio.base.conduit.Conduit;
 import crazypants.enderio.base.conduit.ConduitServer;
-import crazypants.enderio.conduits.conduit.redstone.IRedstoneConduit;
+import crazypants.enderio.conduits.conduit.redstone.RedstoneConduit;
 import crazypants.enderio.util.EnumReader;
 import io.netty.buffer.ByteBuf;
 
@@ -43,8 +43,8 @@ public class PacketConnectionMode extends AbstractConduitPacket.Sided<Conduit> {
         public IMessage onMessage(PacketConnectionMode message, MessageContext ctx) {
             Conduit conduit = message.getConduit(ctx);
             if (conduit instanceof ConduitServer) {
-                if (conduit instanceof IRedstoneConduit) {
-                    ((IRedstoneConduit) conduit).forceConnectionMode(message.dir, message.mode);
+                if (conduit instanceof RedstoneConduit) {
+                    ((RedstoneConduit) conduit).forceConnectionMode(message.dir, message.mode);
                 } else if (conduit instanceof ConduitServer) {
                     ((ConduitServer) conduit).setConnectionMode(message.dir, message.mode);
                 }

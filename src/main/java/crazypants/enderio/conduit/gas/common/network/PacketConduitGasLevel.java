@@ -9,16 +9,16 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import crazypants.enderio.conduits.network.AbstractConduitPacket;
-import crazypants.enderio.conduit.gas.common.conduit.IGasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.GasConduit;
 import io.netty.buffer.ByteBuf;
 
-public class PacketConduitGasLevel extends AbstractConduitPacket<IGasConduit> {
+public class PacketConduitGasLevel extends AbstractConduitPacket<GasConduit> {
 
     private NBTTagCompound tc;
 
     public PacketConduitGasLevel() {}
 
-    public PacketConduitGasLevel(@Nonnull IGasConduit conduit) {
+    public PacketConduitGasLevel(@Nonnull GasConduit conduit) {
         super(conduit);
         tc = new NBTTagCompound();
         conduit.writeToNBT(tc);
@@ -41,7 +41,7 @@ public class PacketConduitGasLevel extends AbstractConduitPacket<IGasConduit> {
         @Override
         public IMessage onMessage(PacketConduitGasLevel message, MessageContext ctx) {
             NBTTagCompound nbt = message.tc;
-            IGasConduit conduit = message.getConduit(ctx);
+            GasConduit conduit = message.getConduit(ctx);
             if (nbt != null && conduit != null) {
                 conduit.readFromNBT(nbt);
             }

@@ -2,14 +2,10 @@ package crazypants.enderio.conduits.conduit.power;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -27,58 +23,71 @@ import crazypants.enderio.base.lang.LangPower;
 import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 import crazypants.enderio.conduits.render.ConduitBundleRenderManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemPowerConduit extends AbstractConduitItem {
 
-    public static ItemPowerConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
-        ItemPowerConduit result = new ItemPowerConduit(modObject);
-        return result;
+    public static ItemPowerConduit create(@NotNull IModObject modObject, @Nullable Block block) {
+        return new ItemPowerConduit(modObject);
     }
 
-    protected ItemPowerConduit(@Nonnull IModObject modObject) {
+    protected ItemPowerConduit(@NotNull IModObject modObject) {
         super(modObject, new ItemConduitSubtype(modObject.getUnlocalisedName(), modObject.getRegistryName().toString()),
                 new ItemConduitSubtype(modObject.getUnlocalisedName() + "_enhanced",
-                        modObject.getRegistryName().toString() + "_enhanced"),
+                        modObject.getRegistryName() + "_enhanced"),
                 new ItemConduitSubtype(modObject.getUnlocalisedName() + "_ender",
-                        modObject.getRegistryName().toString() + "_ender"));
-        ConduitRegistry.register(ConduitBuilder.start().setUUID(new ResourceLocation(EnderIO.DOMAIN, "power"))
-                .setClass(getBaseConduitType())
-                .setOffsets(Offset.DOWN, Offset.DOWN, Offset.SOUTH, Offset.DOWN).build()
-                .setUUID(new ResourceLocation(EnderIO.DOMAIN, "power_conduit"))
-                .setClass(PowerConduitImpl.class).build().finish());
+                        modObject.getRegistryName() + "_ender"));
+
+        var definition = ConduitBuilder.builder()
+                .id(EnderIO.id("power"))
+                .baseType(getBaseConduitType())
+                .offsets(Offset.DOWN, Offset.DOWN, Offset.SOUTH, Offset.DOWN)
+                .build();
+
+        ConduitRegistry.register(definition
+                .id(EnderIO.id("power_conduit"))
+                .baseType(PowerConduitImpl.class)
+                .build()
+                .finish());
+
         ConduitDisplayMode.registerDisplayMode(new ConduitDisplayMode(getBaseConduitType(),
                 IconEIO.WRENCH_OVERLAY_POWER, IconEIO.WRENCH_OVERLAY_POWER_OFF));
     }
 
-    @Override
     @SideOnly(Side.CLIENT)
-    public void registerRenderers(@Nonnull IModObject modObject) {
+    @Override
+    public void registerRenderers(@NotNull IModObject modObject) {
         super.registerRenderers(modObject);
         ConduitBundleRenderManager.instance.getConduitBundleRenderer().registerRenderer(new PowerConduitRenderer());
     }
 
+    @NotNull
     @Override
-    public @Nonnull Class<? extends Conduit> getBaseConduitType() {
+    public Class<? extends Conduit> getBaseConduitType() {
         return PowerConduit.class;
     }
 
     @Override
-    public ConduitServer createConduit(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
+    public ConduitServer createConduit(@NotNull ItemStack stack, @NotNull EntityPlayer player) {
         return new PowerConduitImpl(PowerConduitData.Registry.fromID(stack.getItemDamage()));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemStack, @Nullable World world, @Nonnull List<String> list,
-                               @Nonnull ITooltipFlag flag) {
+    public void addInformation(@NotNull ItemStack stack,
+                               @Nullable World world,
+                               @NotNull List<String> tooltip,
+                               @NotNull ITooltipFlag flag) {
         String prefix = EnderIO.lang.localize("power.max_output") + " ";
-        super.addInformation(itemStack, world, list, flag);
-        int cap = PowerConduitImpl.getMaxEnergyIO(PowerConduitData.Registry.fromID(itemStack.getItemDamage()));
-        list.add(prefix + LangPower.RFt(cap));
+        super.addInformation(stack, world, tooltip, flag);
+        int cap = PowerConduitImpl.getMaxEnergyIO(PowerConduitData.Registry.fromID(stack.getItemDamage()));
+        tooltip.add(prefix + LangPower.RFt(cap));
     }
 
     @Override
-    public boolean shouldHideFacades(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
+    public boolean shouldHideFacades(@NotNull ItemStack stack, @NotNull EntityPlayer player) {
         return true;
     }
+
 }

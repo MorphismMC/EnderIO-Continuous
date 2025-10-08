@@ -30,7 +30,7 @@ import crazypants.enderio.base.filter.redstone.IInputSignalFilter;
 import crazypants.enderio.conduits.conduit.AbstractConduitNetwork;
 import crazypants.enderio.conduits.config.ConduitConfig;
 
-public class RedstoneConduitNetwork extends AbstractConduitNetwork<IRedstoneConduit, IRedstoneConduit> {
+public class RedstoneConduitNetwork extends AbstractConduitNetwork<RedstoneConduit, RedstoneConduit> {
 
     private final @Nonnull BundledSignal bundledSignal = new BundledSignal();
 
@@ -39,11 +39,11 @@ public class RedstoneConduitNetwork extends AbstractConduitNetwork<IRedstoneCond
     private int baseId = 0;
 
     public RedstoneConduitNetwork() {
-        super(IRedstoneConduit.class, IRedstoneConduit.class);
+        super(RedstoneConduit.class, RedstoneConduit.class);
     }
 
     @Override
-    public void init(@Nonnull ConduitBundle bundle, Collection<IRedstoneConduit> connections,
+    public void init(@Nonnull ConduitBundle bundle, Collection<RedstoneConduit> connections,
                      @Nonnull World world) throws UnloadedBlockException {
         super.init(bundle, connections, world);
         updatingNetwork++;
@@ -54,7 +54,7 @@ public class RedstoneConduitNetwork extends AbstractConduitNetwork<IRedstoneCond
     @Override
     public void destroyNetwork() {
         updatingNetwork++;
-        for (IRedstoneConduit con : getConduits()) {
+        for (RedstoneConduit con : getConduits()) {
             con.setActive(false);
         }
         // Notify neighbours that all signals have been lost
@@ -65,7 +65,7 @@ public class RedstoneConduitNetwork extends AbstractConduitNetwork<IRedstoneCond
     }
 
     @Override
-    public void addConduit(@Nonnull IRedstoneConduit con) {
+    public void addConduit(@Nonnull RedstoneConduit con) {
         super.addConduit(con);
         con.setSignalIdBase(baseId);
         baseId += 6;
@@ -73,7 +73,7 @@ public class RedstoneConduitNetwork extends AbstractConduitNetwork<IRedstoneCond
                                             // all neighbors
     }
 
-    public void updateInputsFromConduit(@Nonnull IRedstoneConduit con, boolean delayUpdate) {
+    public void updateInputsFromConduit(@Nonnull RedstoneConduit con, boolean delayUpdate) {
         // Make my neighbors update as if we have no signals
         updatingNetwork++;
         notifyConduitNeighbours(con);
@@ -104,12 +104,12 @@ public class RedstoneConduitNetwork extends AbstractConduitNetwork<IRedstoneCond
                 break;
             }
         }
-        for (IRedstoneConduit con : getConduits()) {
+        for (RedstoneConduit con : getConduits()) {
             con.setActive(isActive);
         }
     }
 
-    private void updateInputsForSource(@Nonnull IRedstoneConduit con, @Nonnull EnumFacing dir) {
+    private void updateInputsForSource(@Nonnull RedstoneConduit con, @Nonnull EnumFacing dir) {
         updatingNetwork++;
         Signal signal = con.getNetworkInput(dir);
         bundledSignal.addSignal(con.getInputSignalColor(dir), signal);
@@ -150,7 +150,7 @@ public class RedstoneConduitNetwork extends AbstractConduitNetwork<IRedstoneCond
 
     private String conduitsString() {
         StringBuilder sb = new StringBuilder();
-        for (IRedstoneConduit con : getConduits()) {
+        for (RedstoneConduit con : getConduits()) {
             TileEntity te = con.getBundle().getTileEntity();
             sb.append("<").append(te.getPos().getX()).append(",").append(te.getPos().getY()).append(",")
                     .append(te.getPos().getZ()).append(">");
@@ -170,12 +170,12 @@ public class RedstoneConduitNetwork extends AbstractConduitNetwork<IRedstoneCond
     }
 
     public void notifyNeigborsOfSignalUpdate() {
-        for (IRedstoneConduit con : new ArrayList<IRedstoneConduit>(getConduits())) {
+        for (RedstoneConduit con : new ArrayList<RedstoneConduit>(getConduits())) {
             notifyConduitNeighbours(con);
         }
     }
 
-    private void notifyConduitNeighbours(@Nonnull IRedstoneConduit con) {
+    private void notifyConduitNeighbours(@Nonnull RedstoneConduit con) {
         TileEntity te = con.getBundle().getTileEntity();
 
         World world = te.getWorld();
@@ -220,7 +220,7 @@ public class RedstoneConduitNetwork extends AbstractConduitNetwork<IRedstoneCond
     public void tickEnd(@Nullable Profiler profiler) {
         Prof.start(profiler, "checkTickingFilters");
         String oldSignals = null;
-        for (IRedstoneConduit con : getConduits()) {
+        for (RedstoneConduit con : getConduits()) {
             for (EnumFacing dir : EnumFacing.VALUES) {
                 if (dir != null && ((IInputSignalFilter) con.getSignalFilter(dir, false)).shouldUpdate()) {
                     if (oldSignals == null) {

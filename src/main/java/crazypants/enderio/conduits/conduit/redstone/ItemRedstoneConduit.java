@@ -1,12 +1,8 @@
 package crazypants.enderio.conduits.conduit.redstone;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -22,46 +18,57 @@ import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 import crazypants.enderio.conduits.render.ConduitBundleRenderManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemRedstoneConduit extends AbstractConduitItem {
 
-    public static ItemRedstoneConduit create(@Nonnull IModObject modObject, @Nullable Block block) {
+    public static ItemRedstoneConduit create(@NotNull IModObject modObject, @Nullable Block block) {
         return new ItemRedstoneConduit(modObject);
     }
 
-    protected ItemRedstoneConduit(@Nonnull IModObject modObject) {
+    protected ItemRedstoneConduit(@NotNull IModObject modObject) {
         super(modObject, new ItemConduitSubtype(modObject.getUnlocalisedName() + "_insulated",
-                modObject.getRegistryName().toString() + "_insulated"));
+                modObject.getRegistryName() + "_insulated"));
 
-        ConduitRegistry.register(ConduitBuilder.start().setUUID(new ResourceLocation(EnderIO.DOMAIN, "redstone"))
-                .setClass(getBaseConduitType())
-                .setOffsets(Offset.UP, Offset.UP, Offset.NORTH, Offset.UP).setCanConnectToAnything().build()
-                .setUUID(new ResourceLocation(EnderIO.DOMAIN, "redstone_conduit"))
-                .setClass(InsulatedRedstoneConduit.class).build().finish());
+        var definition = ConduitBuilder.builder()
+                .id(EnderIO.id("redstone"))
+                .baseType(getBaseConduitType())
+                .offsets(Offset.UP, Offset.UP, Offset.NORTH, Offset.UP)
+                .canConnectToAnything()
+                .build();
+
+        ConduitRegistry.register(definition
+                .id(EnderIO.id("redstone_conduit"))
+                .baseType(InsulatedRedstoneConduit.class)
+                .build()
+                .finish());
+
         ConduitDisplayMode.registerDisplayMode(new ConduitDisplayMode(getBaseConduitType(),
                 IconEIO.WRENCH_OVERLAY_REDSTONE, IconEIO.WRENCH_OVERLAY_REDSTONE_OFF));
     }
 
-    @Override
     @SideOnly(Side.CLIENT)
-    public void registerRenderers(@Nonnull IModObject modObject) {
+    @Override
+    public void registerRenderers(@NotNull IModObject modObject) {
         super.registerRenderers(modObject);
-        ConduitBundleRenderManager.instance.getConduitBundleRenderer()
-                .registerRenderer(new InsulatedRedstoneConduitRenderer());
+        ConduitBundleRenderManager.instance.getConduitBundleRenderer().registerRenderer(new InsulatedRedstoneConduitRenderer());
+    }
+
+    @NotNull
+    @Override
+    public Class<? extends Conduit> getBaseConduitType() {
+        return RedstoneConduit.class;
     }
 
     @Override
-    public @Nonnull Class<? extends Conduit> getBaseConduitType() {
-        return IRedstoneConduit.class;
-    }
-
-    @Override
-    public ConduitServer createConduit(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
+    public ConduitServer createConduit(@NotNull ItemStack stack, @NotNull EntityPlayer player) {
         return new InsulatedRedstoneConduit();
     }
 
     @Override
-    public boolean shouldHideFacades(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
+    public boolean shouldHideFacades(@NotNull ItemStack stack, @NotNull EntityPlayer player) {
         return true;
     }
+
 }

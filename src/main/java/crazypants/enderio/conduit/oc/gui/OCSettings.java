@@ -13,7 +13,7 @@ import com.enderio.core.common.util.DyeColor;
 import crazypants.enderio.base.conduit.ConduitClient;
 import crazypants.enderio.base.conduit.GuiExternalConnection;
 import crazypants.enderio.base.gui.IconEIO;
-import crazypants.enderio.conduit.oc.conduit.IOCConduit;
+import crazypants.enderio.conduit.oc.conduit.OCConduit;
 import crazypants.enderio.conduit.oc.init.ConduitOpenComputersObject;
 import crazypants.enderio.conduit.oc.network.PacketHandler;
 import crazypants.enderio.conduit.oc.network.PacketOCConduitSignalColor;
@@ -26,12 +26,12 @@ public class OCSettings extends BaseSettingsPanel {
     private @Nonnull ColorButton cb;
 
     private @Nonnull String signalColorStr = Lang.GUI_SIGNAL_COLOR.get();
-    private final @Nonnull IOCConduit occon;
+    private final @Nonnull OCConduit occon;
 
     public OCSettings(@Nonnull GuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_OC, ConduitOpenComputersObject.item_opencomputers_conduit.getUnlocalisedName(),
                 gui, con, "simple_settings");
-        occon = (IOCConduit) con;
+        occon = (OCConduit) con;
 
         int x = leftColumn;
         int y = customTop;

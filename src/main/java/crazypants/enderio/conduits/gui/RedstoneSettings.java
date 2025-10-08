@@ -22,7 +22,7 @@ import crazypants.enderio.base.filter.gui.FilterGuiUtil;
 import crazypants.enderio.base.gui.IconEIO;
 import crazypants.enderio.base.init.ModObject;
 import crazypants.enderio.base.network.PacketHandler;
-import crazypants.enderio.conduits.conduit.redstone.IRedstoneConduit;
+import crazypants.enderio.conduits.conduit.redstone.RedstoneConduit;
 import crazypants.enderio.conduits.init.ConduitObject;
 import crazypants.enderio.conduits.lang.Lang;
 import crazypants.enderio.conduits.network.PacketRedstoneConduitOutputStrength;
@@ -41,7 +41,7 @@ public class RedstoneSettings extends BaseSettingsPanel {
 
     private @Nonnull String signalColorStr = Lang.GUI_SIGNAL_COLOR.get();
     private @Nonnull String signalStrengthStr = Lang.GUI_REDSTONE_SIGNAL_STRENGTH.get();
-    private @Nonnull IRedstoneConduit insCon;
+    private @Nonnull RedstoneConduit insCon;
 
     public RedstoneSettings(@Nonnull final GuiExternalConnection gui, @Nonnull ConduitClient con) {
         super(IconEIO.WRENCH_OVERLAY_REDSTONE, ConduitObject.item_redstone_conduit.getUnlocalisedName(), gui, con,
@@ -50,7 +50,7 @@ public class RedstoneSettings extends BaseSettingsPanel {
         int x = leftColumn;
         int y = customTop + 4;
 
-        insCon = (IRedstoneConduit) con;
+        insCon = (RedstoneConduit) con;
 
         inputColorB = new ColorButton(gui, ID_INPUT_COLOR_BUTTON, x, y);
         inputColorB.setToolTipHeading(Lang.GUI_SIGNAL_COLOR.get());

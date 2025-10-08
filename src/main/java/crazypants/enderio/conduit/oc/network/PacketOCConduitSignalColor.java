@@ -10,12 +10,12 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.enderio.core.common.util.DyeColor;
 
-import crazypants.enderio.conduit.oc.conduit.IOCConduit;
+import crazypants.enderio.conduit.oc.conduit.OCConduit;
 import crazypants.enderio.conduits.network.AbstractConduitPacket;
 import crazypants.enderio.util.EnumReader;
 import io.netty.buffer.ByteBuf;
 
-public class PacketOCConduitSignalColor extends AbstractConduitPacket.Sided<IOCConduit> {
+public class PacketOCConduitSignalColor extends AbstractConduitPacket.Sided<OCConduit> {
 
     private @Nonnull DyeColor col;
 
@@ -23,7 +23,7 @@ public class PacketOCConduitSignalColor extends AbstractConduitPacket.Sided<IOCC
         col = DyeColor.BLACK;
     }
 
-    public PacketOCConduitSignalColor(@Nonnull IOCConduit con, @Nonnull EnumFacing dir) {
+    public PacketOCConduitSignalColor(@Nonnull OCConduit con, @Nonnull EnumFacing dir) {
         super(con, dir);
         this.col = con.getSignalColor(dir);
     }
@@ -44,7 +44,7 @@ public class PacketOCConduitSignalColor extends AbstractConduitPacket.Sided<IOCC
 
         @Override
         public IMessage onMessage(PacketOCConduitSignalColor message, MessageContext ctx) {
-            IOCConduit con = message.getConduit(ctx);
+            OCConduit con = message.getConduit(ctx);
             if (con != null) {
                 con.setSignalColor(message.dir, message.col);
                 IBlockState bs = message.getWorld(ctx).getBlockState(message.getPos());

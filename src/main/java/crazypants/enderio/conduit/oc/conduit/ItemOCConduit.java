@@ -1,12 +1,8 @@
 package crazypants.enderio.conduit.oc.conduit;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -24,47 +20,58 @@ import crazypants.enderio.conduit.oc.init.ConduitOpenComputersObject;
 import crazypants.enderio.conduits.conduit.AbstractConduitItem;
 import crazypants.enderio.conduits.conduit.ItemConduitSubtype;
 import crazypants.enderio.conduits.render.ConduitBundleRenderManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemOCConduit extends AbstractConduitItem {
 
-    public static ItemOCConduit create(@Nonnull IModObject mo, @Nullable Block block) {
+    public static ItemOCConduit create(@NotNull IModObject modObject, @Nullable Block block) {
         if (OCUtil.isOCEnabled()) {
-            return new ItemOCConduit(mo);
+            return new ItemOCConduit(modObject);
         }
         return null;
     }
 
-    protected ItemOCConduit(@Nonnull IModObject mo) {
-        super(mo, new ItemConduitSubtype(ConduitOpenComputersObject.item_opencomputers_conduit.getUnlocalisedName(),
+    protected ItemOCConduit(@NotNull IModObject modObject) {
+        super(modObject, new ItemConduitSubtype(ConduitOpenComputersObject.item_opencomputers_conduit.getUnlocalisedName(),
                 "enderio:item_oc_conduit"));
-        ConduitRegistry.register(ConduitBuilder.start().setUUID(new ResourceLocation(EnderIO.DOMAIN, "opencomputers"))
-                .setClass(getBaseConduitType())
-                .setOffsets(Offset.WEST_DOWN, Offset.NORTH_DOWN, Offset.SOUTH_WEST, Offset.WEST_DOWN).build()
-                .setUUID(new ResourceLocation(EnderIO.DOMAIN, "opencomputers_conduit")).setClass(OCConduit.class)
+
+        var definition = ConduitBuilder.builder()
+                .id(EnderIO.id("opencomputers"))
+                .baseType(getBaseConduitType())
+                .offsets(Offset.WEST_DOWN, Offset.NORTH_DOWN, Offset.SOUTH_WEST, Offset.WEST_DOWN)
+                .build();
+
+        ConduitRegistry.register(definition
+                .id(EnderIO.id("opencomputers_conduit"))
+                .baseType(OCConduitImpl.class)
                 .build().finish());
+
         ConduitDisplayMode.registerDisplayMode(
                 new ConduitDisplayMode(getBaseConduitType(), IconEIO.WRENCH_OVERLAY_OC, IconEIO.WRENCH_OVERLAY_OC_OFF));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void registerRenderers(@Nonnull IModObject modObject) {
+    public void registerRenderers(@NotNull IModObject modObject) {
         super.registerRenderers(modObject);
         ConduitBundleRenderManager.instance.getConduitBundleRenderer().registerRenderer(new OCConduitRenderer());
     }
 
+    @NotNull
     @Override
-    public @Nonnull Class<? extends Conduit> getBaseConduitType() {
-        return IOCConduit.class;
+    public Class<? extends Conduit> getBaseConduitType() {
+        return OCConduit.class;
     }
 
     @Override
-    public ConduitServer createConduit(@Nonnull ItemStack item, @Nonnull EntityPlayer player) {
-        return new OCConduit(item.getItemDamage());
+    public ConduitServer createConduit(@NotNull ItemStack item, @NotNull EntityPlayer player) {
+        return new OCConduitImpl(item.getItemDamage());
     }
 
     @Override
-    public boolean shouldHideFacades(@Nonnull ItemStack stack, @Nonnull EntityPlayer player) {
+    public boolean shouldHideFacades(@NotNull ItemStack stack, @NotNull EntityPlayer player) {
         return true;
     }
+
 }

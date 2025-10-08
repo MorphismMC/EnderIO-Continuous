@@ -31,7 +31,7 @@ public abstract class AbstractConduitPacket<T extends Conduit> extends AbstractC
 
     public AbstractConduitPacket(@Nonnull T conduit) {
         super(conduit.getBundle().getTileEntity());
-        this.uuid = ConduitRegistry.getNetwork(conduit).getUUID();
+        this.uuid = ConduitRegistry.getNetwork(conduit).getNetworkUUID();
     }
 
     protected Class<? extends Conduit> getConType() {

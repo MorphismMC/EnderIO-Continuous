@@ -50,7 +50,7 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
 
     @Override
     public boolean isRendererForConduit(@Nonnull Conduit conduit) {
-        return conduit instanceof GasConduit;
+        return conduit instanceof GasConduitImpl;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
                                         @Nonnull ConduitClient.WithDefaultRendering conduit,
                                         @Nonnull CollidableComponent component, float brightness) {
         if (component.isDirectional()) {
-            GasConduit lc = (GasConduit) conduit;
+            GasConduitImpl lc = (GasConduitImpl) conduit;
             GasStack gas = lc.getGasType();
             if (gas != null) {
                 renderGasOutline(component, gas);
@@ -78,7 +78,7 @@ public class GasConduitRenderer extends DefaultConduitRenderer implements IResou
     protected void renderTransmissionDynamic(@Nonnull Conduit conduit, @Nonnull ConduitTexture texture,
                                              @Nullable Vector4f color, @Nonnull CollidableComponent component,
                                              float brightness) {
-        float filledRatio = ((GasConduit) conduit).getTank().getFilledRatio();
+        float filledRatio = ((GasConduitImpl) conduit).getTank().getFilledRatio();
         if (filledRatio <= 0 || !component.isDirectional()) {
             return;
         }

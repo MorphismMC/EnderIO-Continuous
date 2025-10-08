@@ -10,18 +10,18 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.enderio.core.common.util.DyeColor;
 
-import crazypants.enderio.conduits.conduit.redstone.IRedstoneConduit;
+import crazypants.enderio.conduits.conduit.redstone.RedstoneConduit;
 import crazypants.enderio.util.EnumReader;
 import io.netty.buffer.ByteBuf;
 
-public class PacketRedstoneConduitSignalColor extends AbstractConduitPacket.Sided<IRedstoneConduit> {
+public class PacketRedstoneConduitSignalColor extends AbstractConduitPacket.Sided<RedstoneConduit> {
 
     private @Nonnull DyeColor col = DyeColor.BLACK;
     private boolean isInput;
 
     public PacketRedstoneConduitSignalColor() {}
 
-    public PacketRedstoneConduitSignalColor(@Nonnull IRedstoneConduit con, @Nonnull EnumFacing dir, boolean isInput) {
+    public PacketRedstoneConduitSignalColor(@Nonnull RedstoneConduit con, @Nonnull EnumFacing dir, boolean isInput) {
         super(con, dir);
         this.col = isInput ? con.getInputSignalColor(dir) : con.getOutputSignalColor(dir);
         this.isInput = isInput;
@@ -45,7 +45,7 @@ public class PacketRedstoneConduitSignalColor extends AbstractConduitPacket.Side
 
         @Override
         public IMessage onMessage(PacketRedstoneConduitSignalColor message, MessageContext ctx) {
-            final IRedstoneConduit conduit = message.getConduit(ctx);
+            final RedstoneConduit conduit = message.getConduit(ctx);
             if (conduit != null) {
                 if (message.isInput) {
                     conduit.setInputSignalColor(message.dir, message.col);

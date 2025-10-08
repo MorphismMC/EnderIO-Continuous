@@ -12,13 +12,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import crazypants.enderio.conduits.network.AbstractConduitPacket;
-import crazypants.enderio.conduit.gas.common.conduit.IGasConduit;
-import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.GasConduit;
+import crazypants.enderio.conduit.gas.common.conduit.ender.EnderGasConduitImpl;
 import crazypants.enderio.conduit.gas.common.filter.GasFilterImpl;
 import crazypants.enderio.conduit.gas.common.filter.GasFilter;
 import io.netty.buffer.ByteBuf;
 
-public class PacketGasFilter extends AbstractConduitPacket.Sided<IGasConduit> {
+public class PacketGasFilter extends AbstractConduitPacket.Sided<GasConduit> {
 
     private boolean isInput;
     @Nonnull
@@ -26,7 +26,7 @@ public class PacketGasFilter extends AbstractConduitPacket.Sided<IGasConduit> {
 
     public PacketGasFilter() {}
 
-    public PacketGasFilter(EnderGasConduit eConduit, @Nonnull EnumFacing dir, @Nonnull GasFilter filter,
+    public PacketGasFilter(EnderGasConduitImpl eConduit, @Nonnull EnumFacing dir, @Nonnull GasFilter filter,
                            boolean isInput) {
         super(eConduit, dir);
         this.filter = filter;
@@ -56,9 +56,9 @@ public class PacketGasFilter extends AbstractConduitPacket.Sided<IGasConduit> {
 
         @Override
         public IMessage onMessage(PacketGasFilter message, MessageContext ctx) {
-            IGasConduit conduit = message.getConduit(ctx);
-            if (conduit instanceof EnderGasConduit) {
-                ((EnderGasConduit) conduit).setFilter(message.dir, message.filter, message.isInput);
+            GasConduit conduit = message.getConduit(ctx);
+            if (conduit instanceof EnderGasConduitImpl) {
+                ((EnderGasConduitImpl) conduit).setFilter(message.dir, message.filter, message.isInput);
                 World world = message.getWorld(ctx);
                 IBlockState bs = world.getBlockState(message.getPos());
                 world.notifyBlockUpdate(message.getPos(), bs, bs, 3);

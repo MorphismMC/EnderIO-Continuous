@@ -3,7 +3,6 @@ package crazypants.enderio.conduits.conduit.item;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -31,13 +30,15 @@ public class ItemItemConduit extends AbstractConduitItem {
     protected ItemItemConduit(@NotNull IModObject modObject) {
         super(modObject, new ItemConduitSubtype(modObject.getUnlocalisedName(), modObject.getRegistryName().toString()));
 
-        ConduitRegistry.register(ConduitBuilder.start()
-                .setUUID(EnderIO.id("items"))
-                .setClass(getBaseConduitType())
-                .setOffsets(Offset.EAST, Offset.SOUTH, Offset.EAST, Offset.EAST)
-                .build()
-                .setUUID(EnderIO.id("item_conduit"))
-                .setClass(ItemConduitImpl.class)
+        var definition = ConduitBuilder.builder()
+                .id(EnderIO.id("items"))
+                .baseType(getBaseConduitType())
+                .offsets(Offset.EAST, Offset.SOUTH, Offset.EAST, Offset.EAST)
+                .build();
+
+        ConduitRegistry.register(definition
+                .id(EnderIO.id("item_conduit"))
+                .baseType(ItemConduitImpl.class)
                 .build()
                 .finish());
 
@@ -45,8 +46,8 @@ public class ItemItemConduit extends AbstractConduitItem {
                 IconEIO.WRENCH_OVERLAY_ITEM_OFF));
     }
 
-    @Override
     @SideOnly(Side.CLIENT)
+    @Override
     public void registerRenderers(@NotNull IModObject modObject) {
         super.registerRenderers(modObject);
         ConduitBundleRenderManager.instance.getConduitBundleRenderer().registerRenderer(new ItemConduitRenderer());
