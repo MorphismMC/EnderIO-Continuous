@@ -2,9 +2,6 @@ package crazypants.enderio.base.conduit.facade;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -38,17 +35,19 @@ import crazypants.enderio.base.recipe.painter.FacadePainterRecipe;
 import crazypants.enderio.base.registry.Registry;
 import crazypants.enderio.base.render.IHaveRenderers;
 import crazypants.enderio.base.render.registry.ItemModelRegistry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemConduitFacade extends Item
                                implements IAdvancedTooltipProvider, IResourceTooltipProvider, IHaveRenderers {
 
-    public static ItemConduitFacade create(@Nonnull IModObject modObject, @Nullable Block block) {
+    public static ItemConduitFacade create(@NotNull IModObject modObject, @Nullable Block block) {
         ItemConduitFacade result = new ItemConduitFacade(modObject);
         MachineRecipeRegistry.instance.registerRecipe(MachineRecipeRegistry.PAINTER, new FacadePainterRecipe(result));
         return result;
     }
 
-    public ItemConduitFacade(@Nonnull IModObject modObject) {
+    public ItemConduitFacade(@NotNull IModObject modObject) {
         setCreativeTab(EnderIOTab.tabEnderIOItems);
         setMaxStackSize(64);
         setHasSubtypes(true);
@@ -60,26 +59,22 @@ public class ItemConduitFacade extends Item
         return damage;
     }
 
+    @NotNull
     @Override
-    public @Nonnull String getTranslationKey(@Nonnull ItemStack stack) {
+    public String getTranslationKey(@NotNull ItemStack stack) {
         return EnumFacadeType.getTypeFromMeta(stack.getMetadata()).getUnlocalizedName(this);
     }
 
     @SuppressWarnings("deprecation")
+    @NotNull
     @Override
-    public @Nonnull EnumActionResult onItemUse(@Nonnull EntityPlayer player, @Nonnull World world,
-                                               @Nonnull BlockPos pos, @Nonnull EnumHand hand,
-                                               @Nonnull EnumFacing side, float hitX, float hitY, float hitZ) {
-        if (world.isRemote) {
-            return EnumActionResult.SUCCESS;
-        }
+    public EnumActionResult onItemUse(@NotNull EntityPlayer player, @NotNull World world, @NotNull BlockPos pos,
+                                      @NotNull EnumHand hand, @NotNull EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (world.isRemote) return EnumActionResult.SUCCESS;
 
         Block conduitBlock = Registry.getConduitBlock();
-
         if (conduitBlock != null) {
-
             ItemStack stack = player.getHeldItem(hand);
-
             BlockPos placeAt = pos.offset(side);
 
             if (player.canPlayerEdit(placeAt, side, stack) && PaintUtil.getSourceBlock(stack) != null) {
@@ -97,8 +92,8 @@ public class ItemConduitFacade extends Item
                     return EnumActionResult.SUCCESS;
                 } else {
                     TileEntity tileEntity = world.getTileEntity(placeAt);
-                    if (tileEntity instanceof ConduitBundle) {
-                        if (((ConduitBundle) tileEntity).handleFacadeClick(world, placeAt, player, side.getOpposite(),
+                    if (tileEntity instanceof ConduitBundle bundle) {
+                        if (bundle.handleFacadeClick(world, placeAt, player, side.getOpposite(),
                                 stack, hand, hitX, hitY, hitZ)) {
                             return EnumActionResult.SUCCESS;
                         }
@@ -111,25 +106,28 @@ public class ItemConduitFacade extends Item
         return EnumActionResult.PASS;
     }
 
+    @NotNull
     @Override
-    public @Nonnull String getUnlocalizedNameForTooltip(@Nonnull ItemStack itemStack) {
+    public String getUnlocalizedNameForTooltip(@NotNull ItemStack stack) {
         return getTranslationKey();
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
     @SideOnly(Side.CLIENT)
-    public void addDetailedEntries(@Nonnull ItemStack itemstack, @Nullable EntityPlayer entityplayer,
-                                   @Nonnull List list, boolean flag) {
-        SpecialTooltipHandler.addDetailedTooltipFromResources(list, itemstack);
-        if (EnumFacadeType.getTypeFromMeta(itemstack.getMetadata()) != EnumFacadeType.BASIC) {
-            list.add("");
-            SpecialTooltipHandler.addDetailedTooltipFromResources(list, getTranslationKey(itemstack));
+    @Override
+    public void addDetailedEntries(@NotNull ItemStack stack,
+                                   @Nullable EntityPlayer player,
+                                   @NotNull List tooltip,
+                                   boolean flag) {
+        SpecialTooltipHandler.addDetailedTooltipFromResources(tooltip, stack);
+        if (EnumFacadeType.getTypeFromMeta(stack.getMetadata()) != EnumFacadeType.BASIC) {
+            tooltip.add("");
+            SpecialTooltipHandler.addDetailedTooltipFromResources(tooltip, getTranslationKey(stack));
         }
     }
 
     @Override
-    public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> list) {
+    public void getSubItems(@NotNull CreativeTabs tab, @NotNull NonNullList<ItemStack> list) {
         if (isInCreativeTab(tab)) {
             for (EnumFacadeType type : EnumFacadeType.values()) {
                 list.add(new ItemStack(this, 1, type.ordinal()));
@@ -138,7 +136,7 @@ public class ItemConduitFacade extends Item
     }
 
     @Override
-    public void registerRenderers(@Nonnull IModObject modObject) {
+    public void registerRenderers(@NotNull IModObject modObject) {
         for (EnumFacadeType type : EnumFacadeType.values()) {
             final ModelResourceLocation mrl = new ModelResourceLocation(
                     NullHelper.notnull(getRegistryName(), "unregistered item?"), "type=" + type.getName());
@@ -146,4 +144,5 @@ public class ItemConduitFacade extends Item
             ItemModelRegistry.registerFacade(mrl);
         }
     }
+
 }
