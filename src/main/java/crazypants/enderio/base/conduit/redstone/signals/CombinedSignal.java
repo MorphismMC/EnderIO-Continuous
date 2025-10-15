@@ -1,11 +1,15 @@
 package crazypants.enderio.base.conduit.redstone.signals;
 
-import javax.annotation.Nonnull;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
+@Getter
 public class CombinedSignal {
 
-    public static final @Nonnull CombinedSignal NONE = new CombinedSignal(0);
-    public static final @Nonnull CombinedSignal MAX = new CombinedSignal(15);
+    @NotNull
+    public static final CombinedSignal NONE = new CombinedSignal(0);
+    @NotNull
+    public static final CombinedSignal MAX = new CombinedSignal(15);
 
     private int strength;
 
@@ -13,17 +17,9 @@ public class CombinedSignal {
         this.strength = strength;
     }
 
-    public int getStrength() {
-        return strength;
-    }
-
     protected void setStrength(int str) {
         if (str > 0) {
-            if (str > 15) {
-                strength = 15;
-            } else {
-                strength = str;
-            }
+            strength = Math.min(str, 15);
         } else {
             strength = 0;
         }
@@ -46,13 +42,12 @@ public class CombinedSignal {
         if (getClass() != obj.getClass())
             return false;
         CombinedSignal other = (CombinedSignal) obj;
-        if (strength != other.strength)
-            return false;
-        return true;
+        return strength == other.strength;
     }
 
     @Override
     public String toString() {
         return "CombinedSignal [strength=" + strength + "]";
     }
+
 }

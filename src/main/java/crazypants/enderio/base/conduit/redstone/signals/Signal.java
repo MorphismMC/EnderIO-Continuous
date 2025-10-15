@@ -1,54 +1,21 @@
 package crazypants.enderio.base.conduit.redstone.signals;
 
-import javax.annotation.Nonnull;
+import com.github.bsideup.jabel.Desugar;
+import org.jetbrains.annotations.NotNull;
 
-public class Signal {
+/**
+ * Immutable redstone signal wrapper.
+ * <p>
+ * Please see {@link BundledSignal} and {@link CombinedSignal} for several redstone signal variants.
+ *
+ * @param id       The id of redstone signal.
+ * @param strength The strength of redstone signal.
+ */
+@Desugar
+public record Signal(int id, int strength) {
 
-    private final int id;
-    private final int strength;
-
-    public Signal(int strength, int id) {
-        this.id = id;
-        this.strength = strength;
-    }
-
-    public Signal(@Nonnull CombinedSignal signal, int id) {
+    public Signal(@NotNull CombinedSignal signal, int id) {
         this(signal.getStrength(), id);
     }
 
-    public int getStrength() {
-        return strength;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + strength;
-        result = prime * result + getId();
-        return result;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Signal other = (Signal) obj;
-        if (strength != other.getStrength())
-            return false;
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Signal [getStrength()=" + getStrength() + ", getId()=" + getId() + "]";
-    }
 }

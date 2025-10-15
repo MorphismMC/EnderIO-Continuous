@@ -5,43 +5,43 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
 import com.enderio.core.common.util.DyeColor;
 
 import crazypants.enderio.base.filter.redstone.IOutputSignalFilter;
+import org.jetbrains.annotations.NotNull;
 
 public class BundledSignal {
 
-    private final @Nonnull Map<DyeColor, CombinedSignal> bundle;
-    private final @Nonnull Map<DyeColor, Map<Integer, Signal>> bundleSignals;
+    @NotNull
+    private final Map<DyeColor, CombinedSignal> bundle;
+    @NotNull
+    private final Map<DyeColor, Map<Integer, Signal>> bundleSignals;
 
     public BundledSignal() {
         bundle = new EnumMap<>(DyeColor.class);
         bundleSignals = new EnumMap<>(DyeColor.class);
         for (DyeColor color : DyeColor.values()) {
             bundle.put(color, new CombinedSignal(0));
-            bundleSignals.put(color, new HashMap<Integer, Signal>());
+            bundleSignals.put(color, new HashMap<>());
         }
     }
 
-    @SuppressWarnings("null")
-    @Nonnull
-    public CombinedSignal getSignal(@Nonnull DyeColor color) {
+    @NotNull
+    public CombinedSignal getSignal(@NotNull DyeColor color) {
         return bundle.get(color);
     }
 
-    public void addSignal(@Nonnull DyeColor color, @Nonnull Signal signal) {
+    public void addSignal(@NotNull DyeColor color, @NotNull Signal signal) {
         Map<Integer, Signal> signalMap = bundleSignals.get(color);
-        if (!signalMap.containsKey(signal.getId())) {
-            signalMap.put(signal.getId(), signal);
-        } else if (signalMap.get(signal.getId()).getStrength() != signal.getStrength()) {
-            signalMap.put(signal.getId(), signal);
+        if (!signalMap.containsKey(signal.id())) {
+            signalMap.put(signal.id(), signal);
+        } else if (signalMap.get(signal.id()).strength() != signal.strength()) {
+            signalMap.put(signal.id(), signal);
         }
 
         int str = 0;
         for (Signal sig : signalMap.values()) {
-            str += sig.getStrength();
+            str += sig.strength();
             if (str >= 15) {
                 str = 15;
                 break;
@@ -51,20 +51,20 @@ public class BundledSignal {
         bundle.get(color).setStrength(str);
     }
 
-    public void set(@Nonnull DyeColor color, @Nonnull CombinedSignal signal) {
+    public void set(@NotNull DyeColor color, @NotNull CombinedSignal signal) {
         bundle.put(color, signal);
     }
 
-    public void reset(@Nonnull DyeColor color) {
+    public void reset(@NotNull DyeColor color) {
         bundle.remove(color);
     }
 
-    @Nonnull
-    public CombinedSignal getFilteredSignal(@Nonnull DyeColor color, @Nonnull IOutputSignalFilter filter) {
+    @NotNull
+    public CombinedSignal getFilteredSignal(@NotNull DyeColor color, @NotNull IOutputSignalFilter filter) {
         return filter.apply(color, this);
     }
 
-    @Nonnull
+    @NotNull
     public Collection<CombinedSignal> getSignals() {
         return bundle.values();
     }
@@ -74,4 +74,5 @@ public class BundledSignal {
             sig.setStrength(0);
         }
     }
+
 }
