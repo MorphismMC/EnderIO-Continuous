@@ -2,6 +2,7 @@ package crazypants.enderio.base.config.recipes;
 
 import com.enderio.core.common.util.NNList;
 import com.enderio.core.common.util.NullHelper;
+import com.morphismmc.eioadditions.integrations.crafttweaker.CTIntegration;
 import crazypants.enderio.api.addon.IEnderIOAddon;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.Log;
@@ -178,7 +179,10 @@ public final class RecipeLoader {
                 ((IEnderIOAddon) mod).postRecipeRegistration();
             }
         }
+
+        bar.step("CraftTweaker Integration");
         ProgressManager.pop(bar2);
+        CTIntegration.applyChanges();
 
         ProgressManager.pop(bar);
     }

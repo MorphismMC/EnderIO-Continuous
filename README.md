@@ -16,6 +16,9 @@ The original [EnderIO](https://github.com/SleepyTrousers/EnderIO-1.5-1.12) mod c
 - EnderIO Sounds
   - Copyright (c) [Free Sound Website](https://freesound.org/)
   - [![License](https://img.shields.io/badge/License-CC%20BY%203.0-yellow.svg?style=flat-square)](https://creativecommons.org/licenses/by/3.0/) or [![License](https://img.shields.io/badge/License-CC%20BY--NC%203.0-yellow.svg?style=flat-square)](https://creativecommons.org/licenses/by-nc/3.0/)
+- EnderTweaker Codes
+  - Copyright (c) Shadows-of-Fire
+  - [![License](https://img.shields.io/badge/License-MIT-green)](https://github.com/Shadows-of-Fire/EnderTweaker/blob/master/LICENSE)
 
 
 Here are the licenses for this fork version **EnderIO Continuous**:

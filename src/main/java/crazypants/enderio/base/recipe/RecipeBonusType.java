@@ -8,7 +8,15 @@ public enum RecipeBonusType {
 
     private final boolean multiply, chances;
 
-    private RecipeBonusType(boolean multiply, boolean chances) {
+    public static RecipeBonusType fromString(String s) {
+        return switch (s.toLowerCase()) {
+            case "multiply_output" -> MULTIPLY_OUTPUT;
+            case "chance_only" -> CHANCE_ONLY;
+            default -> NONE;
+        };
+    }
+
+    RecipeBonusType(boolean multiply, boolean chances) {
         this.multiply = multiply;
         this.chances = chances;
     }

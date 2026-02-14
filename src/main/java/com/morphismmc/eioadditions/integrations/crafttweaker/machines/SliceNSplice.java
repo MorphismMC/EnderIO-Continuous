@@ -1,0 +1,69 @@
+package com.morphismmc.eioadditions.integrations.crafttweaker.machines;
+
+import com.morphismmc.eioadditions.integrations.crafttweaker.CTIntegration;
+import com.morphismmc.eioadditions.integrations.crafttweaker.RecipeUtils;
+import com.morphismmc.eioadditions.integrations.crafttweaker.recipe.ManyToOneRecipe;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.annotations.ZenRegister;
+import crafttweaker.api.item.IIngredient;
+import crafttweaker.api.item.IItemStack;
+import crafttweaker.api.minecraft.CraftTweakerMC;
+import crazypants.enderio.base.recipe.IManyToOneRecipe;
+import crazypants.enderio.base.recipe.RecipeBonusType;
+import crazypants.enderio.base.recipe.RecipeLevel;
+import crazypants.enderio.base.recipe.RecipeOutput;
+import crazypants.enderio.base.recipe.slicensplice.SliceAndSpliceRecipeManager;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
+import stanhebben.zenscript.annotations.Optional;
+import stanhebben.zenscript.annotations.ZenClass;
+import stanhebben.zenscript.annotations.ZenMethod;
+
+@ZenClass("mods.enderio.SliceNSplice")
+@ZenRegister
+public class SliceNSplice {
+
+    @ZenMethod
+    public static void addRecipe(IItemStack output, IIngredient[] input, @Optional int energyCost, @Optional float xp) {
+        if (hasErrors(output, input)) return;
+        CTIntegration.ADDITIONS.add(() -> {
+            RecipeOutput out = new RecipeOutput(CraftTweakerMC.getItemStack(output), 1, xp);
+            ManyToOneRecipe rec = new ManyToOneRecipe(out, energyCost <= 0 ? 5000 : energyCost, RecipeBonusType.NONE, RecipeLevel.IGNORE, RecipeUtils.toEIOInputs(input));
+            SliceAndSpliceRecipeManager.getInstance().addRecipe(rec);
+        });
+    }
+
+    @ZenMethod
+    public static void removeRecipe(IItemStack output) {
+        if (output == null) {
+            CraftTweakerAPI.logError("Cannot remove recipe for null from slice'n'splice.");
+            return;
+        }
+        CTIntegration.REMOVALS.add(() -> {
+            ItemStack stack = CraftTweakerMC.getItemStack(output);
+            IManyToOneRecipe rec = null;
+            for (IManyToOneRecipe r : SliceAndSpliceRecipeManager.getInstance().getRecipes()) {
+                if (OreDictionary.itemMatches(stack, r.getOutput(), false)) {
+                    rec = r;
+                    break;
+                }
+            }
+            if (rec != null) {
+                SliceAndSpliceRecipeManager.getInstance().getRecipes().remove(rec);
+            } else CraftTweakerAPI.logError("No Slice'n'Splice recipe found for " + output.getDisplayName());
+        });
+    }
+
+    private static boolean hasErrors(IItemStack output, IIngredient[] input) {
+        if (output == null || output.isEmpty()) {
+            CraftTweakerAPI.logError("Invalid output (empty or null) in Slice'n'Splice recipe: " + output);
+            return true;
+        }
+        if (input.length > 6) {
+            CraftTweakerAPI.logError("Invalid Slice'n'Splice input, must be between 1 and 6 inputs.  Provided: " + RecipeUtils.getDisplayString(input));
+            return true;
+        }
+        return false;
+    }
+
+}

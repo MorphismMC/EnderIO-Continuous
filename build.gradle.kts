@@ -91,5 +91,6 @@ tasks {
         compileOnly(deobf("curse.maven:mekanism-268560:2835175"))  // Mekanism 9.8.3.390
         //compileOnly("com.mod-buildcraft:buildcraft-api:7.99.24.8")
         //localImplementation rfg.deobf("curse.maven:buildcraft-61811:3204475") // Buildcraft 7.99.24.8
+        compileOnly(deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.698")) // CraftTweaker 4.1.20.698
     }
 }
