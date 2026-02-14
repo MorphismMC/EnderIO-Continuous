@@ -1,4 +1,4 @@
-package crazypants.enderio.base.integration.crafttweaker;
+package crazypants.enderio.integration.crafttweaker;
 
 import java.util.ArrayList;
 import java.util.List;

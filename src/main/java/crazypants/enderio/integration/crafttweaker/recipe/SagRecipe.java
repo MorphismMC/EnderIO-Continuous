@@ -1,4 +1,4 @@
-package crazypants.enderio.base.integration.crafttweaker.recipe;
+package crazypants.enderio.integration.crafttweaker.recipe;
 
 import com.enderio.core.common.util.NNList;
 import crazypants.enderio.base.recipe.*;

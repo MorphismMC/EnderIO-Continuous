@@ -2,6 +2,7 @@ package crazypants.enderio.base;
 
 import javax.annotation.Nonnull;
 
+import crazypants.enderio.integration.crafttweaker.CTIntegration;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.crash.ICrashReportDetail;

@@ -11,7 +11,7 @@ import crazypants.enderio.base.config.recipes.xml.AbstractConditional;
 import crazypants.enderio.base.config.recipes.xml.Aliases;
 import crazypants.enderio.base.config.recipes.xml.Capacitors;
 import crazypants.enderio.base.config.recipes.xml.Recipes;
-import crazypants.enderio.base.integration.crafttweaker.CTIntegration;
+import crazypants.enderio.integration.crafttweaker.CTIntegration;
 import crazypants.enderio.base.recipe.RecipeLevel;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;

@@ -1,4 +1,4 @@
-package crazypants.enderio.base.integration.crafttweaker.machines;
+package crazypants.enderio.integration.crafttweaker.machines;
 
 import java.util.Map;
 
@@ -7,8 +7,8 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import crazypants.enderio.base.integration.crafttweaker.CTIntegration;
-import crazypants.enderio.base.integration.crafttweaker.recipe.SoulBinderRecipe;
+import crazypants.enderio.integration.crafttweaker.CTIntegration;
+import crazypants.enderio.integration.crafttweaker.recipe.SoulBinderRecipe;
 import crazypants.enderio.base.recipe.IMachineRecipe;
 import crazypants.enderio.base.recipe.MachineRecipeRegistry;
 import crazypants.enderio.base.recipe.RecipeLevel;
