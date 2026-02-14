@@ -1,6 +1,5 @@
-package com.morphismmc.eioadditions.integrations.crafttweaker.machines;
+package crazypants.enderio.base.integration.crafttweaker.machines;
 
-import com.morphismmc.eioadditions.integrations.crafttweaker.CTIntegration;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.liquid.ILiquidStack;
@@ -8,6 +7,7 @@ import crafttweaker.api.minecraft.CraftTweakerMC;
 import crazypants.enderio.base.fluid.FluidFuelRegister;
 import crazypants.enderio.base.fluid.IFluidCoolant;
 import crazypants.enderio.base.fluid.IFluidFuel;
+import crazypants.enderio.base.integration.crafttweaker.CTIntegration;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;

@@ -1,11 +1,11 @@
-package com.morphismmc.eioadditions.integrations.crafttweaker;
+package crazypants.enderio.base.integration.crafttweaker;
 
 import com.enderio.core.common.util.NNList;
-import com.morphismmc.eioadditions.integrations.crafttweaker.recipe.RecipeInput;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.WeightedItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
+import crazypants.enderio.base.integration.crafttweaker.recipe.RecipeInput;
 import crazypants.enderio.base.recipe.IRecipeInput;
 import crazypants.enderio.base.recipe.RecipeOutput;
 

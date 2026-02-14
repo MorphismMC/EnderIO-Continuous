@@ -1,4 +1,4 @@
-package com.morphismmc.eioadditions.integrations.crafttweaker.recipe;
+package crazypants.enderio.base.integration.crafttweaker.recipe;
 
 import com.enderio.core.common.util.NNList;
 

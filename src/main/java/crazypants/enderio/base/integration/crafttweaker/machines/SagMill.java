@@ -1,19 +1,17 @@
-package com.morphismmc.eioadditions.integrations.crafttweaker.machines;
+package crazypants.enderio.base.integration.crafttweaker.machines;
 
 import java.util.Arrays;
 
-import com.google.common.base.Strings;
-
-import com.morphismmc.eioadditions.integrations.crafttweaker.CTIntegration;
-import com.morphismmc.eioadditions.integrations.crafttweaker.RecipeUtils;
-import com.morphismmc.eioadditions.integrations.crafttweaker.recipe.RecipeInput;
-import com.morphismmc.eioadditions.integrations.crafttweaker.recipe.SagRecipe;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.WeightedItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
+import crazypants.enderio.base.integration.crafttweaker.CTIntegration;
+import crazypants.enderio.base.integration.crafttweaker.RecipeUtils;
+import crazypants.enderio.base.integration.crafttweaker.recipe.RecipeInput;
+import crazypants.enderio.base.integration.crafttweaker.recipe.SagRecipe;
 import crazypants.enderio.base.recipe.IRecipe;
 import crazypants.enderio.base.recipe.RecipeBonusType;
 import crazypants.enderio.base.recipe.RecipeLevel;

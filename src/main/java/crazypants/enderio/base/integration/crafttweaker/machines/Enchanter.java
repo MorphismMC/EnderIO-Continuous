@@ -1,13 +1,13 @@
-package com.morphismmc.eioadditions.integrations.crafttweaker.machines;
+package crazypants.enderio.base.integration.crafttweaker.machines;
 
 import com.enderio.core.common.util.NNList;
 import com.enderio.core.common.util.stackable.Things;
-import com.morphismmc.eioadditions.integrations.crafttweaker.CTIntegration;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.enchantments.IEnchantmentDefinition;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.minecraft.CraftTweakerMC;
+import crazypants.enderio.base.integration.crafttweaker.CTIntegration;
 import crazypants.enderio.base.recipe.IMachineRecipe;
 import crazypants.enderio.base.recipe.MachineRecipeRegistry;
 import crazypants.enderio.base.recipe.RecipeLevel;

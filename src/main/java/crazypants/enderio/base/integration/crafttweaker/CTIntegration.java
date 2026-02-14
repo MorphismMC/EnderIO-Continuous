@@ -1,4 +1,4 @@
-package com.morphismmc.eioadditions.integrations.crafttweaker;
+package crazypants.enderio.base.integration.crafttweaker;
 
 import java.util.ArrayList;
 import java.util.List;
