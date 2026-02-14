@@ -2,7 +2,6 @@ package crazypants.enderio.base.config.recipes;
 
 import com.enderio.core.common.util.NNList;
 import com.enderio.core.common.util.NullHelper;
-import com.morphismmc.eioadditions.integrations.crafttweaker.CTIntegration;
 import crazypants.enderio.api.addon.IEnderIOAddon;
 import crazypants.enderio.base.EnderIO;
 import crazypants.enderio.base.Log;
@@ -12,6 +11,7 @@ import crazypants.enderio.base.config.recipes.xml.AbstractConditional;
 import crazypants.enderio.base.config.recipes.xml.Aliases;
 import crazypants.enderio.base.config.recipes.xml.Capacitors;
 import crazypants.enderio.base.config.recipes.xml.Recipes;
+import crazypants.enderio.base.integration.crafttweaker.CTIntegration;
 import crazypants.enderio.base.recipe.RecipeLevel;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
@@ -47,7 +47,7 @@ public final class RecipeLoader {
     }
 
     public static void addRecipes() {
-        ProgressManager.ProgressBar bar = ProgressManager.push("XML Recipes", 11, true);
+        ProgressManager.ProgressBar bar = ProgressManager.push("Recipes", 12, true);
         final RecipeFactory recipeFactory = new RecipeFactory(EnderIO.getConfigHandler().getConfigDirectory(),
                 EnderIO.DOMAIN);
 
