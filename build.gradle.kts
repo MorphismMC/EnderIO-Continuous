@@ -49,17 +49,16 @@ tasks {
     }
 
     named<ProcessResources>("processResources") {
-        fileTree(sourceSets.main.get().output.resourcesDir) {
-            include("**/config/recipes/*.xml")
-        }.files.forEach {
+        sourceSets.main.get().output.resourcesDir?.let {
+            fileTree(it) {
+                include("**/config/recipes/*.xml")
+            }
+        }?.files?.forEach {
             val baseFilename = it.name.take(it.name.lastIndexOf("."))
             val inputFile = File(it.parent, "${baseFilename}.xml")
             val outputFile = File(it.parent, "${baseFilename}.pdf")
             PdfConverterExtension.exportToPdf(outputFile.path,
-                "<html><head></head><body><div style='white-space:pre-wrap; font-family:monospace;'>" +
-                        XmlUtil.escapeXml(inputFile.readText()) +
-                        "</div></body></html>", "", MutableDataSet()
-            )
+                                              "<html><head></head><body><div style='white-space:pre-wrap; font-family:monospace;'>" + XmlUtil.escapeXml(inputFile.readText()) + "</div></body></html>", "", MutableDataSet())
         }
     }
 
@@ -71,8 +70,7 @@ tasks {
         localImplementation("info.loenwind:ap:1.0.0")
         annotationProcessor("info.loenwind:ap:1.0.0")
 
-        compileOnlyApi("org.jetbrains:annotations:24.1.0")
-        annotationProcessor("org.jetbrains:annotations:24.1.0")
+        compileOnlyApi("org.jetbrains:annotations:26.1.0")
 
         localImplementation(deobf("curse.maven:journeymap-32274:5172461"))
         localImplementation(deobf("mezz.jei:jei_1.12.2:4.16.1.302"))
